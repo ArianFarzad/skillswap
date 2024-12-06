@@ -23,10 +23,11 @@ afterEach(async () => {
 
 describe('Auth Routes', () => {
   it('should register a new user', async () => {
+    const email = `test${Date.now()}@example.com`;
     const res = await request(app)
       .post('/api/auth/register')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123',
         name: 'Test User'
       });
@@ -35,10 +36,11 @@ describe('Auth Routes', () => {
   }, 10000); // Timeout von 10 Sekunden
 
   it('should not register a user with an existing email', async () => {
+    const email = `test${Date.now()}@example.com`;
     await request(app)
       .post('/api/auth/register')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123',
         name: 'Test User'
       });
@@ -46,7 +48,7 @@ describe('Auth Routes', () => {
     const res = await request(app)
       .post('/api/auth/register')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123',
         name: 'Test User'
       });
@@ -55,10 +57,11 @@ describe('Auth Routes', () => {
   }, 10000); // Timeout von 10 Sekunden
 
   it('should login a user with correct credentials', async () => {
+    const email = `test${Date.now()}@example.com`;
     await request(app)
       .post('/api/auth/register')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123',
         name: 'Test User'
       });
@@ -66,7 +69,7 @@ describe('Auth Routes', () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123'
       });
     expect(res.statusCode).toEqual(200);
@@ -74,10 +77,11 @@ describe('Auth Routes', () => {
   }, 10000); // Timeout von 10 Sekunden
 
   it('should not login a user with incorrect credentials', async () => {
+    const email = `test${Date.now()}@example.com`;
     await request(app)
       .post('/api/auth/register')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'password123',
         name: 'Test User'
       });
@@ -85,7 +89,7 @@ describe('Auth Routes', () => {
     const res = await request(app)
       .post('/api/auth/login')
       .send({
-        email: 'test@example.com',
+        email,
         password: 'wrongpassword'
       });
     expect(res.statusCode).toEqual(400);
