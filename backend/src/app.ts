@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes';
 import profileRoutes from './routes/profileRoutes';
 import sessionRoutes from './routes/sessionRoutes';
+import feedbackRoutes from './routes/feedbackRoutes';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/sessions', sessionRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // MongoDB-Verbindung
 mongoose.connect(process.env.MONGO_URI!, {
