@@ -13,6 +13,10 @@ export const register = async (req: Request, res: Response) => {
     console.log('User registered successfully:', user);
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
+    if ((error as any).code === 11000) {
+      console.error('Error registering user: Duplicate email');
+      return res.status(400).json({ error: 'Email already exists' });
+    }
     console.error('Error registering user:', error);
     res.status(500).json({ error: 'Server error' });
   }
