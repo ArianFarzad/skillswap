@@ -12,6 +12,8 @@ beforeAll(async () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
+  await User.deleteMany({});
+  await Profile.deleteMany({});
 });
 
 afterAll(async () => {
@@ -125,5 +127,25 @@ describe('Profile Routes', () => {
 
     console.log('Response:', res.body);
     expect(res.statusCode).toEqual(201);
+  });
+
+  it('should search profiles by skills', async () => {
+    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    await user.save();
+
+    const profile = new Profile({ userId: user._id, name: 'Test User', skills: ['JavaScript', 'Node.js'], interests: ['Coding'] });
+    await profile.save();
+
+    const token = user.generateAuthToken();
+    console.log('Generated token:', token);
+
+    const res = await request(app)
+      .get('/api/profiles/search?skills=JavaScript')
+      .set('Authorization', `Bearer ${token}`);
+
+    console.log('Response:', res.body);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0]).toHaveProperty('name', 'Test User');
   });
 });
