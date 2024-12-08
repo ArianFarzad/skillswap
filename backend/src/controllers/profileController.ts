@@ -23,7 +23,7 @@ export const createProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const getProfile = async (req: Request, res: Response) => {
+export const getMyProfile = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       console.warn('Unauthorized access attempt');
@@ -39,6 +39,16 @@ export const getProfile = async (req: Request, res: Response) => {
     res.json(profile);
   } catch (error) {
     console.error('Error fetching profile:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getAllProfiles = async (req: Request, res: Response) => {
+  try {
+    const profiles = await Profile.find();
+    res.json(profiles);
+  } catch (error) {
+    console.error('Error fetching all profiles:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
