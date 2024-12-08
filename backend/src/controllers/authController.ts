@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import Profile from '../models/Profile';
+
+// authController.ts
 
 export const register = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
@@ -11,6 +14,12 @@ export const register = async (req: Request, res: Response) => {
     const user = new User({ email, password: hashedPassword, name });
     await user.save();
     console.log('User registered successfully:', user);
+
+    // Profil mit userId und name erstellen
+    const profile = new Profile({ userId: user._id, name: user.name, email: user.email, skills: [], interests: [] });
+    await profile.save();
+    console.log('Profile created successfully:', profile);
+
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     if ((error as any).code === 11000) {

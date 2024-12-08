@@ -1,11 +1,21 @@
-import React from 'react';
-import './style/App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Register from './components/Register';
+import Login from './components/Login';
+import Profile from './components/Profile';
+import Welcome from './components/Welcome';
 
 function App() {
   return (
-    <div className="App">
-      <p>Frontend für das Projekt SkillSwap</p>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/" element={<Welcome />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
