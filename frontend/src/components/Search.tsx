@@ -26,7 +26,7 @@ const Search: React.FC = () => {
   };
 
   const handleNameClick = (userId: string) => {
-    navigate(`/profile/${userId}`);
+    navigate(`/profiles/${userId}`);
   };
 
   return (

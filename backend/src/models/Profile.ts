@@ -1,7 +1,7 @@
-import { Schema, model, Document, ValidatorProps } from 'mongoose';
+import { Schema, model, Document, ValidatorProps, Types } from 'mongoose';
 
 interface IProfile extends Document {
-  userId: string;
+  userId: Types.ObjectId;
   name: string;
   skills: string[];
   interests: string[];

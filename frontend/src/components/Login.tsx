@@ -17,6 +17,7 @@ const Login: React.FC = () => {
       });
       localStorage.setItem('token', response.data.token);
       setMessage('Login successful');
+      localStorage.setItem('userId', response.data.userId); // Nach erfolgreichem Login
       navigate('/profile'); // Weiterleitung zur Profilseite
     } catch (error) {
       setMessage('Error logging in');
