@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Profile from '../models/Profile';
+import mongoose from 'mongoose';
 
 declare module 'express' {
   export interface Request {
@@ -111,6 +112,41 @@ export const searchProfiles = async (req: Request, res: Response) => {
     res.json(profiles);
   } catch (error) {
     console.error('Error searching profiles:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getProfileById = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  console.log('Eingehende Anfrage für Profil mit userId:', userId);
+
+  try {
+    // Überprüfen, ob die userId ein gültiges ObjectId-Format hat
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      console.warn('Ungültiges userId-Format:', userId);
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    // Konvertieren der userId in ein ObjectId
+    const objectId = new mongoose.Types.ObjectId(userId);
+    console.log('Konvertierte userId zu ObjectId:', objectId);
+
+    // Suchen des Profils
+    const profile = await Profile.findOne({ userId: objectId });
+    if (!profile) {
+      console.warn('Kein Profil gefunden für userId:', userId);
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    console.log('Profil gefunden:', profile);
+
+    // Optional: Feedback zum Profil abrufen
+    // const feedback = await Feedback.find({ userId: objectId });
+    // console.log('Feedback gefunden:', feedback);
+
+    res.json({ profile, feedback: [] });
+  } catch (error) {
+    console.error('Fehler beim Abrufen des Profils für userId:', userId, error);
     res.status(500).json({ error: 'Server error' });
   }
 };
