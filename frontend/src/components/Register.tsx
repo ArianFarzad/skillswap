@@ -13,14 +13,17 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/register', {
-        name,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost:8000/api/auth/register',
+        {
+          name,
+          email,
+          password,
+        }
+      );
       setMessage(response.data.message);
     } catch (error) {
-      setMessage('Error registering user');
+      setMessage(`Error registering user ${error}`);
     }
   };
 
@@ -35,7 +38,7 @@ const Register: React.FC = () => {
       <form onSubmit={handleSubmit} className="register-form">
         <input
           type="text"
-          className='register-input'
+          className="register-input"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -43,7 +46,7 @@ const Register: React.FC = () => {
         />
         <input
           type="email"
-          className='register-input'
+          className="register-input"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -51,17 +54,14 @@ const Register: React.FC = () => {
         />
         <input
           type="password"
-          className='register-input'
+          className="register-input"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <p 
-          id='register-message'
-          onClick={handleForwardToLogin}
-        >
-            already have an account?
+        <p id="register-message" onClick={handleForwardToLogin}>
+          already have an account?
         </p>
         <button type="submit">Register</button>
       </form>

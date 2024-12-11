@@ -1,19 +1,32 @@
-// Search.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// Search.tsx
+
+interface Profile {
+  id: string;
+  name: string;
+  email: string;
+  skills: string[];
+  interests: string[];
+}
 
 const Search: React.FC = () => {
-  const [profiles, setProfiles] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const navigate = useNavigate();
 
   const fetchProfiles = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/profiles/all');
+      const response = await axios.get('http://localhost:8000/api/profiles');
       setProfiles(response.data);
     } catch (error) {
-      console.error('Error fetching profiles:', error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          'Error fetching profiles:',
+          error.response?.data?.message || error.message
+        );
+      } else {
+        console.error('An unexpected error occurred');
+      }
     }
   };
 
@@ -37,53 +50,24 @@ const Search: React.FC = () => {
         <thead>
           <tr>
             <th>Name</th>
-            <th>Fähigkeiten</th>
-            <th>Interessen</th>
-            <th>Chat-Anfrage</th>
+            <th>Email</th>
+            <th>Skills</th>
+            <th>Interests</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {profiles.map((profile) => (
-            <tr key={profile.userId}>
-              <td>
-                <button onClick={() => handleNameClick(profile.userId)}>
-                  {profile.name}
-                </button>
+            <tr key={profile.id}>
+              <td onClick={() => handleNameClick(profile.id)}>
+                {profile.name}
               </td>
-              <td>{profile.skills ? profile.skills.join(', ') : ''}</td>
-              <td>{profile.interests ? profile.interests.join(', ') : ''}</td>
+              <td>{profile.email}</td>
+              <td>{profile.skills.join(', ')}</td>
+              <td>{profile.interests.join(', ')}</td>
               <td>
-                <button onClick={() => handleChatRequest(profile.userId)}>
-                  Anfrage senden
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <h2>Alle Profile</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Fähigkeiten</th>
-            <th>Interessen</th>
-            <th>Chat-Anfrage</th>
-          </tr>
-        </thead>
-        <tbody>
-          {profiles.map((profile) => (
-            <tr key={profile.userId}>
-              <td>
-                <button onClick={() => handleNameClick(profile.userId)}>
-                  {profile.name}
-                </button>
-              </td>
-              <td>{profile.skills ? profile.skills.join(', ') : ''}</td>
-              <td>{profile.interests ? profile.interests.join(', ') : ''}</td>
-              <td>
-                <button onClick={() => handleChatRequest(profile.userId)}>
-                  Anfrage senden
+                <button onClick={() => handleChatRequest(profile.id)}>
+                  Chat
                 </button>
               </td>
             </tr>

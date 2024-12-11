@@ -16,13 +16,19 @@ export const register = async (req: Request, res: Response) => {
     console.log('User registered successfully:', user);
 
     // Profil mit userId und name erstellen
-    const profile = new Profile({ userId: user._id, name: user.name, email: user.email, skills: [], interests: [] });
+    const profile = new Profile({
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      skills: [],
+      interests: [],
+    });
     await profile.save();
     console.log('Profile created successfully:', profile);
 
     res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    if ((error as any).code === 11000) {
+  } catch (error: unknown) {
+    if (error instanceof Error && (error as { code?: number }).code === 11000) {
       console.error('Error registering user: Duplicate email');
       return res.status(400).json({ error: 'Email already exists' });
     }
@@ -45,10 +51,12 @@ export const login = async (req: Request, res: Response) => {
       console.warn('Invalid credentials for email:', email);
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
+      expiresIn: '1h',
+    });
     console.log('User logged in successfully:', user);
     res.json({ token });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error logging in user:', error);
     res.status(500).json({ error: 'Server error' });
   }

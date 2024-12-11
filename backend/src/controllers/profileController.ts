@@ -14,7 +14,12 @@ export const createProfile = async (req: Request, res: Response) => {
   const { name, skills, interests } = req.body;
   try {
     console.log('Creating profile for user:', req.user!.userId);
-    const profile = new Profile({ userId: req.user!.userId, name, skills, interests });
+    const profile = new Profile({
+      userId: req.user!.userId,
+      name,
+      skills,
+      interests,
+    });
     await profile.save();
     console.log('Profile created successfully:', profile);
     res.status(201).json(profile);
@@ -104,9 +109,11 @@ export const searchProfiles = async (req: Request, res: Response) => {
   try {
     console.log('Searching profiles with skills:', skills);
     const skillsArray = Array.isArray(skills) ? skills : [skills];
-    const stringSkillsArray = skillsArray.filter(skill => typeof skill === 'string') as string[];
+    const stringSkillsArray = skillsArray.filter(
+      (skill) => typeof skill === 'string'
+    ) as string[];
     const profiles = await Profile.find({
-      skills: { $in: stringSkillsArray }
+      skills: { $in: stringSkillsArray },
     });
     console.log('Profiles found:', profiles);
     res.json(profiles);

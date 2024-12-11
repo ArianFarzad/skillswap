@@ -1,13 +1,16 @@
-// Profile.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Profile: React.FC = () => {
-  const [profile, setProfile] = useState<any>(null);
-  const [message, setMessage] = useState('');
+interface ProfileType {
+  skills: string[];
+  interests: string[];
+}
 
+const Profile: React.FC = () => {
+  const [profile, setProfile] = useState<ProfileType | null>(null);
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -20,120 +23,103 @@ const Profile: React.FC = () => {
         });
         setProfile(response.data);
       } catch (error) {
-        setMessage('Error fetching profile');
+        if (axios.isAxiosError(error)) {
+          setMessage(
+            `Error fetching profile: ${error.response?.data?.message || error.message}`
+          );
+        } else {
+          setMessage('An unexpected error occurred');
+        }
       }
     };
 
     fetchProfile();
   }, []);
 
-  const handleAddSkill = () => {
-    if (newSkill.trim() === '') return;
-    setProfile({
-      ...profile,
-      skills: [...(profile.skills || []), newSkill.trim()],
-    });
-    setNewSkill('');
-  };
-
-  const handleDeleteSkill = (index: number) => {
-    const updatedSkills = [...profile.skills];
-    updatedSkills.splice(index, 1);
-    setProfile({
-      ...profile,
-      skills: updatedSkills,
-    });
-  };
-
-  const handleAddInterest = () => {
-    if (newInterest.trim() === '') return;
-    setProfile({
-      ...profile,
-      interests: [...(profile.interests || []), newInterest.trim()],
-    });
-    setNewInterest('');
-  };
-
-  const handleDeleteInterest = (index: number) => {
-    const updatedInterests = [...profile.interests];
-    updatedInterests.splice(index, 1);
-    setProfile({
-      ...profile,
-      interests: updatedInterests,
-    });
-  };
-
-  const handleSaveProfile = async () => {
+  const handleAddSkill = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(
-        'http://localhost:8000/api/profiles',
-        {
-          name: profile.name,
-          skills: profile.skills,
-          interests: profile.interests,
-        },
+      const response = await axios.post(
+        'http://localhost:8000/api/profiles/skills',
+        { skill: newSkill },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setMessage('Profile updated successfully');
+      setProfile(response.data);
+      setNewSkill('');
     } catch (error) {
-      setMessage('Error updating profile');
+      if (axios.isAxiosError(error)) {
+        setMessage(
+          `Error adding skill: ${error.response?.data?.message || error.message}`
+        );
+      } else {
+        setMessage('An unexpected error occurred');
+      }
+    }
+  };
+
+  const handleAddInterest = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        'http://localhost:8000/api/profiles/interests',
+        { interest: newInterest },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setProfile(response.data);
+      setNewInterest('');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setMessage(
+          `Error adding interest: ${error.response?.data?.message || error.message}`
+        );
+      } else {
+        setMessage('An unexpected error occurred');
+      }
     }
   };
 
   return (
     <div>
-      <h2>Profil</h2>
-      {profile ? (
+      <h2>Profile</h2>
+      {message && <p>{message}</p>}
+      {profile && (
         <div>
-          <p>Name: {profile.name}</p>
-
           <h3>Skills</h3>
           <ul>
-            {profile.skills &&
-              profile.skills.map((skill: string, index: number) => (
-                <li key={index}>
-                  {skill}{' '}
-                  <button onClick={() => handleDeleteSkill(index)}>Löschen</button>
-                </li>
-              ))}
+            {profile.skills.map((skill) => (
+              <li key={skill}>{skill}</li>
+            ))}
           </ul>
           <input
             type="text"
-            placeholder="Neue Skill hinzufügen"
+            placeholder="New Skill"
             value={newSkill}
             onChange={(e) => setNewSkill(e.target.value)}
           />
-          <button onClick={handleAddSkill}>Skill hinzufügen</button>
+          <button onClick={handleAddSkill}>Add Skill</button>
 
-          <h3>Interessen</h3>
+          <h3>Interests</h3>
           <ul>
-            {profile.interests &&
-              profile.interests.map((interest: string, index: number) => (
-                <li key={index}>
-                  {interest}{' '}
-                  <button onClick={() => handleDeleteInterest(index)}>Löschen</button>
-                </li>
-              ))}
+            {profile.interests.map((interest) => (
+              <li key={interest}>{interest}</li>
+            ))}
           </ul>
           <input
             type="text"
-            placeholder="Neue Interesse hinzufügen"
+            placeholder="New Interest"
             value={newInterest}
             onChange={(e) => setNewInterest(e.target.value)}
           />
-          <button onClick={handleAddInterest}>Interesse hinzufügen</button>
-
-          <button onClick={handleSaveProfile}>Profil speichern</button>
-
-          {message && <p>{message}</p>}
+          <button onClick={handleAddInterest}>Add Interest</button>
         </div>
-      ) : (
-        <p>{message}</p>
       )}
     </div>
   );
