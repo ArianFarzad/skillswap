@@ -27,7 +27,11 @@ afterEach(async () => {
 
 describe('Profile Routes', () => {
   it('should create a new profile', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    const user = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User',
+    });
     await user.save();
 
     const token = user.generateAuthToken();
@@ -39,7 +43,7 @@ describe('Profile Routes', () => {
       .send({
         name: 'Test User',
         skills: ['JavaScript', 'Node.js'],
-        interests: ['Coding']
+        interests: ['Coding'],
       });
 
     console.log('Response:', res.body);
@@ -48,10 +52,19 @@ describe('Profile Routes', () => {
   });
 
   it('should get a profile', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    const user = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User',
+    });
     await user.save();
 
-    const profile = new Profile({ userId: user._id, name: 'Test User', skills: ['JavaScript', 'Node.js'], interests: ['Coding'] });
+    const profile = new Profile({
+      userId: user._id,
+      name: 'Test User',
+      skills: ['JavaScript', 'Node.js'],
+      interests: ['Coding'],
+    });
     await profile.save();
 
     const token = user.generateAuthToken();
@@ -67,10 +80,19 @@ describe('Profile Routes', () => {
   });
 
   it('should update a profile', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    const user = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User',
+    });
     await user.save();
 
-    const profile = new Profile({ userId: user._id, name: 'Test User', skills: ['JavaScript', 'Node.js'], interests: ['Coding'] });
+    const profile = new Profile({
+      userId: user._id,
+      name: 'Test User',
+      skills: ['JavaScript', 'Node.js'],
+      interests: ['Coding'],
+    });
     await profile.save();
 
     const token = user.generateAuthToken();
@@ -82,7 +104,7 @@ describe('Profile Routes', () => {
       .send({
         name: 'Updated User',
         skills: ['Python'],
-        interests: ['Machine Learning']
+        interests: ['Machine Learning'],
       });
 
     console.log('Response:', res.body);
@@ -91,10 +113,19 @@ describe('Profile Routes', () => {
   });
 
   it('should delete a profile', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    const user = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User',
+    });
     await user.save();
 
-    const profile = new Profile({ userId: user._id, name: 'Test User', skills: ['JavaScript', 'Node.js'], interests: ['Coding'] });
+    const profile = new Profile({
+      userId: user._id,
+      name: 'Test User',
+      skills: ['JavaScript', 'Node.js'],
+      interests: ['Coding'],
+    });
     await profile.save();
 
     const token = user.generateAuthToken();
@@ -110,7 +141,11 @@ describe('Profile Routes', () => {
   });
 
   it('should validate skills and interests length', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    const user = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User',
+    });
     await user.save();
 
     const token = user.generateAuthToken();
@@ -122,7 +157,7 @@ describe('Profile Routes', () => {
       .send({
         name: 'Test User',
         skills: ['a'.repeat(49)],
-        interests: ['b'.repeat(49)]
+        interests: ['b'.repeat(49)],
       });
 
     console.log('Response:', res.body);
@@ -130,10 +165,19 @@ describe('Profile Routes', () => {
   });
 
   it('should search profiles by skills', async () => {
-    const user = new User({ email: 'test@example.com', password: 'password123', name: 'Test User' });
+    const user = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      name: 'Test User',
+    });
     await user.save();
 
-    const profile = new Profile({ userId: user._id, name: 'Test User', skills: ['JavaScript', 'Node.js'], interests: ['Coding'] });
+    const profile = new Profile({
+      userId: user._id,
+      name: 'Test User',
+      skills: ['JavaScript', 'Node.js'],
+      interests: ['Coding'],
+    });
     await profile.save();
 
     const token = user.generateAuthToken();

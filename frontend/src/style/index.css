@@ -1,15 +1,21 @@
-
 @keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
-  overflow: hidden; 
-  height: 100%; 
+  overflow: hidden;
+  height: 100%;
   font-family: lato, sans-serif;
   background: linear-gradient(45deg, #8d8e98, #a59793, #7b829c, #ae9f9f);
   animation: gradientAnimation 15s ease infinite;

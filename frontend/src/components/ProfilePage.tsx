@@ -2,61 +2,62 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
+interface ProfileData {
+  name: string;
+  email: string;
+  skills: string[];
+  interests: string[];
+}
 
 const ProfilePage: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [message, setMessage] = useState('');
-  const navigate = useNavigate();
-
-  const loggedInUserId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/profiles/${userId}`);
+        const response = await axios.get(
+          `http://localhost:8000/api/profiles/${userId}`
+        );
         setProfileData(response.data);
       } catch (error) {
-        setMessage('Fehler beim Laden des Profils.');
-        console.error(error);
+        if (axios.isAxiosError(error)) {
+          setMessage(
+            `Error fetching profile: ${error.response?.data?.message || error.message}`
+          );
+        } else {
+          setMessage('An unexpected error occurred');
+        }
       }
     };
+
     fetchProfile();
   }, [userId]);
 
-  const handleEdit = () => {
-    navigate('/profile'); // Zur eigenen Profilbearbeitungsseite
-  };
-
   return (
     <div>
-      {profileData ? (
+      <h2>Profile Page</h2>
+      {message && <p>{message}</p>}
+      {profileData && (
         <div>
-          <h2>{profileData.profile.name}</h2>
-          <p><strong>Fähigkeiten:</strong> {profileData.profile.skills.join(', ')}</p>
-          <p><strong>Interessen:</strong> {profileData.profile.interests.join(', ')}</p>
-
-          <h3>Feedback</h3>
-          {profileData.feedback && profileData.feedback.length > 0 ? (
-            <ul>
-              {profileData.feedback.map((fb: any) => (
-                <li key={fb._id}>
-                  <p>Bewertung: {fb.rating}</p>
-                  <p>Kommentar: {fb.comment}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Noch kein Feedback vorhanden.</p>
-          )}
-
-          {loggedInUserId === userId && (
-            <button onClick={handleEdit}>Bearbeiten</button>
-          )}
+          <h3>{profileData.name}</h3>
+          <p>Email: {profileData.email}</p>
+          <h4>Skills</h4>
+          <ul>
+            {profileData.skills.map((skill) => (
+              <li key={skill}>{skill}</li>
+            ))}
+          </ul>
+          <h4>Interests</h4>
+          <ul>
+            {profileData.interests.map((interest) => (
+              <li key={interest}>{interest}</li>
+            ))}
+          </ul>
         </div>
-      ) : (
-        <p>{message}</p>
       )}
     </div>
   );

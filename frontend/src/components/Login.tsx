@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
@@ -11,16 +11,25 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/auth/login', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        'http://localhost:8000/api/auth/login',
+        {
+          email,
+          password,
+        }
+      );
       localStorage.setItem('token', response.data.token);
       setMessage('Login successful');
-      localStorage.setItem('userId', response.data.userId); // Nach erfolgreichem Login
-      navigate('/profile'); // Weiterleitung zur Profilseite
+      localStorage.setItem('userId', response.data.userId);
+      navigate('/profile');
     } catch (error) {
-      setMessage('Error logging in');
+      if (axios.isAxiosError(error)) {
+        setMessage(
+          `Error logging in: ${error.response?.data?.message || error.message}`
+        );
+      } else {
+        setMessage('An unexpected error occurred');
+      }
     }
   };
 
@@ -28,8 +37,20 @@ const Login: React.FC = () => {
     <div>
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
         <button type="submit">Login</button>
       </form>
       {message && <p>{message}</p>}

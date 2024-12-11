@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import Session from '../models/Session';
-import User from '../models/User';
 import nodemailer from 'nodemailer';
 
 interface PopulatedSession {
@@ -28,7 +27,9 @@ export const createSession = async (req: Request, res: Response) => {
 
 export const getSessions = async (req: Request, res: Response) => {
   try {
-    const sessions = await Session.find().populate('tutor', 'email name').populate('student', 'email name');
+    const sessions = await Session.find()
+      .populate('tutor', 'email name')
+      .populate('student', 'email name');
     res.json(sessions);
   } catch (error) {
     console.error('Error fetching sessions:', error);
@@ -40,7 +41,13 @@ export const updateSession = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { date, status } = req.body;
   try {
-    const session = await Session.findByIdAndUpdate(id, { date, status }, { new: true }).populate('tutor', 'email name').populate('student', 'email name');
+    const session = await Session.findByIdAndUpdate(
+      id,
+      { date, status },
+      { new: true }
+    )
+      .populate('tutor', 'email name')
+      .populate('student', 'email name');
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
@@ -68,16 +75,21 @@ export const deleteSession = async (req: Request, res: Response) => {
 export const sendReminderEmails = async () => {
   try {
     const sessions = await Session.find({
-      date: { $gte: new Date(Date.now() + 24 * 60 * 60 * 1000), $lt: new Date(Date.now() + 25 * 60 * 60 * 1000) },
-      status: 'confirmed'
-    }).populate('tutor', 'email').populate('student', 'email');
+      date: {
+        $gte: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        $lt: new Date(Date.now() + 25 * 60 * 60 * 1000),
+      },
+      status: 'confirmed',
+    })
+      .populate('tutor', 'email')
+      .populate('student', 'email');
 
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
+        pass: process.env.EMAIL_PASS,
+      },
     });
 
     for (const session of sessions as unknown as PopulatedSession[]) {
@@ -85,7 +97,7 @@ export const sendReminderEmails = async () => {
         from: process.env.EMAIL_USER,
         to: [session.tutor.email, session.student.email],
         subject: 'Session Reminder',
-        text: `Reminder: You have a session scheduled on ${session.date}`
+        text: `Reminder: You have a session scheduled on ${session.date}`,
       };
 
       await transporter.sendMail(mailOptions);

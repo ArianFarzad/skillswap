@@ -1,7 +1,15 @@
 // profileRoutes.ts
 
 import { Router } from 'express';
-import { createProfile, getMyProfile, updateProfile, deleteProfile, searchProfiles, getAllProfiles, getProfileById } from '../controllers/profileController';
+import {
+  createProfile,
+  getMyProfile,
+  updateProfile,
+  deleteProfile,
+  searchProfiles,
+  getAllProfiles,
+  getProfileById,
+} from '../controllers/profileController';
 import { verifyToken } from '../utils/jwt';
 
 const router = Router();

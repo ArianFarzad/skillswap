@@ -30,10 +30,18 @@ describe('Session Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
+    const tutor = new User({
+      email: emailTutor,
+      password: 'password123',
+      name: 'Tutor',
+    });
     await tutor.save();
 
-    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
+    const student = new User({
+      email: emailStudent,
+      password: 'password123',
+      name: 'Student',
+    });
     await student.save();
 
     const token = tutor.generateAuthToken();
@@ -45,7 +53,7 @@ describe('Session Routes', () => {
       .send({
         tutor: tutor._id,
         student: student._id,
-        date: new Date()
+        date: new Date(),
       });
 
     console.log('Response:', res.body);
@@ -58,13 +66,25 @@ describe('Session Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
+    const tutor = new User({
+      email: emailTutor,
+      password: 'password123',
+      name: 'Tutor',
+    });
     await tutor.save();
 
-    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
+    const student = new User({
+      email: emailStudent,
+      password: 'password123',
+      name: 'Student',
+    });
     await student.save();
 
-    const session = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
+    const session = new Session({
+      tutor: tutor._id,
+      student: student._id,
+      date: new Date(),
+    });
     await session.save();
 
     const token = tutor.generateAuthToken();
@@ -87,13 +107,25 @@ describe('Session Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
+    const tutor = new User({
+      email: emailTutor,
+      password: 'password123',
+      name: 'Tutor',
+    });
     await tutor.save();
 
-    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
+    const student = new User({
+      email: emailStudent,
+      password: 'password123',
+      name: 'Student',
+    });
     await student.save();
 
-    const session = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
+    const session = new Session({
+      tutor: tutor._id,
+      student: student._id,
+      date: new Date(),
+    });
     await session.save();
 
     const token = tutor.generateAuthToken();
@@ -104,7 +136,7 @@ describe('Session Routes', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         date: new Date(),
-        status: 'confirmed'
+        status: 'confirmed',
       });
 
     console.log('Response:', res.body);
@@ -116,13 +148,25 @@ describe('Session Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
+    const tutor = new User({
+      email: emailTutor,
+      password: 'password123',
+      name: 'Tutor',
+    });
     await tutor.save();
 
-    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
+    const student = new User({
+      email: emailStudent,
+      password: 'password123',
+      name: 'Student',
+    });
     await student.save();
 
-    const session = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
+    const session = new Session({
+      tutor: tutor._id,
+      student: student._id,
+      date: new Date(),
+    });
     await session.save();
 
     const token = tutor.generateAuthToken();

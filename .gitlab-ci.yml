@@ -1,0 +1,92 @@
+image: node:18
+
+stages:
+  - install
+  - test
+  - lint
+  - format
+  - dependency-scanning
+
+variables:
+  NODE_ENV: 'development'
+
+cache:
+  paths:
+    - frontend/node_modules/
+    - backend/node_modules/
+
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+install-frontend:
+  stage: install
+  script:
+    - cd frontend
+    - npm install
+  cache:
+    paths:
+      - frontend/node_modules/
+
+install-backend:
+  stage: install
+  script:
+    - cd backend
+    - npm install
+  cache:
+    paths:
+      - backend/node_modules/
+
+test-backend:
+  stage: test
+  script:
+    - cd backend
+    - npm install
+    - npm run test
+  dependencies:
+    - install-backend
+  allow_failure: true
+
+
+lint-frontend:
+  stage: lint
+  script:
+    - cd frontend
+    - npm install
+    - npm run lint
+  dependencies:
+    - install-frontend
+
+lint-backend:
+  stage: lint
+  script:
+    - cd backend
+    - npm install
+    - npm run lint
+  dependencies:
+    - install-backend
+
+format-frontend:
+  stage: format
+  script:
+    - cd frontend
+    - npm install
+    - npm run format
+  dependencies:
+    - install-frontend
+
+format-backend:
+  stage: format
+  script:
+    - cd backend
+    - npm install
+    - npm run format
+  dependencies:
+    - install-backend
+
+dependency_scanning:
+  stage: dependency-scanning
+  script:
+    - echo "Running dependency scanning"
+  dependencies:
+    - install-frontend
+    - install-backend

@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { createSession, getSessions, updateSession, deleteSession } from '../controllers/sessionController';
+import {
+  createSession,
+  getSessions,
+  updateSession,
+  deleteSession,
+} from '../controllers/sessionController';
 import { verifyToken } from '../utils/jwt';
 
 const router = Router();

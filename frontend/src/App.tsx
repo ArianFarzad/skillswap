@@ -8,7 +8,6 @@ import Settings from './components/Settings';
 import Search from './components/Search';
 import ProfilePage from './components/ProfilePage';
 
-
 function App() {
   return (
     <Router>
