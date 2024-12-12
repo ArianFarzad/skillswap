@@ -30,25 +30,13 @@ describe('Feedback Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({
-      email: emailTutor,
-      password: 'password123',
-      name: 'Tutor',
-    });
+    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
     await tutor.save();
 
-    const student = new User({
-      email: emailStudent,
-      password: 'password123',
-      name: 'Student',
-    });
+    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
     await student.save();
 
-    const session = new Session({
-      tutor: tutor._id,
-      student: student._id,
-      date: new Date(),
-    });
+    const session = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
     await session.save();
 
     const token = student.generateAuthToken();
@@ -61,7 +49,7 @@ describe('Feedback Routes', () => {
         sessionId: session._id,
         userId: student._id,
         rating: 5,
-        comment: 'Great session!',
+        comment: 'Great session!'
       });
 
     console.log('Response:', res.body);
@@ -74,33 +62,16 @@ describe('Feedback Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({
-      email: emailTutor,
-      password: 'password123',
-      name: 'Tutor',
-    });
+    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
     await tutor.save();
 
-    const student = new User({
-      email: emailStudent,
-      password: 'password123',
-      name: 'Student',
-    });
+    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
     await student.save();
 
-    const session = new Session({
-      tutor: tutor._id,
-      student: student._id,
-      date: new Date(),
-    });
+    const session = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
     await session.save();
 
-    const feedback = new Feedback({
-      sessionId: session._id,
-      userId: student._id,
-      rating: 5,
-      comment: 'Great session!',
-    });
+    const feedback = new Feedback({ sessionId: session._id, userId: student._id, rating: 5, comment: 'Great session!' });
     await feedback.save();
 
     const token = student.generateAuthToken();
@@ -121,48 +92,22 @@ describe('Feedback Routes', () => {
     const emailTutor = `tutor${Date.now()}@example.com`;
     const emailStudent = `student${Date.now()}@example.com`;
 
-    const tutor = new User({
-      email: emailTutor,
-      password: 'password123',
-      name: 'Tutor',
-    });
+    const tutor = new User({ email: emailTutor, password: 'password123', name: 'Tutor' });
     await tutor.save();
 
-    const student = new User({
-      email: emailStudent,
-      password: 'password123',
-      name: 'Student',
-    });
+    const student = new User({ email: emailStudent, password: 'password123', name: 'Student' });
     await student.save();
 
-    const session1 = new Session({
-      tutor: tutor._id,
-      student: student._id,
-      date: new Date(),
-    });
+    const session1 = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
     await session1.save();
 
-    const session2 = new Session({
-      tutor: tutor._id,
-      student: student._id,
-      date: new Date(),
-    });
+    const session2 = new Session({ tutor: tutor._id, student: student._id, date: new Date() });
     await session2.save();
 
-    const feedback1 = new Feedback({
-      sessionId: session1._id,
-      userId: student._id,
-      rating: 5,
-      comment: 'Great session!',
-    });
+    const feedback1 = new Feedback({ sessionId: session1._id, userId: student._id, rating: 5, comment: 'Great session!' });
     await feedback1.save();
 
-    const feedback2 = new Feedback({
-      sessionId: session2._id,
-      userId: student._id,
-      rating: 4,
-      comment: 'Good session!',
-    });
+    const feedback2 = new Feedback({ sessionId: session2._id, userId: student._id, rating: 4, comment: 'Good session!' });
     await feedback2.save();
 
     const token = student.generateAuthToken();
