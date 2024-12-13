@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../style/profile.css';
 
 interface ProfileType {
   skills: string[];
@@ -87,40 +88,49 @@ const Profile: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Profile</h2>
-      {message && <p>{message}</p>}
-      {profile && (
-        <div>
-          <h3>Skills</h3>
-          <ul>
-            {profile.skills.map((skill) => (
-              <li key={skill}>{skill}</li>
-            ))}
-          </ul>
-          <input
-            type="text"
-            placeholder="New Skill"
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-          />
-          <button onClick={handleAddSkill}>Add Skill</button>
-
-          <h3>Interests</h3>
-          <ul>
-            {profile.interests.map((interest) => (
-              <li key={interest}>{interest}</li>
-            ))}
-          </ul>
-          <input
-            type="text"
-            placeholder="New Interest"
-            value={newInterest}
-            onChange={(e) => setNewInterest(e.target.value)}
-          />
-          <button onClick={handleAddInterest}>Add Interest</button>
-        </div>
-      )}
+    <div className="profile-main-container">
+      <div className="profile-container">
+        <h2 id='profile-headline'>Profile</h2>
+        {message && <p>{message}</p>}
+        {profile && (
+          <div className="form-area">
+            <div className="skill-area">
+              <h3 className='skill-interest-headline'>Skills</h3>
+              <ul>
+                {profile.skills.map((skill) => (
+                  <li key={skill}>{skill}</li>
+                ))}
+              </ul>
+              <div className="skill-input">
+                <input
+                  type="text"
+                  placeholder="New Skill"
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
+                />
+                <button onClick={handleAddSkill}>+</button>
+              </div>
+            </div>
+            <div className="interest-area">
+              <h3 className='skill-interest-headline'>Interests</h3>
+              <ul>
+                {profile.interests.map((interest) => (
+                  <li key={interest}>{interest}</li>
+                ))}
+              </ul>
+              <div className="interest-input">
+                <input
+                  type="text"
+                  placeholder="New Interest"
+                  value={newInterest}
+                  onChange={(e) => setNewInterest(e.target.value)}
+                />
+                <button onClick={handleAddInterest}>+</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

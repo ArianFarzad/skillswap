@@ -11,24 +11,19 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav>
-      <ul>
-        <li>
-          <button onClick={() => navigate(-1)}>Back</button>
-        </li>
-        <li>
+    <nav className='nav-area'>
+      <ul className='list-area'>
+        <li className='list-item'>
           <Link to="/profile">Profile</Link>
         </li>
-        <li>
-          <Link to="/settings">Settings</Link>
-        </li>
-        <li>
+        <li className='list-item'>
           <Link to="/search">Search</Link>
         </li>
-        <li>
-          <button onClick={handleLogout}>Logout</button>
+        <li className='list-item'>
+          <Link to="/settings">Settings</Link>
         </li>
       </ul>
+      <p onClick={handleLogout}>Logout</p>
     </nav>
   );
 };
