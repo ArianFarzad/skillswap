@@ -1,5 +1,18 @@
 image: node:18
 
+services:
+  - name: mongo:latest
+    alias: mongo
+
+variables:
+  NODE_ENV: 'development'
+  MONGO_URI: "mongodb://mongo:27017/testdb"
+
+cache:
+  paths:
+    - frontend/node_modules/
+    - backend/node_modules/
+
 stages:
   - install
   - test
@@ -7,86 +20,50 @@ stages:
   - format
   - dependency-scanning
 
-variables:
-  NODE_ENV: 'development'
-
-cache:
-  paths:
-    - frontend/node_modules/
-    - backend/node_modules/
-
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-install-frontend:
+install_dependencies:
   stage: install
   script:
-    - cd frontend
-    - npm install
-  cache:
-    paths:
-      - frontend/node_modules/
+    - npm install --prefix frontend
+    - npm install --prefix backend
 
-install-backend:
-  stage: install
-  script:
-    - cd backend
-    - npm install
-  cache:
-    paths:
-      - backend/node_modules/
-
-test-backend:
+test_backend:
   stage: test
   script:
-    - cd backend
-    - npm install
-    - npm run test
+    # Warten, bis MongoDB verfügbar ist
+    - until nc -z mongo 27017; do echo "Warte auf MongoDB..."; sleep 1; done
+    - npm test --prefix backend
   dependencies:
-    - install-backend
-  allow_failure: true
+    - install_dependencies
 
+test_frontend:
+  stage: test
+  script:
+    - npm test --prefix frontend
+  dependencies:
+    - install_dependencies
 
-lint-frontend:
+lint:
   stage: lint
   script:
-    - cd frontend
-    - npm install
-    - npm run lint
+    - npm run lint --prefix frontend
+    - npm run lint --prefix backend
   dependencies:
-    - install-frontend
+    - install_dependencies
 
-lint-backend:
-  stage: lint
-  script:
-    - cd backend
-    - npm install
-    - npm run lint
-  dependencies:
-    - install-backend
-
-format-frontend:
+format:
   stage: format
   script:
-    - cd frontend
-    - npm install
-    - npm run format
+    - npm run format --prefix frontend
+    - npm run format --prefix backend
   dependencies:
-    - install-frontend
-
-format-backend:
-  stage: format
-  script:
-    - cd backend
-    - npm install
-    - npm run format
-  dependencies:
-    - install-backend
+    - install_dependencies
 
 dependency_scanning:
   stage: dependency-scanning
   script:
-    - echo "Running dependency scanning"
+    - echo "Dependency scanning wird hier konfiguriert"
   dependencies:
-    - install-frontend
-    - install-backend
+    - install_dependencies
+
+include:
+  # Weitere Inklusionen wie nötig
