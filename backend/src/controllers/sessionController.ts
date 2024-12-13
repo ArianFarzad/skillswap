@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import Session from '../models/Session';
 import nodemailer from 'nodemailer';
+import Profile from '../models/Profile';
+
 
 interface PopulatedSession {
   tutor: {
@@ -104,5 +106,31 @@ export const sendReminderEmails = async () => {
     }
   } catch (error) {
     console.error('Error sending reminder emails:', error);
+  }
+};
+
+export const completeSession = async (req: Request, res: Response) => {
+  const { id } = req.params; // ID der Sitzung
+  try {
+    const session = await Session.findById(id);
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
+    // Aktualisieren des Sitzungsstatus
+    session.status = 'completed';
+    await session.save();
+
+    // Punkte zum Profil hinzufügen
+    const profile = await Profile.findOne({ userId: session.student });
+    if (profile) {
+      profile.points += 10; // Beispiel: 10 Punkte pro abgeschlossene Sitzung
+      await profile.save();
+    }
+
+    res.json({ message: 'Session completed and points added' });
+  } catch (error) {
+    console.error('Error completing session:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 };

@@ -5,6 +5,7 @@ interface IProfile extends Document {
   name: string;
   skills: string[];
   interests: string[];
+  points: number; // Neues Feld für Punkte
 }
 
 const profileSchema = new Schema<IProfile>({
@@ -30,6 +31,7 @@ const profileSchema = new Schema<IProfile>({
         `${props.value} exceeds the maximum allowed length (50)`,
     },
   },
+  points: { type: Number, default: 0 }, // Neues Feld für Punkte
 });
 
 const Profile = model<IProfile>('Profile', profileSchema);

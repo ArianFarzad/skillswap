@@ -4,6 +4,8 @@ import cors from 'cors'; // Importieren Sie das cors-Paket
 import authRoutes from './routes/authRoutes';
 import profileRoutes from './routes/profileRoutes';
 import dotenv from 'dotenv';
+import gamificationRoutes from './routes/gamificationRoutes';
+
 
 dotenv.config();
 
@@ -16,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
+app.use('/api/gamification', gamificationRoutes);
 
 // MongoDB-Verbindung
 mongoose.connect(process.env.MONGO_URI!)
