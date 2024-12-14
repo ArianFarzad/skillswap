@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import '../style/NavBar.css';
 
 const NavBar: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -14,16 +16,16 @@ const NavBar: React.FC = () => {
     <nav className='nav-area'>
       <ul className='list-area'>
         <li className='list-item'>
-          <Link to="/profile">Profile</Link>
+          <Link to="/profile">{t('profile')}</Link>
         </li>
         <li className='list-item'>
-          <Link to="/search">Search</Link>
+          <Link to="/search">{t('search')}</Link>
         </li>
         <li className='list-item'>
-          <Link to="/settings">Settings</Link>
+          <Link to="/settings">{t('settings')}</Link>
         </li>
       </ul>
-      <p onClick={handleLogout}>Logout</p>
+      <p onClick={handleLogout}>{t('logout')}</p>
     </nav>
   );
 };

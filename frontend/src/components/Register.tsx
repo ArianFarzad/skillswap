@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next'; // Importieren des useTranslation Hooks
 import '../style/register.css';
 
 const Register: React.FC = () => {
+  const { t } = useTranslation(); // Verwendung des useTranslation Hooks
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,51 +23,51 @@ const Register: React.FC = () => {
           password,
         }
       );
-      setMessage(response.data.message);
+      setMessage(t('register_success'));
+      navigate('/login');
     } catch (error) {
-      setMessage(`Error registering user ${error}`);
+      if (axios.isAxiosError(error)) {
+        setMessage(
+          `${t('error_registering_user')}: ${error.response?.data?.message || error.message}`
+        );
+      } else {
+        setMessage(t('unexpected_error'));
+      }
     }
-  };
-
-  const handleForwardToLogin = () => {
-    navigate('/login');
   };
 
   return (
     <div className="register-area">
-      <h2>Register</h2>
-      <p>Please enter your details to create an account.</p>
-      <form onSubmit={handleSubmit} className="register-form">
+      <h2>{t('register')}</h2>
+      <p>{t('please_fill_details')}</p>
+      <form className="register-form" onSubmit={handleSubmit}>
         <input
           type="text"
-          className="register-input"
-          placeholder="Name"
+          placeholder={t('name')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
         <input
           type="email"
-          className="register-input"
-          placeholder="Email"
+          placeholder={t('email')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
           type="password"
-          className="register-input"
-          placeholder="Password"
+          placeholder={t('password')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <p id="register-message" onClick={handleForwardToLogin}>
-          already have an account?
+        <p id="register-message" onClick={() => navigate('/login')}>
+          {t('already_have_account')}
         </p>
-        <button type="submit">Register</button>
+        <button type="submit">{t('register')}</button>
+        {message && <p>{message}</p>}
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };

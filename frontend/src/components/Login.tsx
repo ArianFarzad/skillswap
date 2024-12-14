@@ -1,9 +1,11 @@
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import '../style/login.css';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -20,45 +22,45 @@ const Login: React.FC = () => {
         }
       );
       localStorage.setItem('token', response.data.token);
-      setMessage('Login successful');
+      setMessage(t('login_success'));
       localStorage.setItem('userId', response.data.userId);
       navigate('/profile');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setMessage(
-          `Error logging in: ${error.response?.data?.message || error.message}`
+          `${t('login_error')}: ${error.response?.data?.message || error.message}`
         );
       } else {
-        setMessage('An unexpected error occurred');
+        setMessage(t('unexpected_error'));
       }
     }
   };
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
-      <p>Please enter your details to login.</p>
+      <h2>{t('login')}</h2>
+      <p>{t('please_enter_details')}</p>
       <form className="login-form" onSubmit={handleSubmit}>
         <input
           type="email"
-          placeholder="Email"
+          placeholder={t('email')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t('password')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <p id="login-message" onClick={() => navigate('/register')}>
-          New here?
+          {t('new_here')}
         </p>
-        <button type="submit">Login</button>
+        <button type="submit">{t('login')}</button>
+        {message && <p>{message}</p>}
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 };

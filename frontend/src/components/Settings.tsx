@@ -1,10 +1,19 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Settings: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <div>
-      <h2>Settings</h2>
-      <p>Settings page content goes here.</p>
+      <h2>{t('settings')}</h2>
+      <p>{t('select_language')}</p>
+      <button onClick={() => changeLanguage('en')}>{t('english')}</button>
+      <button onClick={() => changeLanguage('de')}>{t('german')}</button>
     </div>
   );
 };

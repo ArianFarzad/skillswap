@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface Profile {
   id: string;
@@ -11,6 +12,7 @@ interface Profile {
 }
 
 const Search: React.FC = () => {
+  const { t } = useTranslation();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const navigate = useNavigate();
 
@@ -21,11 +23,10 @@ const Search: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(
-          'Error fetching profiles:',
-          error.response?.data?.message || error.message
+           `${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`
         );
       } else {
-        console.error('An unexpected error occurred');
+        console.error(t('unexpected_error'));
       }
     }
   };
@@ -45,15 +46,15 @@ const Search: React.FC = () => {
 
   return (
     <div>
-      <h2>Alle Profile</h2>
+      <h2>{t('all_profiles')}</h2>
       <table>
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Skills</th>
-            <th>Interests</th>
-            <th>Actions</th>
+            <th>{t('skills')}</th>
+            <th>{t('interests')}</th>
+            <th>{t('actions')}</th>
           </tr>
         </thead>
         <tbody>

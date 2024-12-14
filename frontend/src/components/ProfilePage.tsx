@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 
 interface ProfileData {
   name: string;
@@ -12,6 +14,7 @@ interface ProfileData {
 }
 
 const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const { userId } = useParams<{ userId: string }>();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [message, setMessage] = useState('');
@@ -39,19 +42,19 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div>
-      <h2>Profile Page</h2>
+      <h2>{t('profile_page')}</h2>
       {message && <p>{message}</p>}
       {profileData && (
         <div>
           <h3>{profileData.name}</h3>
-          <p>Email: {profileData.email}</p>
-          <h4>Skills</h4>
+          <p>E-mail: {profileData.email}</p>
+          <h4>{t('skills')}</h4>
           <ul>
             {profileData.skills.map((skill) => (
               <li key={skill}>{skill}</li>
             ))}
           </ul>
-          <h4>Interests</h4>
+          <h4>{t('interests')}</h4>
           <ul>
             {profileData.interests.map((interest) => (
               <li key={interest}>{interest}</li>

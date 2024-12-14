@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../style/profile.css';
+import { useTranslation } from 'react-i18next';
+
 
 interface ProfileType {
   skills: string[];
@@ -9,6 +11,7 @@ interface ProfileType {
 }
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
@@ -177,12 +180,12 @@ const Profile: React.FC = () => {
   return (
     <div className="profile-main-container">
       <div className="profile-container">
-        <h2 id='profile-headline'>Profile</h2>
+        <h2 id='profile-headline'>{t('profile')}</h2>
         {message && <p>{message}</p>}
         {profile && (
           <div className="form-area">
             <div className="skill-area">
-              <h3 className='skill-interest-headline'>Skills</h3>
+              <h3 className='skill-interest-headline'>{t('skills')}</h3>
               <ul>
                 {profile.skills.map((skill) => (
                   <li key={skill}>
@@ -194,7 +197,7 @@ const Profile: React.FC = () => {
               <div className="skill-input">
                 <input
                   type="text"
-                  placeholder="New Skill"
+                  placeholder={t('new_skill')}
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                 />
@@ -202,7 +205,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
             <div className="interest-area">
-              <h3 className='skill-interest-headline'>Interests</h3>
+              <h3 className='skill-interest-headline'>{t('interests')}</h3>
               <ul>
                 {profile.interests.map((interest) => (
                   <li key={interest}>
@@ -214,7 +217,7 @@ const Profile: React.FC = () => {
               <div className="interest-input">
                 <input
                   type="text"
-                  placeholder="New Interest"
+                  placeholder={t('new_interest')}
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
                 />
