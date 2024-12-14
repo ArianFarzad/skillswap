@@ -4,7 +4,7 @@
   "description": "Backend für SkillSwap",
   "main": "dist/server.js",
   "scripts": {
-    "start": "ts-node src/app.ts",
+    "start": "ts-node src/server.ts",
     "build": "tsc",
     "test": "jest",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
@@ -20,11 +20,9 @@
     "dav": "^1.8.0",
     "dotenv": "^16.4.7",
     "express": "^4.17.1",
-    "fs": "^0.0.1-security",
     "ical": "^0.8.0",
     "jsonwebtoken": "9.0.0",
     "mongoose": "^8.8.4",
-    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "supertest": "^7.0.0"
   },

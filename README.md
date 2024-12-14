@@ -23,8 +23,8 @@ FWE Skillswap ist eine Plattform, die darauf abzielt, Gamification-Elemente und 
 
 ### Voraussetzungen
 - Node.js (Version 16 oder höher)
-- npm oder yarn
-- PostgreSQL
+- npm
+- MongoDB
 
 ### Backend
 1. Navigiere in das Backend-Verzeichnis:
@@ -37,7 +37,7 @@ FWE Skillswap ist eine Plattform, die darauf abzielt, Gamification-Elemente und 
    ```
 3. Starte den Entwicklungsserver:
    ```bash
-   npm run dev
+   npm start
    ```
 
 ### Frontend
