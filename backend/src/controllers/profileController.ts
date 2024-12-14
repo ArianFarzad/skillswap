@@ -251,3 +251,41 @@ export const removeInterest = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+export const searchProfilesBySkills = async (req: Request, res: Response) => {
+  const { skills } = req.query;
+  try {
+    console.log('Searching profiles with skills:', skills);
+    const skillsArray = Array.isArray(skills) ? skills : [skills];
+    const stringSkillsArray = skillsArray.filter(
+      (skill) => typeof skill === 'string'
+    ) as string[];
+    const profiles = await Profile.find({
+      skills: { $in: stringSkillsArray },
+    });
+    console.log('Profiles found:', profiles);
+    res.json(profiles);
+  } catch (error) {
+    console.error('Error searching profiles by skills:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const searchProfilesByInterests = async (req: Request, res: Response) => {
+  const { interests } = req.query;
+  try {
+    console.log('Searching profiles with interests:', interests);
+    const interestsArray = Array.isArray(interests) ? interests : [interests];
+    const stringInterestsArray = interestsArray.filter(
+      (interest) => typeof interest === 'string'
+    ) as string[];
+    const profiles = await Profile.find({
+      interests: { $in: stringInterestsArray },
+    });
+    console.log('Profiles found:', profiles);
+    res.json(profiles);
+  } catch (error) {
+    console.error('Error searching profiles by interests:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

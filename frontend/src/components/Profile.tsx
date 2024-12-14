@@ -56,7 +56,7 @@ const Profile: React.FC = () => {
         return;
       }
       console.log('Adding skill with token:', token, 'and skill:', newSkill);
-      const response = await axios.put(
+      const response = await axios.post(
         'http://localhost:8000/api/profiles/skills',
         { skill: newSkill },
         {
