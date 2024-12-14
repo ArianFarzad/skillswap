@@ -1,12 +1,13 @@
-// profileRoutes.ts
-
 import { Router } from 'express';
 import {
   createProfile,
   getMyProfile,
   updateProfile,
   deleteProfile,
-  searchProfiles,
+  addSkill,
+  removeSkill,
+  addInterest,
+  removeInterest,
   getAllProfiles,
   getProfileById,
 } from '../controllers/profileController';
@@ -18,8 +19,11 @@ router.post('/', verifyToken, createProfile);
 router.get('/', verifyToken, getMyProfile);
 router.put('/', verifyToken, updateProfile);
 router.delete('/', verifyToken, deleteProfile);
-router.get('/search', searchProfiles);
-router.get('/all', getAllProfiles); // Neue Route für getAllProfiles
+router.put('/skills', verifyToken, addSkill);
+router.delete('/skills', verifyToken, removeSkill);
+router.post('/interests', verifyToken, addInterest);
+router.delete('/interests', verifyToken, removeInterest); // Route für removeInterest
+router.get('/all', getAllProfiles);
 router.get('/:userId', getProfileById);
 
 export default router;

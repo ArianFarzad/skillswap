@@ -14,6 +14,13 @@ const app = express();
 // Middleware
 app.use(cors()); // Aktivieren Sie CORS
 app.use(express.json());
+app.use((req, res, next) => {
+    res.setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+    );
+    next();
+  });
 
 // Routes
 app.use('/api/auth', authRoutes);
