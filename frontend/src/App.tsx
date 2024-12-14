@@ -7,6 +7,8 @@ import NavBar from './components/NavBar';
 import Settings from './components/Settings';
 import Search from './components/Search';
 import ProfilePage from './components/ProfilePage';
+import CalendarImport from './components/CalendarImport';
+
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/profiles/:userId" element={<ProfilePage />} />
           <Route path="/" element={<Welcome />} />
+          <CalendarImport />
         </Routes>
       </div>
     </Router>
