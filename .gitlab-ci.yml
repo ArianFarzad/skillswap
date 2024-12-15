@@ -22,10 +22,6 @@ install_dependencies:
   script:
     - cd backend
     - npm ci
-    - npm install typescript --save-dev
-    - npm install ts-node --save-dev
-    - npm install --backend
-    - npm install --frontend
     - npm run build
   artifacts:
     paths:

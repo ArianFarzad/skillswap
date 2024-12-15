@@ -30,11 +30,15 @@ const CalendarImport: React.FC = () => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post<Event[]>('http://localhost:8000/api/calendar/import', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post<Event[]>(
+        'http://localhost:8000/api/calendar/import',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
       setEvents(response.data);
       setMessage('Datei erfolgreich importiert.');
     } catch (error) {
@@ -55,9 +59,12 @@ const CalendarImport: React.FC = () => {
       <ul>
         {events.map((event, index) => (
           <li key={index}>
-            <strong>{event.summary}</strong><br />
-            {event.description}<br />
-            Start: {new Date(event.start).toLocaleString()}<br />
+            <strong>{event.summary}</strong>
+            <br />
+            {event.description}
+            <br />
+            Start: {new Date(event.start).toLocaleString()}
+            <br />
             Ende: {new Date(event.end).toLocaleString()}
           </li>
         ))}
