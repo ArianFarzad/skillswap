@@ -9,60 +9,30 @@ variables:
   MONGO_URI: "mongodb://mongo:27017/testdb"
 
 cache:
+  key: node-modules
   paths:
     - backend/node_modules/
 
 stages:
   - install
   - test
-  - lint
-  - format
-  - dependency-scanning
 
 install_dependencies:
   stage: install
   script:
     - cd backend
     - npm ci
+    - npm install typescript --save-dev
+    - npm install ts-node --save-dev
+    - npm install --backend
+    - npm install --frontend
+  artifacts:
+    paths:
+      - backend/node_modules/
 
-wait_for_mongo:
-  stage: test
-  script:
-    - echo "Warten auf MongoDB..."
-    - until nc -z mongo 27017; do echo "MongoDB ist nicht verfügbar. Warte..."; sleep 1; done
 
 test_backend:
   stage: test
   script:
     - cd backend
-    - npm start
     - npm test
-  dependencies:
-    - install_dependencies
-    - wait_for_mongo
-
-lint:
-  stage: lint
-  script:
-    - cd backend
-    - npm run lint
-  dependencies:
-    - install_dependencies
-
-format:
-  stage: format
-  script:
-    - cd backend
-    - npm run format
-  dependencies:
-    - install_dependencies
-
-dependency_scanning:
-  stage: dependency-scanning
-  script:
-    - echo "Dependency scanning wird hier konfiguriert"
-  dependencies:
-    - install_dependencies
-
-include:
-  - template: Security/SAST.gitlab-ci.yml

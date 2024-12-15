@@ -183,7 +183,7 @@ describe('Profile Routes', () => {
     console.log('Generated token:', token);
 
     const res = await request(app)
-      .get('/api/profiles/search?skills=JavaScript')
+      .get('/api/profiles/search/skills?skills=JavaScript')
       .set('Authorization', `Bearer ${token}`);
 
     console.log('Response:', res.body);
