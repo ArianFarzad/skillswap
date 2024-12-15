@@ -1,7 +1,8 @@
 image: node:18
 
 services:
-  - name: mongo:latest
+  mongo:
+    image: mongo:latest
     alias: mongo
 
 variables:
@@ -23,17 +24,22 @@ stages:
 install_dependencies:
   stage: install
   script:
-    - npm install --prefix frontend
-    - npm install --prefix backend
+    - npm ci --prefix frontend
+    - npm ci --prefix backend
+
+wait_for_mongo:
+  stage: test
+  script:
+    - echo "Warten auf MongoDB..."
+    - until nc -z mongo 27017; do echo "MongoDB ist nicht verfügbar. Warte..."; sleep 1; done
 
 test_backend:
   stage: test
   script:
-    # Warten, bis MongoDB verfügbar ist
-    - until nc -z mongo 27017; do echo "Warte auf MongoDB..."; sleep 1; done
     - npm test --prefix backend
   dependencies:
     - install_dependencies
+    - wait_for_mongo
 
 test_frontend:
   stage: test
@@ -66,4 +72,4 @@ dependency_scanning:
     - install_dependencies
 
 include:
-  # Weitere Inklusionen wie nötig
+  - template: Security/SAST.gitlab-ci.yml
