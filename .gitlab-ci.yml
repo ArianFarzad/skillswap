@@ -22,7 +22,8 @@ stages:
 install_dependencies:
   stage: install
   script:
-    - npm ci --prefix backend
+    - cd backend
+    - npm ci
 
 wait_for_mongo:
   stage: test
@@ -33,7 +34,9 @@ wait_for_mongo:
 test_backend:
   stage: test
   script:
-    - npm test --prefix backend
+    - cd backend
+    - npm start
+    - npm test
   dependencies:
     - install_dependencies
     - wait_for_mongo
@@ -41,14 +44,16 @@ test_backend:
 lint:
   stage: lint
   script:
-    - npm run lint --prefix backend
+    - cd backend
+    - npm run lint
   dependencies:
     - install_dependencies
 
 format:
   stage: format
   script:
-    - npm run format --prefix backend
+    - cd backend
+    - npm run format
   dependencies:
     - install_dependencies
 
