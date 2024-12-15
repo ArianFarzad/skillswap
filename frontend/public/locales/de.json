@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "welcome": "Willkommen bei SkillSwap",
     "connect_learn_grow": "Verbinden, Lernen, Wachsen",
     "login": "Einloggen",
@@ -36,4 +37,39 @@
     "type_message": "Nachricht eingeben",
     "send": "Senden",
     "error_fetching_messages": "Fehler beim Abrufen der Nachrichten"
+=======
+  "welcome": "Willkommen bei SkillSwap",
+  "connect_learn_grow": "Verbinden, Lernen, Wachsen",
+  "login": "Einloggen",
+  "register": "Registrieren",
+  "settings": "Einstellungen",
+  "profile": "Profil",
+  "search": "Suche",
+  "logout": "Abmelden",
+  "please_enter_details": "Bitte geben Sie Ihre Daten ein, um sich anzumelden.",
+  "new_here": "Neu hier?",
+  "already_have_account": "Bereits ein Konto?",
+  "register_success": "Benutzer erfolgreich registriert",
+  "login_success": "Erfolgreich eingeloggt",
+  "error_registering_user": "Fehler bei der Registrierung des Benutzers",
+  "error_logging_in": "Fehler beim Einloggen",
+  "select_language": "Sprache auswählen",
+  "english": "Englisch",
+  "german": "Deutsch",
+  "login_error": "Fehler beim Einloggen",
+  "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten",
+  "email": "E-Mail",
+  "password": "Passwort",
+  "please_fill_details": "Bitte füllen Sie Ihre Daten aus, um sich zu registrieren.",
+  "name": "Name",
+  "error_fetching_profiles": "Fehler beim Abrufen der Profile",
+  "search_profiles": "Profile suchen",
+  "skills": "Fähigkeiten",
+  "interests": "Interessen",
+  "all_profiles": "Alle Profile",
+  "actions": "Aktionen",
+  "new_skill": "Neue Fähigkeit",
+  "new_interest": "Neues Interesse",
+  "profile_page": "Profilseite"
+>>>>>>> 6769690b8baf76316c97a204b756ba6ab4f533eb
 }

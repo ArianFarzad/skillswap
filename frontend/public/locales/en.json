@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "welcome": "Welcome to SkillSwap",
     "connect_learn_grow": "Connect, Learn, Grow",
     "login": "Log in",
@@ -37,3 +38,39 @@
     "send": "Send",
     "error_fetching_messages": "Error fetching messages"
 }
+=======
+  "welcome": "Welcome to SkillSwap",
+  "connect_learn_grow": "Connect, Learn, Grow",
+  "login": "Log in",
+  "register": "Register",
+  "settings": "Settings",
+  "profile": "Profile",
+  "search": "Search",
+  "logout": "Logout",
+  "please_enter_details": "Please enter your details to login.",
+  "new_here": "New here?",
+  "already_have_account": "Already have an account?",
+  "register_success": "User registered successfully",
+  "login_success": "Login successful",
+  "error_registering_user": "Error registering user",
+  "error_logging_in": "Error logging in",
+  "select_language": "Select Language",
+  "english": "English",
+  "german": "German",
+  "login_error": "Error logging in",
+  "unexpected_error": "An unexpected error occurred",
+  "email": "Email",
+  "password": "Password",
+  "please_fill_details": "Please fill in your details to register.",
+  "name": "Name",
+  "error_fetching_profiles": "Error fetching profiles",
+  "search_profiles": "Search Profiles",
+  "skills": "Skills",
+  "interests": "Interests",
+  "all_profiles": "All Profiles",
+  "actions": "Actions",
+  "new_skill": "New Skill",
+  "new_interest": "New Interest",
+  "profile_page": "Profile Page"
+}
+>>>>>>> 6769690b8baf76316c97a204b756ba6ab4f533eb

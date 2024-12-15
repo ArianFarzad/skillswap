@@ -13,18 +13,18 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className='nav-area'>
-      <ul className='list-area'>
-        <li className='list-item'>
+    <nav className="nav-area">
+      <ul className="list-area">
+        <li className="list-item">
           <Link to="/profile">{t('profile')}</Link>
         </li>
-        <li className='list-item'>
+        <li className="list-item">
           <Link to="/search">{t('search')}</Link>
         </li>
-        <li className='list-item'>
+        <li className="list-item">
           <Link to="/settings">{t('settings')}</Link>
         </li>
-        <li className='list-item'>
+        <li className="list-item">
           <Link to="/book-appointment">{t('bookAppointment')}</Link>
         </li>
       </ul>

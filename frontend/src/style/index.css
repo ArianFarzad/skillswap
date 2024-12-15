@@ -1,3 +1,17 @@
+:root {
+  --primary-color: #007bff;
+  --primary-color-hover: #0056b3;
+  --secondary-color: #333;
+  --text-color: white;
+  --background-color: #f9f9f9;
+  --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --background-color-secondary: #eee8e8;
+  --gradient-start: #8d8e98;
+  --gradient-middle: #a59793;
+  --gradient-end: #7b829c;
+  --gradient-extra: #ae9f9f;
+}
+
 @keyframes gradientAnimation {
   0% {
     background-position: 0% 50%;

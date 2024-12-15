@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next'; // Importieren des useTranslation Hooks
 import '../style/register.css';
 
-const Register: React.FC = () => {
+const Register = () => {
   const { t } = useTranslation(); // Verwendung des useTranslation Hooks
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,14 +15,11 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        'http://localhost:8000/api/auth/register',
-        {
-          name,
-          email,
-          password,
-        }
-      );
+      await axios.post('http://localhost:8000/api/auth/register', {
+        name,
+        email,
+        password,
+      });
       setMessage(t('register_success'));
       navigate('/login');
     } catch (error) {
