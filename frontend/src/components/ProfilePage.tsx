@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-
 interface ProfileData {
   name: string;
   email: string;
