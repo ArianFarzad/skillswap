@@ -31,5 +31,9 @@
     "actions": "Aktionen",
     "new_skill": "Neue Fähigkeit",
     "new_interest": "Neues Interesse",
-    "profile_page": "Profilseite"
+    "profile_page": "Profilseite",
+    "chat_with": "Chat mit",
+    "type_message": "Nachricht eingeben",
+    "send": "Senden",
+    "error_fetching_messages": "Fehler beim Abrufen der Nachrichten"
 }

@@ -6,6 +6,8 @@ import profileRoutes from './routes/profileRoutes';
 import dotenv from 'dotenv';
 import gamificationRoutes from './routes/gamificationRoutes';
 import calendarRoutes from './routes/calendarRoutes';
+import messageRoutes from './routes/messageRoutes';
+
 
 
 dotenv.config();
@@ -28,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api', calendarRoutes);
+app.use('/api/messages', messageRoutes);
 
 // MongoDB-Verbindung
 mongoose.connect(process.env.MONGO_URI!)

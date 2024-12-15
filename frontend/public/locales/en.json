@@ -31,5 +31,9 @@
     "actions": "Actions",
     "new_skill": "New Skill",
     "new_interest": "New Interest",
-    "profile_page": "Profile Page"
+    "profile_page": "Profile Page",
+    "chat_with": "Chat with",
+    "type_message": "Type a message",
+    "send": "Send",
+    "error_fetching_messages": "Error fetching messages"
 }

@@ -11,7 +11,7 @@ const router = Router();
 
 router.post('/', verifyToken, createSession);
 router.get('/', verifyToken, getSessions);
-router.patch('/:id', verifyToken, updateSession);
+router.put('/:id', verifyToken, updateSession);
 router.delete('/:id', verifyToken, deleteSession);
 
 export default router;

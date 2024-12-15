@@ -9,6 +9,7 @@ import ProfilePage from './components/ProfilePage';
 import Register from './components/Register';
 import Login from './components/Login';
 import BookAppointment from './components/BookAppointment';
+import Chat from './components/Chat'; // Importieren der Chat-Komponente
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/profiles/:userId" element={<ProfilePage />} />
           <Route path="/book-appointment" element={<BookAppointment />} />
+          <Route path="/chat/:userId" element={<Chat/>} /> {/* Hinzufügen der Chat-Route */}
           <Route path="/" element={<Welcome />} />
         </Routes>
       </div>

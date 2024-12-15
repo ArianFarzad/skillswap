@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
 interface Profile {
   id: string;
+  userId: string;
   name: string;
   email: string;
   skills: string[];
@@ -23,7 +24,7 @@ const Search: React.FC = () => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error(
-           `${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`
+          `${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`
         );
       } else {
         console.error(t('unexpected_error'));
@@ -36,11 +37,11 @@ const Search: React.FC = () => {
   }, []);
 
   const handleChatRequest = (userId: string) => {
-    // Chat-Anfrage Implementierung
-    console.log('Chat request to:', userId);
+    navigate(`/chat/${userId}`);
   };
 
   const handleNameClick = (userId: string) => {
+    console.log('Navigating to profile:', userId);
     navigate(`/profiles/${userId}`);
   };
 
@@ -60,16 +61,14 @@ const Search: React.FC = () => {
         <tbody>
           {profiles.map((profile) => (
             <tr key={profile.id}>
-              <td onClick={() => handleNameClick(profile.id)}>
+              <td onClick={() => handleNameClick(profile.userId)}>
                 {profile.name}
               </td>
               <td>{profile.email}</td>
               <td>{profile.skills.join(', ')}</td>
               <td>{profile.interests.join(', ')}</td>
               <td>
-                <button onClick={() => handleChatRequest(profile.id)}>
-                  Chat
-                </button>
+                <button onClick={() => handleChatRequest(profile.userId)}>{t('chat')}</button>
               </td>
             </tr>
           ))}
