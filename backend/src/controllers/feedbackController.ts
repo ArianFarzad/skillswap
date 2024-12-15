@@ -39,3 +39,16 @@ export const getAverageRatingForUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+export const getFeedback = async (req: Request, res: Response) => {
+  try {
+    const feedback = await Feedback.find({ sessionId: req.params.sessionId });
+    if (!feedback) {
+      return res.status(404).json({ message: 'Feedback not found' });
+    }
+    const averageRating = feedback.reduce((acc, curr) => acc + curr.rating, 0) / feedback.length;
+    res.status(200).json({ feedback, averageRating });
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+};
