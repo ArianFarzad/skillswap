@@ -1,19 +1,19 @@
 import { Schema, model, Document } from 'mongoose';
 
 interface IFeedback extends Document {
-  sessionId: string;
-  userId: string;
-  rating: number;
-  comment: string;
+  sessionId: Schema.Types.ObjectId;
+  userId: Schema.Types.ObjectId;
+  feedback: string;
+  rating: number; // Fügen Sie das rating-Feld hinzu
 }
 
-const feedbackSchema = new Schema<IFeedback>({
+const FeedbackSchema = new Schema<IFeedback>({
   sessionId: { type: Schema.Types.ObjectId, ref: 'Session', required: true },
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  rating: { type: Number, min: 1, max: 5, required: true },
-  comment: { type: String, maxlength: 200 }
-}, { timestamps: true });
+  feedback: { type: String, required: true },
+  rating: { type: Number, required: true }, // Fügen Sie das rating-Feld hinzu
+});
 
-const Feedback = model<IFeedback>('Feedback', feedbackSchema);
+const Feedback = model<IFeedback>('Feedback', FeedbackSchema);
 
 export default Feedback;

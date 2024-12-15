@@ -14,7 +14,12 @@ export const createProfile = async (req: Request, res: Response) => {
   const { name, skills, interests } = req.body;
   try {
     console.log('Creating profile for user:', req.user!.userId);
-    const profile = new Profile({ userId: req.user!.userId, name, skills, interests });
+    const profile = new Profile({
+      userId: req.user!.userId,
+      name,
+      skills,
+      interests,
+    });
     await profile.save();
     console.log('Profile created successfully:', profile);
     res.status(201).json(profile);
@@ -46,7 +51,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
 
 export const getAllProfiles = async (req: Request, res: Response) => {
   try {
+    console.log('Fetching all profiles');
     const profiles = await Profile.find();
+    console.log('Profiles fetched successfully:', profiles);
     res.json(profiles);
   } catch (error) {
     console.error('Error fetching all profiles:', error);
@@ -55,16 +62,24 @@ export const getAllProfiles = async (req: Request, res: Response) => {
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { name, skills, interests } = req.body;
+  const { name, skills, interests, addSkill, removeSkill } = req.body;
   try {
     if (!req.user) {
       console.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
     console.log('Updating profile for user:', req.user.userId);
+
+    const updateFields: any = {};
+    if (name) updateFields.name = name;
+    if (skills) updateFields.skills = skills;
+    if (interests) updateFields.interests = interests;
+    if (addSkill) updateFields.$push = { skills: addSkill };
+    if (removeSkill) updateFields.$pull = { skills: removeSkill };
+
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user.userId },
-      { name, skills, interests },
+      updateFields,
       { new: true }
     );
     if (!profile) {
@@ -104,9 +119,11 @@ export const searchProfiles = async (req: Request, res: Response) => {
   try {
     console.log('Searching profiles with skills:', skills);
     const skillsArray = Array.isArray(skills) ? skills : [skills];
-    const stringSkillsArray = skillsArray.filter(skill => typeof skill === 'string') as string[];
+    const stringSkillsArray = skillsArray.filter(
+      (skill) => typeof skill === 'string'
+    ) as string[];
     const profiles = await Profile.find({
-      skills: { $in: stringSkillsArray }
+      skills: { $in: stringSkillsArray },
     });
     console.log('Profiles found:', profiles);
     res.json(profiles);
@@ -147,6 +164,128 @@ export const getProfileById = async (req: Request, res: Response) => {
     res.json({ profile, feedback: [] });
   } catch (error) {
     console.error('Fehler beim Abrufen des Profils für userId:', userId, error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const addSkill = async (req: Request, res: Response) => {
+  const { skill } = req.body;
+  try {
+    if (!req.user) {
+      console.warn('Unauthorized access attempt');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    console.log('Adding skill for user:', req.user.userId, 'Skill:', skill);
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.userId },
+      { $push: { skills: skill } },
+      { new: true }
+    );
+    console.log('Skill added successfully:', profile);
+    res.json(profile);
+  } catch (error) {
+    console.error('Error adding skill:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const removeSkill = async (req: Request, res: Response) => {
+  const { skill } = req.body;
+  try {
+    if (!req.user) {
+      console.warn('Unauthorized access attempt');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    console.log('Removing skill for user:', req.user.userId, 'Skill:', skill);
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.userId },
+      { $pull: { skills: skill } },
+      { new: true }
+    );
+    console.log('Skill removed successfully:', profile);
+    res.json(profile);
+  } catch (error) {
+    console.error('Error removing skill:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const addInterest = async (req: Request, res: Response) => {
+  const { interest } = req.body;
+  try {
+    if (!req.user) {
+      console.warn('Unauthorized access attempt');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    console.log('Adding interest for user:', req.user.userId, 'Interest:', interest);
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.userId },
+      { $push: { interests: interest } },
+      { new: true }
+    );
+    console.log('Interest added successfully:', profile);
+    res.json(profile);
+  } catch (error) {
+    console.error('Error adding interest:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const removeInterest = async (req: Request, res: Response) => {
+  const { interest } = req.body;
+  try {
+    if (!req.user) {
+      console.warn('Unauthorized access attempt');
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    console.log('Removing interest for user:', req.user.userId, 'Interest:', interest);
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.user.userId },
+      { $pull: { interests: interest } },
+      { new: true }
+    );
+    console.log('Interest removed successfully:', profile);
+    res.json(profile);
+  } catch (error) {
+    console.error('Error removing interest:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const searchProfilesBySkills = async (req: Request, res: Response) => {
+  const { skills } = req.query;
+  try {
+    console.log('Searching profiles with skills:', skills);
+    const skillsArray = Array.isArray(skills) ? skills : [skills];
+    const stringSkillsArray = skillsArray.filter(
+      (skill) => typeof skill === 'string'
+    ) as string[];
+    const profiles = await Profile.find({
+      skills: { $in: stringSkillsArray },
+    });
+    console.log('Profiles found:', profiles);
+    res.json(profiles);
+  } catch (error) {
+    console.error('Error searching profiles by skills:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const searchProfilesByInterests = async (req: Request, res: Response) => {
+  const { interests } = req.query;
+  try {
+    console.log('Searching profiles with interests:', interests);
+    const interestsArray = Array.isArray(interests) ? interests : [interests];
+    const stringInterestsArray = interestsArray.filter(
+      (interest) => typeof interest === 'string'
+    ) as string[];
+    const profiles = await Profile.find({
+      interests: { $in: stringInterestsArray },
+    });
+    console.log('Profiles found:', profiles);
+    res.json(profiles);
+  } catch (error) {
+    console.error('Error searching profiles by interests:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };

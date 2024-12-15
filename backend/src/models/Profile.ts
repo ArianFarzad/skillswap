@@ -5,6 +5,7 @@ interface IProfile extends Document {
   name: string;
   skills: string[];
   interests: string[];
+  points: number; // Neues Feld für Punkte
 }
 
 const profileSchema = new Schema<IProfile>({
@@ -14,20 +15,23 @@ const profileSchema = new Schema<IProfile>({
     type: [String],
     validate: {
       validator: function (v: string[]) {
-        return v.every(skill => skill.length <= 50);
+        return v.every((skill) => skill.length <= 50);
       },
-      message: (props: ValidatorProps) => `${props.value} exceeds the maximum allowed length (50)`
-    }
+      message: (props: ValidatorProps) =>
+        `${props.value} exceeds the maximum allowed length (50)`,
+    },
   },
   interests: {
     type: [String],
     validate: {
       validator: function (v: string[]) {
-        return v.every(interest => interest.length <= 50);
+        return v.every((interest) => interest.length <= 50);
       },
-      message: (props: ValidatorProps) => `${props.value} exceeds the maximum allowed length (50)`
-    }
-  }
+      message: (props: ValidatorProps) =>
+        `${props.value} exceeds the maximum allowed length (50)`,
+    },
+  },
+  points: { type: Number, default: 0 }, // Neues Feld für Punkte
 });
 
 const Profile = model<IProfile>('Profile', profileSchema);
