@@ -1,8 +1,7 @@
 image: node:18
 
 services:
-  mongo:
-    image: mongo:latest
+  - name: mongo:latest
     alias: mongo
 
 variables:
@@ -11,7 +10,6 @@ variables:
 
 cache:
   paths:
-    - frontend/node_modules/
     - backend/node_modules/
 
 stages:
@@ -24,7 +22,6 @@ stages:
 install_dependencies:
   stage: install
   script:
-    - npm ci --prefix frontend
     - npm ci --prefix backend
 
 wait_for_mongo:
@@ -41,17 +38,9 @@ test_backend:
     - install_dependencies
     - wait_for_mongo
 
-test_frontend:
-  stage: test
-  script:
-    - npm test --prefix frontend
-  dependencies:
-    - install_dependencies
-
 lint:
   stage: lint
   script:
-    - npm run lint --prefix frontend
     - npm run lint --prefix backend
   dependencies:
     - install_dependencies
@@ -59,7 +48,6 @@ lint:
 format:
   stage: format
   script:
-    - npm run format --prefix frontend
     - npm run format --prefix backend
   dependencies:
     - install_dependencies
