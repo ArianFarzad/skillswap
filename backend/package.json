@@ -23,6 +23,7 @@
     "ical": "^0.8.0",
     "jsonwebtoken": "9.0.0",
     "mongoose": "^8.8.4",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "supertest": "^7.0.0"
   },
