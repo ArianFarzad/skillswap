@@ -35,5 +35,7 @@
   "chat_with": "Chat with",
   "type_message": "Type a message",
   "send": "Send",
-  "error_fetching_messages": "Error fetching messages"
+  "error_fetching_messages": "Error fetching messages",
+  "no_skills": "No skills",
+  "no_interests": "No interests"
 }

@@ -35,5 +35,7 @@
   "chat_with": "Chat mit",
   "type_message": "Nachricht eingeben",
   "send": "Senden",
-  "error_fetching_messages": "Fehler beim Abrufen der Nachrichten"
+  "error_fetching_messages": "Fehler beim Abrufen der Nachrichten",
+  "no_skills": "Keine Fähigkeiten",
+  "no_interests": "Keine Interessen"
 }

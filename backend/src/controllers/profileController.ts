@@ -161,7 +161,7 @@ export const getProfileById = async (req: Request, res: Response) => {
     // const feedback = await Feedback.find({ userId: objectId });
     // console.log('Feedback gefunden:', feedback);
 
-    res.json({ profile, feedback: [] });
+    res.json({ profile });
   } catch (error) {
     console.error('Fehler beim Abrufen des Profils für userId:', userId, error);
     res.status(500).json({ error: 'Server error' });
