@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: '1h',
     });
     console.log('User logged in successfully:', user);
-    res.json({ token });
+    res.json({ token, userId: user._id }); // Rückgabe von token und userId
   } catch (error: unknown) {
     console.error('Error logging in user:', error);
     res.status(500).json({ error: 'Server error' });

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ObjectId } from 'mongodb';
 import Session from '../models/Session';
 import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
@@ -40,11 +41,11 @@ export const getSessions = async (req: Request, res: Response) => {
 };
 
 export const updateSession = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { sessionId } = req.params;
   const { date, status } = req.body;
   try {
     const session = await Session.findByIdAndUpdate(
-      id,
+      sessionId,
       { date, status },
       { new: true }
     )
@@ -61,9 +62,9 @@ export const updateSession = async (req: Request, res: Response) => {
 };
 
 export const deleteSession = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { sessionId } = req.params;
   try {
-    const session = await Session.findByIdAndDelete(id);
+    const session = await Session.findByIdAndDelete(sessionId);
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
@@ -131,6 +132,76 @@ export const completeSession = async (req: Request, res: Response) => {
     res.json({ message: 'Session completed and points added' });
   } catch (error) {
     console.error('Error completing session:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+// ...existing code...
+export const sendMessageInSession = async (req: Request, res: Response) => {
+  const { sessionId } = req.params;
+  const { content } = req.body;
+  const senderId = req.user?.userId as unknown as ObjectId;
+  if (!senderId) {
+    return res.status(400).json({ error: 'Sender ID is required' });
+  }
+
+  try {
+    const session = await Session.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
+    const newMessage = {
+      sender: senderId,
+      content,
+      timestamp: new Date(),
+    };
+
+    session.messages.push(newMessage);
+    await session.save();
+
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.error('Error sending message in session:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getSessionMessages = async (req: Request, res: Response) => {
+  const { sessionId } = req.params;
+
+  try {
+    const session = await Session.findById(sessionId).populate('messages.sender', 'name');
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+
+    res.json(session.messages);
+  } catch (error) {
+    console.error('Error fetching session messages:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const checkSession = async (req: Request, res: Response) => {
+  const { user1, user2 } = req.query;
+
+  try {
+    const session = await Session.findOne({
+      $or: [
+        { tutor: user1, student: user2 },
+        { tutor: user2, student: user1 },
+      ],
+    });
+
+    if (session) {
+      res.json({ sessionId: session._id });
+    } else {
+      res.json({ sessionId: null });
+    }
+  } catch (error) {
+    console.error('Error checking session:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };

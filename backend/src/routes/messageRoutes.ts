@@ -2,6 +2,8 @@
 import express from 'express';
 import { auth } from '../middleware/auth';
 import Message from '../models/Message';
+import { verifyToken } from '../utils/jwt';
+
 
 const router = express.Router();
 
@@ -15,7 +17,7 @@ declare global {
   }
 }
 
-router.get('/:receiverId', auth, async (req, res) => {
+router.get('/:receiverId', verifyToken, async (req, res) => {
   const senderId = req.user?.userId;
   const { receiverId } = req.params;
 

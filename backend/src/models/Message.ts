@@ -1,14 +1,14 @@
 // Datei: backend/src/models/Message.ts
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-interface IMessage extends Document {
-  sender: string;
-  receiver: string;
+export interface IMessage extends Document {
+  sender: mongoose.Types.ObjectId;
+  receiver: mongoose.Types.ObjectId;
   content: string;
   timestamp: Date;
 }
 
-const MessageSchema = new Schema({
+const MessageSchema: Schema = new Schema({
   sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   receiver: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   content: { type: String, required: true },

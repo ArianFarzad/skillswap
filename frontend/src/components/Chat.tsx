@@ -1,81 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import io from 'socket.io-client';
 import { useTranslation } from 'react-i18next';
-
-const socket = io('http://localhost:8000');
+import axios from 'axios';
 
 interface Message {
-  sender: string;
-  receiver: string;
+  sender: {
+    _id: string;
+    name: string;
+  };
   content: string;
   timestamp: string;
 }
 
 const Chat: React.FC = () => {
   const { t } = useTranslation();
-  const { userId } = useParams<{ userId: string }>();
+  const { sessionId } = useParams<{ sessionId: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const senderId = localStorage.getItem('userId') || '';
+  const senderId = localStorage.getItem('myUserId') || '';
 
   useEffect(() => {
-    // Chatraum beitreten
-    socket.emit('join', senderId);
-
-    // Nachrichtenverlauf abrufen
-    fetch(`http://localhost:8000/api/messages/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return res.json();
+    // Fetch messages for the session
+    axios
+      .get(`http://localhost:8000/api/sessions/${sessionId}/messages`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       })
-      .then((data) => setMessages(data))
-      .catch((error) => console.error('Error fetching messages:', error));
-
-    // Eingehende Nachrichten empfangen
-    socket.on('receiveMessage', (message: Message) => {
-      if (
-        (message.sender === userId && message.receiver === senderId) ||
-        (message.sender === senderId && message.receiver === userId)
-      ) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
-    });
-
-    return () => {
-      socket.off('receiveMessage');
-    };
-  }, [userId, senderId]);
+      .then((res) => {
+        setMessages(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching messages:', error);
+      });
+  }, [sessionId]);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      socket.emit('sendMessage', {
-        senderId,
-        receiverId: userId,
-        content: newMessage,
-      });
-      setNewMessage('');
+      axios
+        .post(
+          `http://localhost:8000/api/sessions/${sessionId}/messages`,
+          {
+            content: newMessage,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        )
+        .then((res) => {
+          setMessages((prevMessages) => [...prevMessages, res.data]);
+          setNewMessage('');
+        })
+        .catch((error) => {
+          console.error('Error sending message:', error);
+        });
     }
   };
 
   return (
     <div className="chat-container">
       <h2>
-        {t('chat_with')} {userId}
+        {t('chat_with')} Session {sessionId}
       </h2>
       <div className="messages-list">
-        {Array.isArray(messages) && messages.map((msg, index) => (
+        {messages.map((msg, index) => (
           <div
             key={index}
-            className={msg.sender === senderId ? 'my-message' : 'their-message'}
+            className={msg.sender._id === senderId ? 'my-message' : 'their-message'}
           >
-            <p>{msg.content}</p>
+            <p>
+              <strong>{msg.sender.name}:</strong> {msg.content}
+            </p>
             <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
           </div>
         ))}

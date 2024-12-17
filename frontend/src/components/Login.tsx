@@ -22,9 +22,11 @@ const Login: React.FC = () => {
         }
       );
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('myUserId', response.data.userId); // Speichern Sie die userId
+      console.log('Login erfolgreich, userId gespeichert:', response.data.userId);
       setMessage(t('login_success'));
-      localStorage.setItem('userId', response.data.userId);
       navigate('/profile');
+      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setMessage(

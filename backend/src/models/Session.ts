@@ -1,19 +1,31 @@
-import { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-interface ISession extends Document {
-  tutor: Schema.Types.ObjectId;
-  student: Schema.Types.ObjectId;
-  datetime: Date;
-  status: string;
+interface IMessage {
+  sender: mongoose.Types.ObjectId;
+  content: string;
+  timestamp: Date;
 }
 
-const SessionSchema = new Schema<ISession>({
-  tutor: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  student: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  datetime: { type: Date, required: true },
-  status: { type: String, required: true },
+export interface ISession extends Document {
+  tutor: mongoose.Types.ObjectId;
+  student: mongoose.Types.ObjectId;
+  date: Date;
+  status: string;
+  messages: IMessage[];
+}
+
+const MessageSchema: Schema = new Schema({
+  sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  content: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
 });
 
-const Session = model<ISession>('Session', SessionSchema);
+const SessionSchema: Schema = new Schema({
+  tutor: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  student: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  date: { type: Date, required: true },
+  status: { type: String, default: 'pending' },
+  messages: { type: [MessageSchema], default: [] },
+});
 
-export default Session;
+export default mongoose.model<ISession>('Session', SessionSchema);
