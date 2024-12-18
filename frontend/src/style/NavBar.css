@@ -8,6 +8,7 @@
   padding: 1em;
   float: left;
   height: 100vh;
+  border-right: #6f6868 3px solid;
 }
 
 .list-area {

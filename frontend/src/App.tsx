@@ -20,7 +20,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/search" element={<Search />} />
-          <Route path="/profiles/:userId" element={<ProfilePage />} />
+          <Route path="/profiles/:profileId" element={<ProfilePage />} />
           <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/chat/:sessionId" element={<Chat />} />
           <Route path="/" element={<Welcome />} />
