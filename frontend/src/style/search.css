@@ -12,6 +12,31 @@
   height: 100vh;
 }
 
+.filter-container {
+  width: 100%;
+  background-color: var(--background-color-nav);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-bottom: 0;
+  padding: 1em;
+}
+
+.keyword-input,
+.filter-input {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  transition: border-color 0.3s ease;
+  border-radius: 5px;
+}
+
+.filter-input {
+  margin-right: 20px;
+}
+
 .all-profiles-container {
   background-color: var(--background-color);
   display: block;
@@ -20,13 +45,19 @@
   border-radius: 8px;
   box-shadow: 0 0 10px var(--box-shadow-color);
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 150px);
+  overflow: hidden;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+}
+
+.scroll-area {
+  overflow-y: auto;
+  height: 100%;
 }
 
 th,

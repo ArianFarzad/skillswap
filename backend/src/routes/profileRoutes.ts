@@ -12,6 +12,7 @@ import {
   getProfileById,
   searchProfilesBySkills,
   searchProfilesByInterests,
+  searchProfiles
 } from '../controllers/profileController';
 import { verifyToken } from '../utils/jwt';
 
@@ -26,8 +27,10 @@ router.delete('/skills', verifyToken, removeSkill);
 router.post('/interests', verifyToken, addInterest);
 router.delete('/interests', verifyToken, removeInterest);
 router.get('/all', getAllProfiles);
-router.get('/:userId', getProfileById);
+router.get('/search', verifyToken, searchProfiles);
+router.get('/:profileId', getProfileById);
 router.get('/search/skills', searchProfilesBySkills); 
-router.get('/search/interests', searchProfilesByInterests); 
+router.get('/search/interests', searchProfilesByInterests);
+
 
 export default router;

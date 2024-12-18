@@ -61,6 +61,7 @@ export const getAllProfiles = async (req: Request, res: Response) => {
   }
 };
 
+
 export const updateProfile = async (req: Request, res: Response) => {
   const { name, skills, interests, addSkill, removeSkill } = req.body;
   try {
@@ -115,17 +116,58 @@ export const deleteProfile = async (req: Request, res: Response) => {
 };
 
 export const searchProfiles = async (req: Request, res: Response) => {
-  const { skills } = req.query;
+  console.log('searchProfiles function called');
+  const { keyword, skills, interests, name, email, filter } = req.query;
+  const userId = req.user?.userId;
+
+  console.log('searchProfiles query:', req.query);
+
   try {
-    console.log('Searching profiles with skills:', skills);
-    const skillsArray = Array.isArray(skills) ? skills : [skills];
-    const stringSkillsArray = skillsArray.filter(
-      (skill) => typeof skill === 'string'
-    ) as string[];
-    const profiles = await Profile.find({
-      skills: { $in: stringSkillsArray },
-    });
+    const query: any = {};
+
+    if (keyword) {
+      const keywordRegex = new RegExp(keyword as string, 'i');
+      query.$or = [
+        { name: { $regex: keywordRegex } },
+        { skills: { $regex: keywordRegex } },
+        { interests: { $regex: keywordRegex } },
+        { email: { $regex: keywordRegex } },
+      ];
+    }
+
+    if (skills) {
+      const skillsArray = Array.isArray(skills) ? skills : [skills as string];
+      query.skills = { $all: skillsArray };
+    }
+
+    if (interests) {
+      const interestsArray = Array.isArray(interests) ? interests : [interests as string];
+      query.interests = { $all: interestsArray };
+    }
+
+    if (name) {
+      query.name = { $regex: name as string, $options: 'i' };
+    }
+
+    if (email) {
+      query.email = { $regex: email as string, $options: 'i' };
+    }
+
+    if (filter) {
+      query.points = { $gte: filter };
+    }
+
+    if (userId) {
+      query.userId = { $ne: userId };
+    }
+
+    const profiles = await Profile.find(query);
+
     console.log('Profiles found:', profiles);
+    if (profiles.length === 0) {
+      return res.status(404).json({ message: 'No profiles found' });
+    }
+
     res.json(profiles);
   } catch (error) {
     console.error('Error searching profiles:', error);
@@ -133,40 +175,38 @@ export const searchProfiles = async (req: Request, res: Response) => {
   }
 };
 
+
+
+
 export const getProfileById = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  console.log('Eingehende Anfrage für Profil mit userId:', userId);
+  const { profileId } = req.params;
 
   try {
-    // Überprüfen, ob die userId ein gültiges ObjectId-Format hat
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      console.warn('Ungültiges userId-Format:', userId);
-      return res.status(400).json({ error: 'Invalid user ID' });
+    // Check if `profileId` is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(profileId)) {
+      console.error('Invalid profileId format:', profileId);
+      return res.status(400).json({ message: 'Invalid profileId format' });
     }
 
-    // Konvertieren der userId in ein ObjectId
-    const objectId = new mongoose.Types.ObjectId(userId);
-    console.log('Konvertierte userId zu ObjectId:', objectId);
+    // Convert profileId to ObjectId
+    const objectId = new mongoose.Types.ObjectId(profileId);
+    console.log('Converted profileId to ObjectId:', objectId);
 
-    // Suchen des Profils
-    const profile = await Profile.findOne({ userId: objectId });
+    // Find profile by profileId
+    const profile = await Profile.findById(objectId);
+
     if (!profile) {
-      console.warn('Kein Profil gefunden für userId:', userId);
-      return res.status(404).json({ error: 'Profile not found' });
+      console.log('No profile found for profileId:', objectId);
+      return res.status(404).json({ message: 'Profile not found' });
     }
 
-    console.log('Profil gefunden:', profile);
-
-    // Optional: Feedback zum Profil abrufen
-    // const feedback = await Feedback.find({ userId: objectId });
-    // console.log('Feedback gefunden:', feedback);
-
-    res.json({ profile });
+    res.json(profile);
   } catch (error) {
-    console.error('Fehler beim Abrufen des Profils für userId:', userId, error);
+    console.error('Error fetching profile:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
+
 
 export const addSkill = async (req: Request, res: Response) => {
   const { skill } = req.body;
