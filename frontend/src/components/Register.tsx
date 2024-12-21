@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next'; // Importieren des useTranslation Hooks
+import { useTranslation } from 'react-i18next';
 import '../style/register.css';
+import logo from '../assets/logo.png';
 
 const Register = () => {
-  const { t } = useTranslation(); // Verwendung des useTranslation Hooks
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,37 +35,65 @@ const Register = () => {
   };
 
   return (
-    <div className="register-area">
-      <h2>{t('register')}</h2>
-      <p>{t('please_fill_details')}</p>
-      <form className="register-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder={t('name')}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+    <div className={'register-container'}>
+      <div className={'register-info'}>
+        <img
+          className="register-image"
+          src={logo}
+          height={300}
+          width={300}
+          alt=""
         />
-        <input
-          type="email"
-          placeholder={t('email')}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder={t('password')}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <p id="register-message" onClick={() => navigate('/login')}>
-          {t('already_have_account')}
-        </p>
-        <button type="submit">{t('register')}</button>
-        {message && <p>{message}</p>}
-      </form>
+        <h2 className={'info-text'}>
+          {t(
+            'Bei SkillSwap verbinden wir dich mit anderen Nutzern, um deine Fähigkeiten zu teilen und gleichzeitig von den Fähigkeiten anderer zu profitieren.'
+          )}
+        </h2>
+      </div>
+      <div className="register-area">
+        <h1>{t('register')}</h1>
+        <p>{t('please_fill_details')}</p>
+        <form className="register-form" onSubmit={handleSubmit}>
+          <label htmlFor={'input-name'}>
+            {t('Bitte geben Sie einen Benutzernamen ein')}
+          </label>
+          <input
+            type="text"
+            id={'input-name'}
+            placeholder={t('name')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+          <label htmlFor={'input-email'}>
+            {t('Bitte geben Sie eine E-Mail-Adresse ein')}
+          </label>
+          <input
+            type="email"
+            id={'input-email'}
+            placeholder={t('email')}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label htmlFor={'input-password'}>
+            {t('Bitte geben Sie ein Passwort ein')}
+          </label>
+          <input
+            type="password"
+            id={'input-password'}
+            placeholder={t('password')}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <p id="register-message" onClick={() => navigate('/login')}>
+            {t('already_have_account')}
+          </p>
+          <button type="submit">{t('register')}</button>
+          {message && <p>{message}</p>}
+        </form>
+      </div>
     </div>
   );
 };

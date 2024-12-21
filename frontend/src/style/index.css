@@ -4,34 +4,33 @@
   --secondary-color: #333;
   --text-color: white;
   --background-color: #f9f9f9;
-  --background-color-nav: #333;
+  --background-color-nav: #ece6e6;
   --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --box-border-left: 2px solid #5e5e63;
   --background-color-secondary: #eee8e8;
+  --input-border: 2px solid #ccc;
+  --input-border-radius: 5px;
+  --input-border-focus: 2px solid #007bff;
+  --input-padding: 0.75rem;
+  --input-box-shadow: inset 5px 5px 15px 5px rgba(0, 0, 0, 0.3);
+  --link-hover: rgb(91, 134, 172);
+  --button-transition: background-color 0.3s ease;
+  --button-border-redius: 5px;
   --gradient-start: #8d8e98;
   --gradient-middle: #a59793;
   --gradient-end: #7b829c;
   --gradient-extra: #ae9f9f;
 }
 
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 html,
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   height: 100%;
-  font-family: lato, sans-serif;
-  background: linear-gradient(45deg, #8d8e98, #a59793, #7b829c, #ae9f9f);
+  background: var(--background-color);
   animation: gradientAnimation 15s ease infinite;
+}
+
+body * {
+  font-family: monospace, sans-serif;
 }

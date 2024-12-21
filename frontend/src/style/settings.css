@@ -1,0 +1,57 @@
+/* settings.css */
+
+.setting-container {
+  margin-top: 7rem;
+  padding: 20px;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 0 10px var(--box-shadow-color);
+  max-width: 800px;
+  margin: 7rem auto;
+}
+
+#setting-headline {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.language-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.language-selection {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.language-selection input[type='radio'] {
+  margin-right: 0.5rem;
+}
+
+.setting-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 767px) {
+  .setting-container {
+    padding: 10px;
+    margin-top: 8em;
+  }
+
+  .language-section {
+    gap: 0.5rem;
+  }
+
+  .setting-content {
+    gap: 1rem;
+  }
+}

@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../style/profile.css';
 import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
+import { Footer } from './Footer';
 
 interface ProfileType {
   skills: string[];
@@ -255,7 +256,10 @@ const Profile = () => {
                   <li key={interest}>
                     <div className="interest-item-container">
                       <p className="interest-item">{interest}</p>
-                      <button onClick={() => handleRemoveInterest(interest)}>
+                      <button
+                        className={'interest-btn'}
+                        onClick={() => handleRemoveInterest(interest)}
+                      >
                         x
                       </button>
                     </div>
@@ -275,6 +279,7 @@ const Profile = () => {
           </div>
         )}
       </div>
+        <Footer />
     </>
   );
 };
