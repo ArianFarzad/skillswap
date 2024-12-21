@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import '../style/search.css';
+import { Footer } from './Footer';
 
 interface Profile {
   id: string; // Mapped from _id
@@ -141,44 +142,35 @@ const Search = () => {
         </div>
         <div className="all-profiles-container">
           <h2 id="all-profiles-headline">{t('all_profiles')}</h2>
-          <div className={'scroll-area'}>
-            <table>
-              <thead>
-                <tr>
-                  <th>{t('name')}</th>
-                  <th>{t('skills')}</th>
-                  <th>{t('interests')}</th>
-                  <th>{t('points')}</th>
-                  <th>{t('actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profiles.length === 0 ? (
-                  <tr>
-                    <td colSpan={6}>{t('no_profiles_found')}</td>
-                  </tr>
-                ) : (
-                  profiles.map((profile) => (
-                    <tr key={profile.id}>
-                      <td onClick={() => handleNameClick(profile.id)}>
-                        {profile.name}
-                      </td>
-                      <td>{profile.skills.join(', ')}</td>
-                      <td>{profile.interests.join(', ')}</td>
-                      <td>{profile.points}</td>
-                      <td>
-                        <button onClick={() => handleChatRequest(profile.id)}>
-                          {t('chat')}
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+
+          <div className="profiles-grid">
+            {profiles.length === 0 ? (
+              <div>{t('no_profiles_found')}</div>
+            ) : (
+              profiles.map((profile) => (
+                <div key={profile.id} className="profile-card">
+                  <h3 onClick={() => handleNameClick(profile.id)}>
+                    {profile.name}
+                  </h3>
+                  <p>
+                    {t('skills')}: {profile.skills.join(', ')}
+                  </p>
+                  <p>
+                    {t('interests')}: {profile.interests.join(', ')}
+                  </p>
+                  <p>
+                    {t('points')}: {profile.points}
+                  </p>
+                  <button onClick={() => handleChatRequest(profile.id)}>
+                    {t('chat')}
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

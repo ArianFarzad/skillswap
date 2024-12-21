@@ -13,23 +13,27 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <nav className="nav-area">
-      <ul className="list-area">
-        <li className="list-item">
-          <Link to="/profile">{t('profile')}</Link>
-        </li>
-        <li className="list-item">
-          <Link to="/search">{t('search')}</Link>
-        </li>
-        <li className="list-item">
-          <Link to="/settings">{t('settings')}</Link>
-        </li>
-        <li className="list-item">
-          <Link to="/book-appointment">{t('bookAppointment')}</Link>
-        </li>
-      </ul>
-      <p onClick={handleLogout}>{t('logout')}</p>
-    </nav>
+    <div className={'banner'}>
+      <nav className="nav-area">
+        <ul className="list-area">
+          <li className="list-item">
+            <Link to="/profile">&#128100;{t('profile')} </Link>
+          </li>
+          <li className="list-item">
+            <Link to="/search">&#128270;{t('search')}</Link>
+          </li>
+          <li className="list-item">
+            <Link to="/settings">&#9881; {t('settings')}</Link>
+          </li>
+          <li className="list-item">
+            <Link to="/book-appointment">&#128214;{t('book appointment')}</Link>
+          </li>
+        </ul>
+        <p className={'logout'} onClick={handleLogout}>
+          {t('logout')}
+        </p>
+      </nav>
+    </div>
   );
 };
 

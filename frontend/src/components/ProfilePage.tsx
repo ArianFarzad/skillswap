@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import NavBar from './NavBar.tsx';
+import { Footer } from './Footer.tsx';
+import '../style/profilePage.css';
 
 interface ProfileData {
   name: string;
@@ -43,28 +46,52 @@ const ProfilePage: React.FC = () => {
   }, [profileId]);
 
   return (
-    <div>
-      <h2>{t('profile_page')}</h2>
-      {message && <p>{message}</p>}
-      {profileData && (
-        <div>
-          <h3>{profileData.name}</h3>
-          <p>E-mail: {profileData.email}</p>
-          <h4>{t('skills')}</h4>
-          <ul>
-            {profileData.skills.map((skill) => (
-              <li key={skill}>{skill}</li>
-            ))}
-          </ul>
-          <h4>{t('interests')}</h4>
-          <ul>
-            {profileData.interests.map((interest) => (
-              <li key={interest}>{interest}</li>
-            ))}
-          </ul>
+    <>
+      <NavBar />
+      <div className={'profile-container'}>
+        <h2 id={'profile-page-headline'}>{t('profile_page')}</h2>
+        <div className={'profile-content'}>
+          {message && <p>{message}</p>}
+          {profileData && (
+            <div className={'profile-info'}>
+              <div className={'left-column'}>
+                <div className={'user-name'}>
+                  <h3>{t('User name')} </h3>
+                  <p>{profileData.name}</p>
+                </div>
+                <div className={'user-email'}>
+                  <h3>E-mail</h3>
+                  <p>{profileData.email}</p>
+                </div>
+              </div>
+              <div className={'right-column'}>
+                <div className={'user-skills'}>
+                  <h4>{t('skills')}</h4>
+                  <div className={'scroll-area'}>
+                  <ul>
+                    {profileData.skills.map((skill) => (
+                      <li key={skill}>{skill}</li>
+                    ))}
+                  </ul>
+                  </div>
+                </div>
+                <div className={'user-interests'}>
+                  <h4>{t('interests')}</h4>
+                  <div className={'scroll-area'}>
+                  <ul>
+                    {profileData.interests.map((interest) => (
+                      <li key={interest}>{interest}</li>
+                    ))}
+                  </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+        <Footer />
+    </>
   );
 };
 

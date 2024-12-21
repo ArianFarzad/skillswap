@@ -68,7 +68,9 @@ const Chat: React.FC = () => {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={msg.sender._id === senderId ? 'my-message' : 'their-message'}
+            className={
+              msg.sender._id === senderId ? 'my-message' : 'their-message'
+            }
           >
             <p>
               <strong>{msg.sender.name}:</strong> {msg.content}

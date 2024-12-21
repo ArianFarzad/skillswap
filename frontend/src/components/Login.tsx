@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import '../style/login.css';
+import logo from '../assets/logo.png';
 
 const Login: React.FC = () => {
   const { t } = useTranslation();
@@ -23,10 +24,12 @@ const Login: React.FC = () => {
       );
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('myUserId', response.data.userId); // Speichern Sie die userId
-      console.log('Login erfolgreich, userId gespeichert:', response.data.userId);
+      console.log(
+        'Login erfolgreich, userId gespeichert:',
+        response.data.userId
+      );
       setMessage(t('login_success'));
       navigate('/profile');
-      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setMessage(
@@ -40,29 +43,53 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      <h2>{t('login')}</h2>
-      <p>{t('please_enter_details')}</p>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder={t('email')}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+      <div className={'login-info'}>
+        <img
+          className="register-image"
+          src={logo}
+          height={300}
+          width={300}
+          alt=""
         />
-        <input
-          type="password"
-          placeholder={t('password')}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <p id="login-message" onClick={() => navigate('/register')}>
-          {t('new_here')}
-        </p>
-        <button type="submit">{t('login')}</button>
-        {message && <p>{message}</p>}
-      </form>
+        <h2 className={'info-text'}>
+          {t(
+            'Bei SkillSwap verbinden wir dich mit anderen Nutzern, um deine Fähigkeiten zu teilen und gleichzeitig von den Fähigkeiten anderer zu profitieren.'
+          )}
+        </h2>
+      </div>
+      <div className={'login-area'}>
+        <h2>{t('login')}</h2>
+        <p>{t('please_enter_details')}</p>
+        <form className="login-form" onSubmit={handleSubmit}>
+          <label htmlFor={'input-email'}>
+            {t('Geben Sie bitte Ihre E-Mail-Addresse an')}
+          </label>
+          <input
+            type="email"
+            id={'input-email'}
+            placeholder={t('email')}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label htmlFor={'input-password'}>
+            {t('Bitte geben Sie Ihr Passwort ein')}
+          </label>
+          <input
+            type="password"
+            id={'input-password'}
+            placeholder={t('password')}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <p id="login-message" onClick={() => navigate('/register')}>
+            {t('new_here')}
+          </p>
+          <button type="submit">{t('login')}</button>
+          {message && <p>{message}</p>}
+        </form>
+      </div>
     </div>
   );
 };
