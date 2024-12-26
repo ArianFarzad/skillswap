@@ -12,6 +12,7 @@ cache:
   key: node-modules
   paths:
     - backend/node_modules/
+    - frontend/node_modules/
 
 stages:
   - install
@@ -26,6 +27,7 @@ install_dependencies:
   artifacts:
     paths:
       - backend/node_modules/
+      - frontend/node_modules/
 
 
 test_backend:
@@ -33,3 +35,27 @@ test_backend:
   script:
     - cd backend
     - npm test
+  dependencies:
+    - install_dependencies
+
+test_frontend:
+  stage: test
+  before_script:
+    - mkdir -p frontend/.nyc_output
+  script:
+    - cd frontend
+    - npm ci
+    - npm run test
+    - npm run test:coverage
+  artifacts:
+    paths:
+      - frontend/coverage/src/coverage.svg
+    expire_in: 1 week
+  coverage: '/All files\s*\|\s*([\d]+(\.\d+)?)%/'
+  dependencies:
+    - install_dependencies
+
+
+
+
+

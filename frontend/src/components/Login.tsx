@@ -58,7 +58,7 @@ const Login: React.FC = () => {
         </h2>
       </div>
       <div className={'login-area'}>
-        <h2>{t('login')}</h2>
+        <h2 data-testid={'login-headline'}>{t('login')}</h2>
         <p>{t('please_enter_details')}</p>
         <form className="login-form" onSubmit={handleSubmit}>
           <label htmlFor={'input-email'}>
