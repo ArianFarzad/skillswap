@@ -128,6 +128,7 @@ const Search = () => {
             className={'keyword-input'}
             type="text"
             placeholder={t('keyword')}
+            data-testid={'keyword-input'}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />
@@ -136,12 +137,15 @@ const Search = () => {
             type="number"
             min="0"
             placeholder={t('filter_by_points')}
+            data-testid={'filter-input'}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           />
         </div>
         <div className="all-profiles-container">
-          <h2 id="all-profiles-headline">{t('all_profiles')}</h2>
+          <h2 id="all-profiles-headline" data-testid={'search-headline'}>
+            {t('all_profiles')}
+          </h2>
 
           <div className="profiles-grid">
             {profiles.length === 0 ? (

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import '../style/settings.css';
-import {Footer} from "./Footer";
+import { Footer } from './Footer';
 
 const Settings: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -15,7 +15,9 @@ const Settings: React.FC = () => {
     <>
       <NavBar />
       <div className={'setting-container'}>
-        <h2 id={'setting-headline'}>{t('settings')}</h2>
+        <h2 id={'setting-headline'} data-testid={'settings-headline'}>
+          {t('settings')}
+        </h2>
         <div className={'language-section setting-content'}>
           <h3>{t('select_language')}:</h3>
           <div className={'language-selection'}>

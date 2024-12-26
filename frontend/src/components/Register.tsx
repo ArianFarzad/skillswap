@@ -51,7 +51,7 @@ const Register = () => {
         </h2>
       </div>
       <div className="register-area">
-        <h1>{t('register')}</h1>
+        <h1 data-testid={'register-headline'}>{t('register')}</h1>
         <p>{t('please_fill_details')}</p>
         <form className="register-form" onSubmit={handleSubmit}>
           <label htmlFor={'input-name'}>

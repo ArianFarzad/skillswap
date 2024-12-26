@@ -218,7 +218,9 @@ const Profile = () => {
       <NavBar />
 
       <div className="profile-container">
-        <h2 id="profile-headline">{t('profile')}</h2>
+        <h2 id="profile-headline" data-testid={'profile-headline'}>
+          {t('profile')}
+        </h2>
         {message && <p>{message}</p>}
         {profile && (
           <div className="form-area">
@@ -231,6 +233,7 @@ const Profile = () => {
                       <p className="skill-item">{skill}</p>
                       <button
                         className="skill-btn"
+                        data-testid={`remove-skill-${skill}`}
                         onClick={() => handleRemoveSkill(skill)}
                       >
                         x
@@ -243,10 +246,13 @@ const Profile = () => {
                 <input
                   type="text"
                   placeholder={t('new_skill')}
+                  data-testid="input-skill"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                 />
-                <button onClick={handleAddSkill}>+</button>
+                <button onClick={handleAddSkill} data-testid="add-skill-button">
+                  +
+                </button>
               </div>
             </div>
             <div className="interest-area">
@@ -259,6 +265,7 @@ const Profile = () => {
                       <button
                         className={'interest-btn'}
                         onClick={() => handleRemoveInterest(interest)}
+                        data-testid={`remove-interest-${interest}`}
                       >
                         x
                       </button>
@@ -270,16 +277,22 @@ const Profile = () => {
                 <input
                   type="text"
                   placeholder={t('new_interest')}
+                  data-testid="input-interest"
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
                 />
-                <button onClick={handleAddInterest}>+</button>
+                <button
+                  onClick={handleAddInterest}
+                  data-testid="add-interest-button"
+                >
+                  +
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
-        <Footer />
+      <Footer />
     </>
   );
 };

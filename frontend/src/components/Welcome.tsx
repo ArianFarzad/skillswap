@@ -7,7 +7,9 @@ export const Welcome = () => {
 
   return (
     <div className="main-container">
-      <h1 id="welcome-headline">{t('welcome')}</h1>
+      <h1 id="welcome-headline" data-testid={'welcome-headline'}>
+        {t('welcome')}
+      </h1>
       <p id="welcome-text">{t('connect_learn_grow')}</p>
       <Link to="/login" className="link">
         {t('login')}

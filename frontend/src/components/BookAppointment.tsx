@@ -37,7 +37,12 @@ END:VCALENDAR
     <>
       <NavBar />
       <div className={'appointment-container'}>
-        <h2 className={'appointment-headline'}>Termin buchen</h2>
+        <h2
+          className={'appointment-headline'}
+          data-testid={'bookAppointment-headline'}
+        >
+          Termin buchen
+        </h2>
         <div className={'appointment-main-content'}>
           <form
             id={'appointment-form'}
@@ -95,7 +100,7 @@ END:VCALENDAR
           </div>
         </div>
       </div>
-        <Footer />
+      <Footer />
     </>
   );
 };

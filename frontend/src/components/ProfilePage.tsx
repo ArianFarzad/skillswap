@@ -49,7 +49,9 @@ const ProfilePage: React.FC = () => {
     <>
       <NavBar />
       <div className={'profile-container'}>
-        <h2 id={'profile-page-headline'}>{t('profile_page')}</h2>
+        <h2 id={'profile-page-headline'} data-testid={'profilePage-headline'}>
+          {t('profile_page')}
+        </h2>
         <div className={'profile-content'}>
           {message && <p>{message}</p>}
           {profileData && (
@@ -68,21 +70,21 @@ const ProfilePage: React.FC = () => {
                 <div className={'user-skills'}>
                   <h4>{t('skills')}</h4>
                   <div className={'scroll-area'}>
-                  <ul>
-                    {profileData.skills.map((skill) => (
-                      <li key={skill}>{skill}</li>
-                    ))}
-                  </ul>
+                    <ul>
+                      {profileData.skills.map((skill) => (
+                        <li key={skill}>{skill}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
                 <div className={'user-interests'}>
                   <h4>{t('interests')}</h4>
                   <div className={'scroll-area'}>
-                  <ul>
-                    {profileData.interests.map((interest) => (
-                      <li key={interest}>{interest}</li>
-                    ))}
-                  </ul>
+                    <ul>
+                      {profileData.interests.map((interest) => (
+                        <li key={interest}>{interest}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -90,7 +92,7 @@ const ProfilePage: React.FC = () => {
           )}
         </div>
       </div>
-        <Footer />
+      <Footer />
     </>
   );
 };
