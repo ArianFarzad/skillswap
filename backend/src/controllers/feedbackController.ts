@@ -2,11 +2,12 @@ import { Request, Response } from 'express';
 import Feedback from '../models/Feedback';
 
 export const createFeedback = async (req: Request, res: Response) => {
-  const { sessionId, userId, rating, comment } = req.body;
+  const { sessionId, userId, rating, feedback } = req.body;
+  console.log('Request Body:', req.body);
   try {
-    const feedback = new Feedback({ sessionId, userId, rating, comment });
-    await feedback.save();
-    res.status(201).json(feedback);
+    const newFeedback = new Feedback({ sessionId, userId, feedback, rating });
+    await newFeedback.save();
+    res.status(201).json({message: 'Feedback created successfully'});
   } catch (error) {
     console.error('Error creating feedback:', error);
     res.status(500).json({ error: 'Server error' });

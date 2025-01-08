@@ -54,7 +54,7 @@ describe('Register Component', () => {
 
   test('navigates to login on clicking "already have an account"', () => {
     renderWithRouter(<Register />);
-    fireEvent.click(screen.getByText('already_have_account'));
+    fireEvent.click(screen.getByText('Already have an account?'));
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });
 });

@@ -136,7 +136,7 @@ const Search = () => {
             className={'filter-input'}
             type="number"
             min="0"
-            placeholder={t('filter_by_points')}
+            placeholder={t('filter by points')}
             data-testid={'filter-input'}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -144,7 +144,7 @@ const Search = () => {
         </div>
         <div className="all-profiles-container">
           <h2 id="all-profiles-headline" data-testid={'search-headline'}>
-            {t('all_profiles')}
+            {t('All profiles')}
           </h2>
 
           <div className="profiles-grid">
@@ -163,7 +163,7 @@ const Search = () => {
                     {t('interests')}: {profile.interests.join(', ')}
                   </p>
                   <p>
-                    {t('points')}: {profile.points}
+                    {t('Points')}: {profile.points}
                   </p>
                   <button onClick={() => handleChatRequest(profile.id)}>
                     {t('chat')}

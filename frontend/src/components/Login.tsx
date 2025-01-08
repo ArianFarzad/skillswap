@@ -53,7 +53,7 @@ const Login: React.FC = () => {
         />
         <h2 className={'info-text'}>
           {t(
-            'Bei SkillSwap verbinden wir dich mit anderen Nutzern, um deine Fähigkeiten zu teilen und gleichzeitig von den Fähigkeiten anderer zu profitieren.'
+            'At SkillSwap, we connect you with other users to share your skills while benefiting from the skills of others.'
           )}
         </h2>
       </div>
@@ -61,9 +61,7 @@ const Login: React.FC = () => {
         <h2 data-testid={'login-headline'}>{t('login')}</h2>
         <p>{t('please_enter_details')}</p>
         <form className="login-form" onSubmit={handleSubmit}>
-          <label htmlFor={'input-email'}>
-            {t('Geben Sie bitte Ihre E-Mail-Addresse an')}
-          </label>
+          <label htmlFor={'input-email'}>{t('Please enter your email')}</label>
           <input
             type="email"
             id={'input-email'}
@@ -73,7 +71,7 @@ const Login: React.FC = () => {
             required
           />
           <label htmlFor={'input-password'}>
-            {t('Bitte geben Sie Ihr Passwort ein')}
+            {t('Please enter your password')}
           </label>
           <input
             type="password"
@@ -84,7 +82,7 @@ const Login: React.FC = () => {
             required
           />
           <p id="login-message" onClick={() => navigate('/register')}>
-            {t('new_here')}
+            {t('new here?')}
           </p>
           <button type="submit">{t('login')}</button>
           {message && <p>{message}</p>}

@@ -5,9 +5,11 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import NavBar from './NavBar';
 import { Footer } from './Footer';
+import { useTranslation } from 'react-i18next';
 import '../style/bookAppointment.css';
 
 const BookAppointment: React.FC = () => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -41,7 +43,7 @@ END:VCALENDAR
           className={'appointment-headline'}
           data-testid={'bookAppointment-headline'}
         >
-          Termin buchen
+          {t('book appointment')}
         </h2>
         <div className={'appointment-main-content'}>
           <form
@@ -52,7 +54,7 @@ END:VCALENDAR
             }}
           >
             <div className={'appointment-input'}>
-              <label htmlFor={'title-input'}>Titel:</label>
+              <label htmlFor={'title-input'}>{t('Title')}:</label>
               <input
                 id={'title-input'}
                 type="text"
@@ -62,7 +64,7 @@ END:VCALENDAR
               />
             </div>
             <div className={'appointment-input'}>
-              <label htmlFor={'description-input'}>Beschreibung:</label>
+              <label htmlFor={'description-input'}>{t('Description')}:</label>
               <input
                 id={'description-input'}
                 type="text"
@@ -72,7 +74,7 @@ END:VCALENDAR
               />
             </div>
             <div className={'appointment-input'}>
-              <label htmlFor={'start-date-input'}>Startdatum:</label>
+              <label htmlFor={'start-date-input'}>{t('Start Date')}:</label>
               <input
                 id={'start-date-input'}
                 type="datetime-local"
@@ -82,7 +84,7 @@ END:VCALENDAR
               />
             </div>
             <div className={'appointment-input'}>
-              <label htmlFor={'end-date-input'}>Enddatum:</label>
+              <label htmlFor={'end-date-input'}>{t('End Date')}:</label>
               <input
                 id={'end-date-input'}
                 type="datetime-local"
@@ -92,7 +94,7 @@ END:VCALENDAR
               />
             </div>
             <button id={'appointment-submit'} type="submit">
-              Termin buchen und exportieren
+              {t('book appointment and export')}
             </button>
           </form>
           <div className={'calender-container'}>

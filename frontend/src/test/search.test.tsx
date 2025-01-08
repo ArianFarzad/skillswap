@@ -52,7 +52,7 @@ describe('Search Component', () => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
       expect(screen.getByText('skills: JavaScript, React')).toBeInTheDocument();
       expect(screen.getByText('interests: Coding, Music')).toBeInTheDocument();
-      expect(screen.getByText('points: 100')).toBeInTheDocument();
+      expect(screen.getByText('Points: 100')).toBeInTheDocument();
     });
   });
 

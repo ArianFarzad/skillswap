@@ -53,6 +53,6 @@ describe('App Component', () => {
   test('renders Chat component on /chat/:sessionId route', () => {
     window.history.pushState({}, 'Chat Page', '/chat/1');
     render(<App />);
-    expect(screen.getByText('chat_with Session 1')).toBeInTheDocument();
+    expect(screen.getByText('chat with Session 1')).toBeInTheDocument();
   });
 });
