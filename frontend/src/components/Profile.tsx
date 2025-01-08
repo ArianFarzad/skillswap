@@ -236,7 +236,7 @@ const Profile = () => {
                         data-testid={`remove-skill-${skill}`}
                         onClick={() => handleRemoveSkill(skill)}
                       >
-                        x
+                        &#10006;
                       </button>
                     </div>
                   </li>
@@ -251,7 +251,7 @@ const Profile = () => {
                   onChange={(e) => setNewSkill(e.target.value)}
                 />
                 <button onClick={handleAddSkill} data-testid="add-skill-button">
-                  +
+                  &#10133;
                 </button>
               </div>
             </div>
@@ -267,7 +267,7 @@ const Profile = () => {
                         onClick={() => handleRemoveInterest(interest)}
                         data-testid={`remove-interest-${interest}`}
                       >
-                        x
+                        &#10006;
                       </button>
                     </div>
                   </li>
@@ -285,7 +285,7 @@ const Profile = () => {
                   onClick={handleAddInterest}
                   data-testid="add-interest-button"
                 >
-                  +
+                  &#10133;
                 </button>
               </div>
             </div>

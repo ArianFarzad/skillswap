@@ -50,7 +50,7 @@ describe('Login Component', () => {
 
   test('navigates to register on clicking "new here"', () => {
     renderWithRouter(<Login />);
-    fireEvent.click(screen.getByText('new_here'));
+    fireEvent.click(screen.getByText('new here?'));
     expect(mockNavigate).toHaveBeenCalledWith('/register');
   });
 });

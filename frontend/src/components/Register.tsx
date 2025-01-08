@@ -46,17 +46,15 @@ const Register = () => {
         />
         <h2 className={'info-text'}>
           {t(
-            'Bei SkillSwap verbinden wir dich mit anderen Nutzern, um deine Fähigkeiten zu teilen und gleichzeitig von den Fähigkeiten anderer zu profitieren.'
+            'At SkillSwap, we connect you with other users to share your skills while benefiting from the skills of others.'
           )}
         </h2>
       </div>
       <div className="register-area">
         <h1 data-testid={'register-headline'}>{t('register')}</h1>
-        <p>{t('please_fill_details')}</p>
+        <p>{t('Please fill in your details to register')}</p>
         <form className="register-form" onSubmit={handleSubmit}>
-          <label htmlFor={'input-name'}>
-            {t('Bitte geben Sie einen Benutzernamen ein')}
-          </label>
+          <label htmlFor={'input-name'}>{t('Please enter an username')}</label>
           <input
             type="text"
             id={'input-name'}
@@ -65,9 +63,7 @@ const Register = () => {
             onChange={(e) => setName(e.target.value)}
             required
           />
-          <label htmlFor={'input-email'}>
-            {t('Bitte geben Sie eine E-Mail-Adresse ein')}
-          </label>
+          <label htmlFor={'input-email'}>{t('Please enter your email')}</label>
           <input
             type="email"
             id={'input-email'}
@@ -77,7 +73,7 @@ const Register = () => {
             required
           />
           <label htmlFor={'input-password'}>
-            {t('Bitte geben Sie ein Passwort ein')}
+            {t('Please enter a password')}
           </label>
           <input
             type="password"
@@ -88,7 +84,7 @@ const Register = () => {
             required
           />
           <p id="register-message" onClick={() => navigate('/login')}>
-            {t('already_have_account')}
+            {t('Already have an account?')}
           </p>
           <button type="submit">{t('register')}</button>
           {message && <p>{message}</p>}

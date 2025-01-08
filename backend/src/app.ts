@@ -8,6 +8,7 @@ import gamificationRoutes from './routes/gamificationRoutes';
 import calendarRoutes from './routes/calendarRoutes';
 import messageRoutes from './routes/messageRoutes';
 import sessionRoutes from './routes/sessionRoutes'; // Importieren Sie die Session-Routen
+import feedbackRoutes from "./routes/feedbackRoutes";
 
 dotenv.config();
 
@@ -30,7 +31,8 @@ app.use('/api/profiles', profileRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/sessions', sessionRoutes); // Fügen Sie die Session-Routen hinzu
+app.use('/api/sessions', sessionRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // MongoDB-Verbindung
 mongoose.connect(process.env.MONGO_URI!)
