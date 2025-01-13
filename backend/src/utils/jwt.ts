@@ -16,12 +16,8 @@ export const verifyToken = (
     return res.status(401).json({ error: 'No token, authorization denied' });
   }
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET!
-    ) as CustomJwtPayload;
-    req.user = decoded;
-    console.log('Token verified successfully:', decoded);
+    req.user = jwt.verify(token, process.env.JWT_SECRET!) as CustomJwtPayload;
+    console.log('Token verified successfully');
     next();
   } catch (error) {
     console.error('Token verification failed:', error);

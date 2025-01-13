@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { mockI18n, mockNavigate, mockReactRouter } from './testUtils/mocks.ts';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 import { vi } from 'vitest';
@@ -8,15 +9,10 @@ import Search from '../components/Search';
 vi.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockNavigate = vi.fn();
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    BrowserRouter: actual.BrowserRouter,
-    useNavigate: () => mockNavigate,
-  };
-});
+mockI18n();
+
+mockReactRouter();
+
 
 const renderWithRouter = (ui: React.ReactElement) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
@@ -50,15 +46,17 @@ describe('Search Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
-      expect(screen.getByText('skills: JavaScript, React')).toBeInTheDocument();
-      expect(screen.getByText('interests: Coding, Music')).toBeInTheDocument();
-      expect(screen.getByText('Points: 100')).toBeInTheDocument();
+      expect(screen.getByText((content) => content.includes('skills: JavaScript, React'))).toBeInTheDocument();
+      expect(screen.getByText((content) => content.includes('interests: Coding, Music'))).toBeInTheDocument();
+      expect(screen.getByText((content) => content.includes('points: 100'))).toBeInTheDocument();
     });
   });
 
   test('shows error message if fetching profiles fails', async () => {
-    mockedAxios.get.mockRejectedValueOnce(new Error('Network Error'));
-
+    mockedAxios.get.mockRejectedValueOnce({
+      isAxiosError: true, // Simulate AxiosError
+      message: 'Network Error',
+    });
     renderWithRouter(<Search />);
 
     expect(await screen.findByText(/no_profiles_found/i)).toBeInTheDocument();

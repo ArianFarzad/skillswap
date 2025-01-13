@@ -1,8 +1,12 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { mockI18n } from './testUtils/mocks.ts';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
 import Chat from '../components/Chat';
+import React, { act } from 'react';
+
+mockI18n();
 
 vi.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -38,6 +42,9 @@ describe('Feedback functionality in Chat component', () => {
       if (url.includes('/feedback/user')) {
         return Promise.resolve({ data: mockAverageRating });
       }
+      if (url.includes('/sessions') && url.includes('/messages')) {
+        return Promise.resolve({ data: [] }); // Mock empty messages
+      }
       return Promise.reject(new Error('Unknown endpoint'));
     });
     mockedAxios.post.mockResolvedValue({ data: { success: true } });
@@ -69,16 +76,18 @@ describe('Feedback functionality in Chat component', () => {
   it('shows a success message after submitting feedback', async () => {
     renderWithRouter(<Chat />);
 
-    const textarea = screen.getByPlaceholderText('Enter your feedback');
+    const textarea = screen.getByPlaceholderText('enter_feedback');
     const stars = screen.getAllByText('☆');
-    const submitButton = screen.getByText('Submit feedback');
+    const submitButton = screen.getByText('submit_feedback');
 
-    fireEvent.change(textarea, { target: { value: 'Awesome session!' } });
-    fireEvent.click(stars[4]);
-    fireEvent.click(submitButton);
+    await act(async () => {
+      fireEvent.change(textarea, { target: { value: 'Awesome session!' } });
+      fireEvent.click(stars[4]);
+      fireEvent.click(submitButton);
+    });
 
     await waitFor(() => {
-      const successMessage = screen.getByText('feedback sent');
+      const successMessage = screen.getByText('feedback_sent');
       expect(successMessage).toBeInTheDocument();
     });
   });
@@ -88,13 +97,15 @@ describe('Feedback functionality in Chat component', () => {
 
     renderWithRouter(<Chat />);
 
-    const textarea = screen.getByPlaceholderText('Enter your feedback');
+    const textarea = screen.getByPlaceholderText('enter_feedback');
     const stars = screen.getAllByText('☆');
-    const submitButton = screen.getByText('Submit feedback');
+    const submitButton = screen.getByText('submit_feedback');
 
-    fireEvent.change(textarea, { target: { value: 'Session was okay.' } });
-    fireEvent.click(stars[2]);
-    fireEvent.click(submitButton);
+    act(() => {
+      fireEvent.change(textarea, { target: { value: 'Session was okay.' } });
+      fireEvent.click(stars[2]);
+      fireEvent.click(submitButton);
+    });
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledTimes(1);

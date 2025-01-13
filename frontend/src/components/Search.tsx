@@ -17,7 +17,11 @@ interface Profile {
 }
 
 const Search = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [keyword, setKeyword] = useState('');
   const [filter, setFilter] = useState('');
@@ -27,7 +31,7 @@ const Search = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        console.error(t('missing_token'));
+        console.error('No token found');
         return;
       }
 
@@ -48,7 +52,7 @@ const Search = () => {
         ? response.data
         : [response.data];
 
-      const mappedProfiles = data.map((profile: any) => ({
+      const mappedProfiles = data.map((profile) => ({
         id: profile._id,
         userId: profile.userId,
         name: profile.name,
@@ -71,7 +75,9 @@ const Search = () => {
   }, [keyword, filter, t]);
 
   useEffect(() => {
-    fetchProfiles();
+    fetchProfiles().catch((error) => {
+      console.error('Error fetching profiles:', error);
+    });
   }, [fetchProfiles]);
 
   const handleChatRequest = async (otherUserId: string) => {
@@ -136,7 +142,7 @@ const Search = () => {
             className={'filter-input'}
             type="number"
             min="0"
-            placeholder={t('filter by points')}
+            placeholder={t('filter_by_points')}
             data-testid={'filter-input'}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -144,7 +150,7 @@ const Search = () => {
         </div>
         <div className="all-profiles-container">
           <h2 id="all-profiles-headline" data-testid={'search-headline'}>
-            {t('All profiles')}
+            {t('all_profiles')}
           </h2>
 
           <div className="profiles-grid">
@@ -163,10 +169,10 @@ const Search = () => {
                     {t('interests')}: {profile.interests.join(', ')}
                   </p>
                   <p>
-                    {t('Points')}: {profile.points}
+                    {t('points')}: {profile.points}
                   </p>
-                  <button onClick={() => handleChatRequest(profile.id)}>
-                    {t('chat')}
+                  <button onClick={() => handleChatRequest(profile.userId)}>
+                    {t('chat_with')} {profile.name}
                   </button>
                 </div>
               ))

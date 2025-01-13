@@ -1,7 +1,58 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
+    // Consolidated build info file
+    "target": "ES2022",
+    // Aligns with the latest features
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    // Supports ES2023 and browser APIs
+    "module": "ESNext",
+    // Suitable for modern JavaScript bundlers
+    "moduleResolution": "node",
+    // Resolves modules in Node.js style
+    "allowImportingTsExtensions": true,
+    // Allow importing `.ts` files directly
+    "isolatedModules": true,
+    // Helps with bundler setups like Vite
+    "moduleDetection": "force",
+    // Ensures explicit module detection
+    "noEmit": true,
+    // Prevents emitting JS files
+    "jsx": "react-jsx",
+    // Supports React with JSX
+    "resolveJsonModule": true,
+    // Enables JSON imports
+    "esModuleInterop": true,
+    // Interop for CommonJS modules
+    "skipLibCheck": true,
+    // Skips type-checking of `.d.ts` files
+    "strict": true,
+    // Enforces strict type-checking
+    "noUnusedLocals": true,
+    // Prevents unused local variables
+    "noUnusedParameters": true,
+    // Prevents unused function parameters
+    "noFallthroughCasesInSwitch": true,
+    // Prevents fallthrough in switch cases
+    "noUncheckedSideEffectImports": true
+    // Avoids unverified side effects in imports
+  },
+  "include": [
+    "src/**/*",
+    "vite.config.ts"
+  ],
+  // Includes all source files and Vite config
+  "exclude": [
+    "node_modules"
   ]
+  // Excludes `node_modules` from type-checking
 }

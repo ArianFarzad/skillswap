@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import '../style/chat.css';
+import { useTranslation } from 'react-i18next';
 
 interface Message {
   sender: {
@@ -23,7 +23,11 @@ interface Feedback {
 }
 
 const Chat: React.FC = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const { sessionId } = useParams<{ sessionId: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -138,7 +142,7 @@ const Chat: React.FC = () => {
     <div className={'session-content'}>
       <div className="chat-container">
         <h2>
-          {t('chat with')} Session {sessionId}
+          {t('chat_with')} Session {sessionId}
         </h2>
         <div className={'chat-content'}>
           <div className="messages-list">
@@ -160,7 +164,7 @@ const Chat: React.FC = () => {
             <input
               type="text"
               className={'msg-text-field'}
-              placeholder={t('type message')}
+              placeholder={t('type_message')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
@@ -171,10 +175,10 @@ const Chat: React.FC = () => {
         </div>
       </div>
       <div className={'feedback-container'}>
-        <h2>{t('Rate this session')}</h2>
+        <h2>{t('rate_session')}</h2>
         <textarea
           className={'feedback-textarea'}
-          placeholder={t('Enter your feedback')}
+          placeholder={t('enter_feedback')}
           rows={5}
           cols={50}
           maxLength={200}
@@ -196,12 +200,12 @@ const Chat: React.FC = () => {
             })}
           </div>
           <button className="feedback-submit-btn" onClick={handleSendFeedback}>
-            {t('Submit feedback')}
+            {t('submit_feedback')}
           </button>
         </div>
-        {feedbackSuccess && <p>{t('feedback sent')}</p>}
+        {feedbackSuccess && <p>{t('feedback_sent')}</p>}
 
-        <h2>{t('Feedbacks for this session')}</h2>
+        <h2>{t('feedbacks_for_session')}</h2>
         <div className="feedbacks-list">
           {feedbacks.map((feedback, index) => (
             <div key={index} className="feedback-card">
@@ -220,7 +224,7 @@ const Chat: React.FC = () => {
         </div>
         {averageRating !== null && (
           <div className={'flex-row'}>
-            <h3>{t('Average rating')}</h3>
+            <h3>{t('average_rating')}</h3>
             <p>
               {[...Array(5)].map((_, index) => (
                 <span key={index}>

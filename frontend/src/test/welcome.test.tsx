@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Welcome } from '../components/Welcome';
 import { vi } from 'vitest';
+import React from 'react';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
