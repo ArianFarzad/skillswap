@@ -1,23 +1,11 @@
 import React from 'react';
+import { initializeMocks, mockedAxios, mockI18n, mockNavigate } from './testUtils/mocks.ts';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { vi } from 'vitest';
+import { BrowserRouter } from 'react-router-dom';
 import Register from '../components/Register';
 
-vi.mock('react-router-dom', async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    useNavigate: vi.fn(),
-  };
-});
-
-const mockNavigate = vi.fn();
-(useNavigate as jest.Mock).mockReturnValue(mockNavigate);
-
-vi.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+initializeMocks();
+mockI18n();
 
 const renderWithRouter = (ui: React.ReactElement) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);

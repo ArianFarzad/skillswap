@@ -196,8 +196,10 @@ export const checkSession = async (req: Request, res: Response) => {
     });
 
     if (session) {
+      console.log('Session found:', session);
       res.json({ sessionId: session._id });
     } else {
+      console.log('No session found');
       res.json({ sessionId: null });
     }
   } catch (error) {

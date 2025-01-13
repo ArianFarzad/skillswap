@@ -12,7 +12,6 @@
     "start:all": "concurrently \"npm start\" \"cd ../frontend && npm run dev\"",
     "install:all": "npm install && cd ../frontend && npm install"
   },
-  "author": "Dein Name",
   "license": "MIT",
   "dependencies": {
     "@types/ical": "^0.8.3",
