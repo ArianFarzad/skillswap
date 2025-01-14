@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import NavBar from './NavBar.tsx';
-import { Footer } from './Footer.tsx';
 import '../style/profilePage.css';
 
 interface ProfileData {
@@ -47,7 +45,6 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <NavBar />
       <div className={'profile-container'}>
         <h2 id={'profile-page-headline'} data-testid={'profilePage-headline'}>
           {t('profile_page')}
@@ -92,7 +89,6 @@ const ProfilePage: React.FC = () => {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 };

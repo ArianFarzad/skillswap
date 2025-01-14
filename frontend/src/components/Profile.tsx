@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import '../style/profile.css';
 import { useTranslation } from 'react-i18next';
-import NavBar from './NavBar';
-import { Footer } from './Footer';
-import TranslationBar from './TranslationBar';
+import React from 'react';
+import {
+  MainContainer,
+  Headline,
+  FormArea,
+  Container,
+  Headline2,
+  ItemContainer,
+  Item,
+  InputContainer,
+  RemoveButton,
+  List,
+  Button,
+  Input,
+} from '../style/components/Profile.style';
 
 interface ProfileType {
   skills: string[];
@@ -12,7 +23,7 @@ interface ProfileType {
   points: number;
 }
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const { t } = useTranslation();
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [newSkill, setNewSkill] = useState('');
@@ -216,85 +227,77 @@ const Profile = () => {
 
   return (
     <>
-      <TranslationBar />
-      <NavBar />
-
-      <div className="profile-container">
-        <h2 id="profile-headline" data-testid={'profile-headline'}>
-          {t('profile')}
-        </h2>
+      <MainContainer>
+        <Headline data-testid={'profile-headline'}>{t('profile')}</Headline>
         {message && <p>{message}</p>}
         {profile && (
-          <div className="form-area">
-            <div className="skill-area">
-              <h3 className="skill-interest-headline">{t('skills')}</h3>
-              <ul className="skill-list">
+          <FormArea>
+            <Container>
+              <Headline2>{t('skills')}</Headline2>
+              <List>
                 {profile.skills.map((skill) => (
                   <li key={skill}>
-                    <div className="skill-item-container">
-                      <p className="skill-item">{skill}</p>
-                      <button
-                        className="skill-btn"
+                    <ItemContainer>
+                      <Item>{skill}</Item>
+                      <RemoveButton
                         data-testid={`remove-skill-${skill}`}
                         onClick={() => handleRemoveSkill(skill)}
                       >
                         &#10006;
-                      </button>
-                    </div>
+                      </RemoveButton>
+                    </ItemContainer>
                   </li>
                 ))}
-              </ul>
-              <div className="skill-input">
-                <input
+              </List>
+              <InputContainer>
+                <Input
                   type="text"
                   placeholder={t('new_skill')}
                   data-testid="input-skill"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                 />
-                <button onClick={handleAddSkill} data-testid="add-skill-button">
+                <Button onClick={handleAddSkill} data-testid="add-skill-button">
                   &#10133;
-                </button>
-              </div>
-            </div>
-            <div className="interest-area">
-              <h3 className="skill-interest-headline">{t('interests')}</h3>
-              <ul className="interest-list">
+                </Button>
+              </InputContainer>
+            </Container>
+            <Container>
+              <Headline2>{t('interests')}</Headline2>
+              <List>
                 {profile.interests.map((interest) => (
                   <li key={interest}>
-                    <div className="interest-item-container">
-                      <p className="interest-item">{interest}</p>
-                      <button
-                        className={'interest-btn'}
+                    <ItemContainer>
+                      <Item>{interest}</Item>
+                      <RemoveButton
                         onClick={() => handleRemoveInterest(interest)}
                         data-testid={`remove-interest-${interest}`}
                       >
                         &#10006;
-                      </button>
-                    </div>
+                      </RemoveButton>
+                    </ItemContainer>
                   </li>
                 ))}
-              </ul>
-              <div className="interest-input">
-                <input
+              </List>
+              <InputContainer>
+                <Input
                   type="text"
                   placeholder={t('new_interest')}
                   data-testid="input-interest"
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
                 />
-                <button
+                <Button
                   onClick={handleAddInterest}
                   data-testid="add-interest-button"
                 >
                   &#10133;
-                </button>
-              </div>
-            </div>
-          </div>
+                </Button>
+              </InputContainer>
+            </Container>
+          </FormArea>
         )}
-      </div>
-      <Footer />
+      </MainContainer>
     </>
   );
 };

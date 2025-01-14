@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Profile from './components/Profile';
+import UserProfilePage from './pages/UserProfilePage';
 import WelcomePage from './pages/WelcomePage';
 import Search from './components/Search';
 import ProfilePage from './components/ProfilePage';
@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/profiles/:profileId" element={<ProfilePage />} />
           <Route path="/chat/:sessionId" element={<Chat />} />

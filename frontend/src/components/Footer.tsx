@@ -1,6 +1,7 @@
 import '../style/footer.css';
+import React from 'react';
 
-export const Footer = () => {
+const Footer: React.FC = () => {
   return (
     <div className={'footer'}>
       <p>&copy; fwe ws 24/25 </p>
@@ -8,3 +9,5 @@ export const Footer = () => {
     </div>
   );
 };
+
+export default Footer;

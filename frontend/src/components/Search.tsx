@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import '../style/search.css';
-import { Footer } from './Footer';
+import Footer from './Footer';
 import TranslationBar from './TranslationBar.tsx';
 
 interface Profile {

@@ -2,74 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import '../style/index.css';
-import styled from "styled-components";
-
-const LoginArea = styled.div`
-  padding: 2rem;
-  border-left: var(--box-border-left);
-  flex: 1;
-`;
-
-const Headline = styled.h1`
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #666;
-`;
-
-const Paragraph = styled.p`
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #666;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Input = styled.input`
-  width: 95%;
-  padding: var(--input-padding);
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  border: var(--input-border);
-  border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
-  transition: border-color 0.3s ease;
-    &:focus {
-        border: var(--input-border-focus);
-        outline: none;
-    }
-`;
-
-const LoginMessage = styled.p`
-  margin-top: 1rem;
-  color: blue;
-  text-align: right;
-  cursor: pointer;
-  text-decoration: underline;
-  
-    &:hover {
-        color: var(--link-hover);;
-    }
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: var(--button-border-redius);
-  cursor: pointer;
-  transition: var(--button-transition);
-  
-    &:hover {
-        background-color: var(--primary-color-hover);;
-    }
-`;
+import {
+  LoginArea,
+  LoginMessage,
+  Headline,
+  Form,
+  Input,
+  Paragraph,
+  Button,
+} from '../style/components/Login.style';
 
 const Login: React.FC = () => {
   const { t } = useTranslation();
@@ -109,39 +50,37 @@ const Login: React.FC = () => {
 
   return (
     <>
-        <LoginArea>
-          <Headline data-testid={'login-headline'}>{t('login')}</Headline>
-          <Paragraph>{t('please_enter_details')}</Paragraph>
-          <Form onSubmit={handleSubmit}>
-            <label htmlFor={'input-email'}>
-              {t('Please_enter_your_email')}
-            </label>
-            <Input
-              type="email"
-              id={'input-email'}
-              placeholder={t('email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <label htmlFor={'input-password'}>
-              {t('Please_enter_your_password')}
-            </label>
-            <Input
-              type="password"
-              id={'input-password'}
-              placeholder={t('password')}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <LoginMessage onClick={() => navigate('/register')}>
-              {t('new_here')}
-            </LoginMessage>
-            <Button type="submit">{t('login')}</Button>
-            {message && <p>{message}</p>}
-          </Form>
-        </LoginArea>
+      <LoginArea>
+        <Headline data-testid={'login-headline'}>{t('login')}</Headline>
+        <Paragraph>{t('please_enter_details')}</Paragraph>
+        <Form onSubmit={handleSubmit}>
+          <label htmlFor={'input-email'}>{t('Please_enter_your_email')}</label>
+          <Input
+            type="email"
+            id={'input-email'}
+            placeholder={t('email')}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <label htmlFor={'input-password'}>
+            {t('Please_enter_your_password')}
+          </label>
+          <Input
+            type="password"
+            id={'input-password'}
+            placeholder={t('password')}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <LoginMessage onClick={() => navigate('/register')}>
+            {t('new_here')}
+          </LoginMessage>
+          <Button type="submit">{t('login')}</Button>
+          {message && <p>{message}</p>}
+        </Form>
+      </LoginArea>
     </>
   );
 };
