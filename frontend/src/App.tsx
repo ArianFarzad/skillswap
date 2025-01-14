@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UserProfilePage from './pages/UserProfilePage';
 import WelcomePage from './pages/WelcomePage';
-import Search from './components/Search';
+import SearchPage from './pages/SearchPage';
 import ProfilePage from './components/ProfilePage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
@@ -15,7 +15,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
-          <Route path="/search" element={<Search />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/profiles/:profileId" element={<ProfilePage />} />
           <Route path="/chat/:sessionId" element={<Chat />} />
           <Route path="/" element={<WelcomePage />} />
