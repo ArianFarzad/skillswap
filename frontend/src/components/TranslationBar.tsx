@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import '../style/translationBar.css';
+import { TranslationBarContainer, LangButton } from '../style/components/TranslationBar.style';
 
 const TranslationBar: React.FC = () => {
   const { i18n } = useTranslation();
@@ -13,20 +13,20 @@ const TranslationBar: React.FC = () => {
   };
 
   return (
-    <div className={'translation-bar'}>
-      <button
-        className={language == 'en' ? 'selected' : 'lang-btn'}
+    <TranslationBarContainer>
+      <LangButton
+        className={language === 'en' ? 'selected' : ''}
         onClick={() => changeLanguage('en')}
       >
         🇬🇧
-      </button>
-      <button
-        className={language == 'de' ? 'selected' : 'lang-btn'}
+      </LangButton>
+      <LangButton
+        className={language === 'de' ? 'selected' : ''}
         onClick={() => changeLanguage('de')}
       >
         🇩🇪
-      </button>
-    </div>
+      </LangButton>
+    </TranslationBarContainer>
   );
 };
 
