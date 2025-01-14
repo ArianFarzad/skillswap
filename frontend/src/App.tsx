@@ -1,14 +1,11 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Profile from './components/Profile';
-import { Welcome } from './components/Welcome';
-import Settings from './components/Settings';
+import WelcomePage from "./pages/WelcomePage";
 import Search from './components/Search';
 import ProfilePage from './components/ProfilePage';
 import Register from './components/Register';
 import Login from './components/Login';
-import BookAppointment from './components/BookAppointment';
-import Chat from './components/Chat'; // Importieren der Chat-Komponente
+import Chat from './components/Chat';
 
 function App() {
   return (
@@ -21,7 +18,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/profiles/:profileId" element={<ProfilePage />} />
           <Route path="/chat/:sessionId" element={<Chat />} />
-          <Route path="/" element={<Welcome />} />
+          <Route path="/" element={<WelcomePage />} />
         </Routes>
       </div>
     </Router>
