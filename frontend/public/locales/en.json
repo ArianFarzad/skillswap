@@ -59,5 +59,14 @@
   "average_rating": "Average rating",
   "enter_feedback": "Enter your feedback",
   "feedback_sent": "Feedback sent",
-  "no_profiles_found": "No profiles found"
+  "no_profiles_found": "No profiles found",
+  "upload_ics": "Upload ICS file",
+  "events_calendar": "Events Calendar",
+  "give_feedback": "Give Feedback",
+  "Please_enter_your_email": "Please enter your email",
+  "Please_enter_your_password": "Please enter your password",
+  "Please_fill_in_your_details_to_register": "Please fill in your details to register",
+  "Please_enter_an_username": "Please enter a username",
+  "Please_enter_a_password": "Please enter a password",
+  "Already_have_an_account?": "Already have an account?"
 }

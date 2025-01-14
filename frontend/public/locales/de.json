@@ -59,5 +59,14 @@
   "average_rating": "Durchschnittliche Bewertung",
   "enter_feedback": "Geben Sie Ihr Feedback ein",
   "feedback_sent": "Feedback gesendet",
-  "no_profiles_found": "Keine Profile gefunden"
+  "no_profiles_found": "Keine Profile gefunden",
+  "upload_ics": "ICS-Datei hochladen",
+  "events_calendar": "Veranstaltungskalender",
+  "give_feedback": "Feedback geben",
+  "Please_enter_your_email": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+  "Please_enter_your_password": "Bitte geben Sie Ihr Passwort ein",
+  "Please_fill_in_your_details_to_register": "Bitte füllen Sie Ihre Daten aus, um sich zu registrieren",
+  "Please_enter_an_username": "Bitte geben Sie einen Benutzernamen ein",
+  "Please_enter_a_password": "Bitte geben Sie ein Passwort ein",
+  "Already_have_an_account?": "Bereits ein Konto?"
 }

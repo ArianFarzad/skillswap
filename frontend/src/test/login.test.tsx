@@ -1,5 +1,10 @@
 import React from 'react';
-import { initializeMocks, mockedAxios, mockI18n, mockNavigate } from './testUtils/mocks.ts';
+import {
+  initializeMocks,
+  mockedAxios,
+  mockI18n,
+  mockNavigate,
+} from './testUtils/mocks.ts';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Login from '../components/Login';
@@ -38,7 +43,7 @@ describe('Login Component', () => {
 
   test('navigates to register on clicking "new here"', () => {
     renderWithRouter(<Login />);
-    fireEvent.click(screen.getByText('new here?'));
+    fireEvent.click(screen.getByText('new_here'));
     expect(mockNavigate).toHaveBeenCalledWith('/register');
   });
 });

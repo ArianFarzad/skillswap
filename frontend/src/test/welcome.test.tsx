@@ -24,7 +24,7 @@ describe('Welcome Component', () => {
 
   it('renders the welcome text', () => {
     renderWithRouter(<Welcome />);
-    expect(screen.getByText('connect learn grow')).toBeInTheDocument();
+    expect(screen.getByText('connect_learn_grow')).toBeInTheDocument();
   });
 
   it('renders the login link', () => {

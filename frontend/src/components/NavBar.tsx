@@ -22,12 +22,6 @@ const NavBar: React.FC = () => {
           <li className="list-item">
             <Link to="/search">&#128270;{t('search')}</Link>
           </li>
-          <li className="list-item">
-            <Link to="/settings">&#9881; {t('settings')}</Link>
-          </li>
-          <li className="list-item">
-            <Link to="/book-appointment">&#128214;{t('book appointment')}</Link>
-          </li>
         </ul>
         <p className={'logout'} onClick={handleLogout}>
           {t('logout')}

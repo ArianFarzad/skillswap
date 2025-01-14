@@ -4,6 +4,7 @@ import '../style/profile.css';
 import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import { Footer } from './Footer';
+import TranslationBar from './TranslationBar';
 
 interface ProfileType {
   skills: string[];
@@ -215,6 +216,7 @@ const Profile = () => {
 
   return (
     <>
+      <TranslationBar />
       <NavBar />
 
       <div className="profile-container">

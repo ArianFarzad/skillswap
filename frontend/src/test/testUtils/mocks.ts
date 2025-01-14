@@ -6,14 +6,14 @@ export const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 export const mockReactRouter = () => {
   vi.mock('react-router-dom', async (importOriginal) => {
-    const actual = (await importOriginal()) as typeof import('react-router-dom');
+    const actual =
+      (await importOriginal()) as typeof import('react-router-dom');
     return {
       ...actual,
       useNavigate: () => mockNavigate,
     };
   });
 };
-
 
 export const mockI18n = () => {
   vi.mock('react-i18next', async () => {

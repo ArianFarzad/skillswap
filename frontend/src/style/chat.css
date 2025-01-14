@@ -1,17 +1,59 @@
 .session-content {
   display: flex;
   flex-direction: row;
+  height: 100vh;
 }
 
 .chat-container {
-  flex: 2;
+  flex: 1;
   padding: 1em;
+  border-left: var(--box-border-left);
+  display: flex;
+  flex-direction: row;
+}
+
+.calendar-container {
+  flex: 1;
+  padding: 1em;
+  overflow-y: scroll;
 }
 
 .feedback-container {
   flex: 1;
   padding: 2em;
   border-left: var(--box-border-left);
+}
+
+.hide {
+  display: none;
+}
+
+.feedback-toggle {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.toggle-btn {
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.btn-text {
+  display: inline-block;
+  transform: rotate(270deg);
+}
+
+.toggle-btn:hover {
+  background-color: var(--primary-color-hover);
 }
 
 .star-rating {
@@ -37,7 +79,6 @@
   background-color: var(--background-color-secondary);
   padding: 1em;
   border-radius: 5px;
-  margin-bottom: 1em;
 }
 
 .feedback-header {
@@ -63,7 +104,6 @@
 }
 
 .flex-row {
-  margin-top: 1em;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -71,8 +111,8 @@
 }
 
 .feedback-textarea {
-  min-width: 350px;
-  max-width: 350px;
+  min-width: 90%;
+  max-width: 90%;
   min-height: 100px;
   max-height: 150px;
   padding: var(--input-padding);
@@ -85,7 +125,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 85vh;
+  height: 95vh;
   gap: 1em;
 }
 
@@ -94,6 +134,7 @@
   flex-direction: row;
   width: 100%;
   gap: 0;
+  padding-bottom: 1em;
 }
 
 .msg-text-field {
@@ -140,4 +181,45 @@
   border-radius: 10px;
   margin-bottom: 0.5em;
   align-self: flex-start;
+}
+
+.messages-list {
+  height: 30em;
+  overflow-y: scroll;
+}
+
+@media (max-width: 600px) {
+  .session-content {
+    flex-direction: column;
+  }
+
+  .chat-container,
+  .calendar-container,
+  .feedback-container {
+    flex: none;
+    width: 100%;
+    padding: 0.5em;
+  }
+
+  .message-input {
+    flex-direction: column;
+  }
+
+  .msg-text-field {
+    border-radius: 5px;
+  }
+
+  .send-msg-btn {
+    border-radius: 5px;
+    margin-top: 0.5em;
+  }
+
+  .btn-text {
+    display: inline-block;
+    transform: rotate(0deg);
+  }
+
+  .toggle-btn {
+    border-radius: var(--button-border-redius);
+  }
 }

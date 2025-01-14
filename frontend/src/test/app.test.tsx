@@ -28,12 +28,6 @@ describe('App Component', () => {
     expect(screen.getByTestId('profile-headline')).toBeInTheDocument();
   });
 
-  test('renders Settings component on /settings route', () => {
-    window.history.pushState({}, 'Settings Page', '/settings');
-    render(<App />);
-    expect(screen.getByTestId('settings-headline')).toBeInTheDocument();
-  });
-
   test('renders Search component on /search route', () => {
     window.history.pushState({}, 'Search Page', '/search');
     render(<App />);
@@ -44,12 +38,6 @@ describe('App Component', () => {
     window.history.pushState({}, 'Profile Page', '/profiles/1');
     render(<App />);
     expect(screen.getByTestId('profilePage-headline')).toBeInTheDocument();
-  });
-
-  test('renders BookAppointment component on /book-appointment route', () => {
-    window.history.pushState({}, 'Book Appointment Page', '/book-appointment');
-    render(<App />);
-    expect(screen.getByTestId('bookAppointment-headline')).toBeInTheDocument();
   });
 
   test('renders Chat component on /chat/:sessionId route', () => {

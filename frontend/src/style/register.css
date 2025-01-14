@@ -98,7 +98,7 @@ p {
   margin-bottom: 1rem;
   border: var(--input-border);
   border-radius: var(--input-border-radius);
-  width: 370px;
+  width: 95%;
   box-shadow: var(--input-box-shadow);
   transition: border-color 0.3s ease;
 }
