@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Profile from './components/Profile';
-import WelcomePage from "./pages/WelcomePage";
+import WelcomePage from './pages/WelcomePage';
 import Search from './components/Search';
 import ProfilePage from './components/ProfilePage';
-import Register from './components/Register';
+import RegisterPage from './pages/RegisterPage';
 import Login from './components/Login';
 import Chat from './components/Chat';
 
@@ -12,7 +12,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/register" element={<Register />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/search" element={<Search />} />
