@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import '../style/search.css';
 import { Footer } from './Footer';
+import TranslationBar from './TranslationBar.tsx';
 
 interface Profile {
   id: string; // Mapped from _id
@@ -127,6 +128,7 @@ const Search = () => {
 
   return (
     <>
+      <TranslationBar />
       <NavBar />
       <div className="search-area">
         <div className="filter-container">

@@ -3,14 +3,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 6em;
-  padding-bottom: 5rem;
-}
-
-.appointment-main-content {
-  display: flex;
-  flex-direction: row;
-  gap: 5em;
 }
 
 .appointment-form {
@@ -21,10 +13,6 @@
   width: 100%;
   gap: 2em;
   flex: 1;
-}
-
-.appointment-headline {
-  color: var(--primary-color);
 }
 
 .appointment-input {
@@ -58,19 +46,70 @@
   cursor: pointer;
 }
 
-.calender-container {
-  margin-top: 2rem;
-  flex: 2;
+.calendar-section {
+  transform: scale(0.9);
 }
 
 .react-calendar {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.react-calendar__tile {
+  transition: background-color 0.3s ease;
+}
+
+.react-calendar__tile:enabled:hover {
+  background-color: #f0f0f0;
+}
+
+.event-dot {
+  color: red;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.event-dot:hover {
+  color: #ff6347;
+}
+
+.Popover-body {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  width: 250px;
+}
+
+.Popover-body h4 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.Popover-body p {
+  margin: 5px 0;
+}
+
+.Popover-body button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 10px;
   width: 100%;
-  max-width: 500px;
-  background-color: var(--background-color);
-  border: 1px solid var(--input-border);
-  border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
-  padding: 1rem;
+}
+
+.Popover-body button:hover {
+  background-color: #0056b3;
+}
+
+.Popover {
+  z-index: 9999;
 }
 
 @media (max-width: 767px) {

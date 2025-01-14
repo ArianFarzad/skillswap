@@ -1,19 +1,12 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     // Consolidated build info file
     "target": "ES2022",
     // Aligns with the latest features
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2023",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
     // Supports ES2023 and browser APIs
     "module": "ESNext",
     // Suitable for modern JavaScript bundlers
@@ -46,13 +39,8 @@
     "noUncheckedSideEffectImports": true
     // Avoids unverified side effects in imports
   },
-  "include": [
-    "src/**/*",
-    "vite.config.ts"
-  ],
+  "include": ["src/**/*", "vite.config.ts"],
   // Includes all source files and Vite config
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
   // Excludes `node_modules` from type-checking
 }

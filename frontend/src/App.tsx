@@ -18,10 +18,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings />} />
           <Route path="/search" element={<Search />} />
           <Route path="/profiles/:profileId" element={<ProfilePage />} />
-          <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/chat/:sessionId" element={<Chat />} />
           <Route path="/" element={<Welcome />} />
         </Routes>

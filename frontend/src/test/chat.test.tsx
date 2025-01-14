@@ -56,6 +56,7 @@ describe('Feedback functionality in Chat component', () => {
 
   it('displays a list of feedbacks for the session', async () => {
     renderWithRouter(<Chat />);
+    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
 
     const feedbackElements = await screen.findAllByText(
       /Great session!|Excellent!/
@@ -68,14 +69,14 @@ describe('Feedback functionality in Chat component', () => {
 
   it('shows the average rating as star icons', async () => {
     renderWithRouter(<Chat />);
-
+    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
     const averageRatingElement = await screen.findByText('★★★★☆');
     expect(averageRatingElement).toBeInTheDocument();
   });
 
   it('shows a success message after submitting feedback', async () => {
     renderWithRouter(<Chat />);
-
+    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
     const textarea = screen.getByPlaceholderText('enter_feedback');
     const stars = screen.getAllByText('☆');
     const submitButton = screen.getByText('submit_feedback');
@@ -96,7 +97,7 @@ describe('Feedback functionality in Chat component', () => {
     mockedAxios.post.mockRejectedValueOnce(new Error('Network Error'));
 
     renderWithRouter(<Chat />);
-
+    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
     const textarea = screen.getByPlaceholderText('enter_feedback');
     const stars = screen.getAllByText('☆');
     const submitButton = screen.getByText('submit_feedback');

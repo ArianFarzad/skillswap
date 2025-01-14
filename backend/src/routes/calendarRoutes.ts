@@ -21,10 +21,11 @@ interface ParsedData {
 }
 
 // API-Endpunkt zum Hochladen der .ics-Datei
-router.post('/calendar/import', upload.single('file'), (req: Request, res: Response) => {
+router.post('/import', upload.single('file'), (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Keine Datei hochgeladen' });
   }
+  console.log('Received file:', req.file);
   const filePath = req.file.path;
 
   fs.readFile(filePath, 'utf8', (err, data) => {

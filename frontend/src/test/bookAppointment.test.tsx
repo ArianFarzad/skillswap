@@ -16,26 +16,26 @@ const renderWithProviders = (ui: React.ReactElement) => {
 describe('BookAppointment Component', () => {
   test('renders BookAppointment component', () => {
     renderWithProviders(<BookAppointment />);
-    expect(screen.getByText('book appointment')).toBeInTheDocument();
+    expect(screen.getByText('book_appointment')).toBeInTheDocument();
   });
 
   test('fills out and submits the form', async () => {
     renderWithProviders(<BookAppointment />);
 
-    fireEvent.change(screen.getByLabelText('Title:'), {
+    fireEvent.change(screen.getByLabelText('title:'), {
       target: { value: 'Meeting' },
     });
-    fireEvent.change(screen.getByLabelText('Description:'), {
+    fireEvent.change(screen.getByLabelText('description:'), {
       target: { value: 'Team meeting' },
     });
-    fireEvent.change(screen.getByLabelText('Start Date:'), {
+    fireEvent.change(screen.getByLabelText('start_date:'), {
       target: { value: '2023-12-01T10:00' },
     });
-    fireEvent.change(screen.getByLabelText('End Date:'), {
+    fireEvent.change(screen.getByLabelText('end_date:'), {
       target: { value: '2023-12-01T11:00' },
     });
 
-    fireEvent.click(screen.getByText('book appointment and export'));
+    fireEvent.click(screen.getByText('book_and_export'));
 
     await waitFor(() => {
       expect(saveAs).toHaveBeenCalled();

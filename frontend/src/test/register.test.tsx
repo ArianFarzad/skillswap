@@ -1,5 +1,10 @@
 import React from 'react';
-import { initializeMocks, mockedAxios, mockI18n, mockNavigate } from './testUtils/mocks.ts';
+import {
+  initializeMocks,
+  mockedAxios,
+  mockI18n,
+  mockNavigate,
+} from './testUtils/mocks.ts';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import Register from '../components/Register';
@@ -42,7 +47,7 @@ describe('Register Component', () => {
 
   test('navigates to login on clicking "already have an account"', () => {
     renderWithRouter(<Register />);
-    fireEvent.click(screen.getByText('Already have an account?'));
+    fireEvent.click(screen.getByText('Already_have_an_account?'));
     expect(mockNavigate).toHaveBeenCalledWith('/login');
   });
 });

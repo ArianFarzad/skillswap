@@ -13,7 +13,6 @@ mockI18n();
 
 mockReactRouter();
 
-
 const renderWithRouter = (ui: React.ReactElement) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
 };
@@ -46,9 +45,19 @@ describe('Search Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
-      expect(screen.getByText((content) => content.includes('skills: JavaScript, React'))).toBeInTheDocument();
-      expect(screen.getByText((content) => content.includes('interests: Coding, Music'))).toBeInTheDocument();
-      expect(screen.getByText((content) => content.includes('points: 100'))).toBeInTheDocument();
+      expect(
+        screen.getByText((content) =>
+          content.includes('skills: JavaScript, React')
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText((content) =>
+          content.includes('interests: Coding, Music')
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText((content) => content.includes('points: 100'))
+      ).toBeInTheDocument();
     });
   });
 
