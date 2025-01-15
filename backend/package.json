@@ -27,7 +27,6 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
     "supertest": "^7.0.0"
   },
   "devDependencies": {

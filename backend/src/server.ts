@@ -6,7 +6,7 @@ import Message from './models/Message';
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173'], // Fügen Sie hier beide URLs hinzu
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Authorization'],
   },
@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
   socket.on('sendMessage', async (data) => {
     const { senderId, receiverId, content } = data;
     console.log('Empfangene Nachricht:', { senderId, receiverId, content });
-    
+
     // Überprüfen Sie, ob senderId und receiverId definiert sind
     if (!senderId || !receiverId) {
       console.error('SenderId oder ReceiverId ist undefined');
@@ -42,8 +42,6 @@ io.on('connection', (socket) => {
     }
   });
 });
-
-
 
 httpServer.listen(8000, () => {
   console.log('Server läuft auf Port 8000');

@@ -1,5 +1,5 @@
 import React from 'react';
-import { mockI18n, mockNavigate, mockReactRouter } from './testUtils/mocks.ts';
+import { mockI18n, mockNavigate, mockReactRouter } from './testUtils/mocks';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
