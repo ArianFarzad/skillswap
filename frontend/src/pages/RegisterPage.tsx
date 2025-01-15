@@ -4,7 +4,6 @@ import Intro from '../components/Intro';
 import Register from '../components/Register';
 import { MainContainer } from '../style/pages/RegisterPage.style';
 
-
 const RegisterPage: React.FC = () => {
   return (
     <>

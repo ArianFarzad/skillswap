@@ -1,0 +1,64 @@
+.feedback-card {
+  background-color: var(--background-color-secondary);
+  padding: 1em;
+  border-radius: 5px;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.feedbacks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  height: 15em;
+  overflow-y: auto;
+  padding: 1em;
+}
+
+.feedback-submit-btn {
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: var(--button-border-redius);
+}
+
+.feedback-submit-btn:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.star {
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1em;
+}
+
+.feedback-textarea {
+  min-width: 90%;
+  max-width: 90%;
+  min-height: 100px;
+  max-height: 150px;
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--input-border-radius);
+  box-shadow: var(--input-box-shadow);
+}

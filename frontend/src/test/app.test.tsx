@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import App from '../App';
-import { mockI18n } from './testUtils/mocks.ts';
+import { mockI18n } from './testUtils/mocks';
 
 mockI18n();
 

@@ -7,11 +7,11 @@ export const ProfileContainer = styled.div`
   background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 0 10px var(--box-shadow-color);
-    
-    @media (max-width: 768px) {
-        padding-top: 4em;
-        margin: 4em 0;
-    }
+
+  @media (max-width: 768px) {
+    padding-top: 4em;
+    margin: 4em 0;
+  }
 `;
 
 export const ProfilePageHeadline = styled.h2`
@@ -29,11 +29,11 @@ export const ProfileInfo = styled.div`
   padding: 3em;
   justify-content: space-between;
   gap: 7.5em;
-    
-    @media (max-width: 768px) {
-        padding: 10px;
-        height: auto;
-    }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    height: auto;
+  }
 `;
 
 export const LeftColumn = styled.div`
@@ -41,10 +41,10 @@ export const LeftColumn = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2em;
-    
-    @media (max-width: 768px) {
-        gap: 1em;
-    }
+
+  @media (max-width: 768px) {
+    gap: 1em;
+  }
 `;
 
 export const RightColumn = styled.div`
@@ -52,10 +52,10 @@ export const RightColumn = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2em;
-    
-    @media (max-width: 768px) {
-        gap: 1em;
-    }
+
+  @media (max-width: 768px) {
+    gap: 1em;
+  }
 `;
 
 export const UserName = styled.div`
@@ -80,10 +80,10 @@ export const ScrollArea = styled.div`
   overflow-y: scroll;
   min-height: 10em;
   padding-right: 0.5em;
-    
-    @media (max-width: 768px) {
-        min-height: 5em;
-    }
+
+  @media (max-width: 768px) {
+    min-height: 5em;
+  }
 `;
 
 export const List = styled.ul`

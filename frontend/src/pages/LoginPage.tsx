@@ -4,7 +4,6 @@ import Intro from '../components/Intro';
 import Login from '../components/Login';
 import { MainContainer } from '../style/pages/LoginPage.style';
 
-
 const LoginPage: React.FC = () => {
   return (
     <>

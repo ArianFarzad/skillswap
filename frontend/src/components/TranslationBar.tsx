@@ -1,7 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { TranslationBarContainer, LangButton } from '../style/components/TranslationBar.style';
+import {
+  TranslationBarContainer,
+  LangButton,
+} from '../style/components/TranslationBar.style';
 
 const TranslationBar: React.FC = () => {
   const { i18n } = useTranslation();

@@ -11,15 +11,15 @@ export const TranslationBarContainer = styled.div`
 `;
 
 export const LangButton = styled.button`
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 1em;
-    margin: 0 0.5em;
-    cursor: pointer;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 1em;
+  margin: 0 0.5em;
+  cursor: pointer;
 
-    &.selected {
-        background: #9c9ca9;
-        border-radius: 0.2em;
-    }
+  &.selected {
+    background: #9c9ca9;
+    border-radius: 0.2em;
+  }
 `;

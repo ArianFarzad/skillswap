@@ -1,7 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Banner, NavArea, ListArea, StyledLink, Logout} from "../style/components/NavBar.style";
+import {
+  Banner,
+  NavArea,
+  ListArea,
+  StyledLink,
+  Logout,
+} from '../style/components/NavBar.style';
 
 const NavBar: React.FC = () => {
   const { t } = useTranslation();

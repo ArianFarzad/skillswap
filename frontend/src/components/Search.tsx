@@ -50,7 +50,9 @@ const Search: React.FC = () => {
         }
       );
 
-      const data = Array.isArray(response.data) ? response.data : [response.data];
+      const data = Array.isArray(response.data)
+        ? response.data
+        : [response.data];
 
       const mappedProfiles = data.map((profile) => ({
         id: profile._id,
@@ -65,7 +67,9 @@ const Search: React.FC = () => {
       setProfiles(mappedProfiles);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(`${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`);
+        console.error(
+          `${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`
+        );
       } else {
         console.error(t('unexpected_error'));
       }
@@ -160,7 +164,9 @@ const Search: React.FC = () => {
                 <ProfileCardText>
                   {t('points')}: {profile.points}
                 </ProfileCardText>
-                <ProfileCardButton onClick={() => handleChatRequest(profile.userId)}>
+                <ProfileCardButton
+                  onClick={() => handleChatRequest(profile.userId)}
+                >
                   {t('chat_with')} {profile.name}
                 </ProfileCardButton>
               </ProfileCard>

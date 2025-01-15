@@ -1,0 +1,63 @@
+.calendar-container {
+  flex: 1;
+  padding: 1em;
+  overflow-y: scroll;
+}
+
+.session-content {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.hide {
+  display: none;
+}
+
+.calendar-container {
+  flex: 1;
+  padding: 1em;
+  overflow-y: scroll;
+}
+
+.feedback-toggle {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.chat-container {
+  flex: 1;
+  padding: 1em;
+  border-left: var(--box-border-left);
+  display: flex;
+  flex-direction: row;
+}
+
+.toggle-btn {
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.btn-text {
+  display: inline-block;
+  transform: rotate(270deg);
+}
+
+.toggle-btn:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.feedback-container {
+  flex: 1;
+  padding: 2em;
+  border-left: var(--box-border-left);
+}

@@ -5,7 +5,7 @@ import SearchPage from './pages/SearchPage';
 import UserInfosPage from './pages/UserInfosPage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
-import Chat from './components/Chat';
+import SessionPage from './pages/SessionPage';
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/profiles/:profileId" element={<UserInfosPage />} />
-          <Route path="/chat/:sessionId" element={<Chat />} />
+          <Route path="/chat/:sessionId" element={<SessionPage />} />
           <Route path="/" element={<WelcomePage />} />
         </Routes>
       </div>
