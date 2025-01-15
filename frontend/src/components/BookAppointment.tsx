@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import Popover from 'react-popover';
-import '../style/bookAppointment.css';
+import ReactPopover from 'react-popover';
+import {
+  AppointmentContainer,
+  AppointmentForm,
+  AppointmentInput,
+  TitleInput,
+  DescriptionInput,
+  StartDateInput,
+  EndDateInput,
+  AppointmentSubmit,
+  CalendarSection,
+  EventDot,
+  PopoverBody,
+} from '../style/components/BookAppointment.style';
 
 interface Event {
   summary: string;
@@ -58,7 +70,7 @@ END:VCALENDAR
   };
 
   const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
+      event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -67,13 +79,13 @@ END:VCALENDAR
 
       try {
         const response = await axios.post<Event[]>(
-          'http://localhost:8000/api/calendar/import',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
+            'http://localhost:8000/api/calendar/import',
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            }
         );
         setUploadedEvents((prevEvents) => [...prevEvents, ...response.data]);
         alert(t('File uploaded successfully.'));
@@ -95,123 +107,125 @@ END:VCALENDAR
   };
 
   return (
-    <div className="appointment-container">
-      <h2
-        className="appointment-headline"
-        data-testid="bookAppointment-headline"
-      >
-        {t('book_appointment')}
-      </h2>
-      <form
-        id="appointment-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleBookAppointment();
-        }}
-      >
-        <div className="appointment-input">
-          <label htmlFor="title-input">{t('title')}:</label>
-          <input
-            id="title-input"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className="appointment-input">
-          <label htmlFor="description-input">{t('description')}:</label>
-          <input
-            id="description-input"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-        <div className="appointment-input">
-          <label htmlFor="start-date-input">{t('start_date')}:</label>
-          <input
-            id="start-date-input"
-            type="datetime-local"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="appointment-input">
-          <label htmlFor="end-date-input">{t('end_date')}:</label>
-          <input
-            id="end-date-input"
-            type="datetime-local"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            required
-          />
-        </div>
-        <button id="appointment-submit" type="submit">
-          {t('book_and_export')}
-        </button>
-      </form>
-
-      <div className="upload-section">
-        <h3>{t('upload_ics')}</h3>
-        <input type="file" onChange={handleFileUpload} />
-      </div>
-
-      <div className="calendar-section">
-        <h3>{t('events_calendar')}</h3>
-        <Calendar
-          onChange={setCalendarDate}
-          value={calendarDate}
-          tileContent={({ date }) => {
-            const eventsOnDate = uploadedEvents.filter(
-              (event) =>
-                new Date(event.start).toDateString() === date.toDateString()
-            );
-
-            if (eventsOnDate.length > 0) {
-              return (
-                <div>
-                  {eventsOnDate.map((event, index) => (
-                    <span
-                      key={index}
-                      className="event-dot"
-                      onClick={() => handlePopoverOpen(event)}
-                    >
-                      ●
-                    </span>
-                  ))}
-                </div>
-              );
-            }
-            return null;
-          }}
-        />
-      </div>
-
-      {selectedEvent && (
-        <Popover
-          isOpen={popoverOpen}
-          body={
-            <div>
-              <h4>{selectedEvent.summary}</h4>
-              <p>{selectedEvent.description}</p>
-              <p>
-                {t('Start')}: {new Date(selectedEvent.start).toLocaleString()}
-              </p>
-              <p>
-                {t('End')}: {new Date(selectedEvent.end).toLocaleString()}
-              </p>
-              <button onClick={handlePopoverClose}>{t('Close')}</button>
-            </div>
-          }
-          onOuterAction={handlePopoverClose}
+      <AppointmentContainer>
+        <h2
+            className="appointment-headline"
+            data-testid="bookAppointment-headline"
         >
-          <div />
-        </Popover>
-      )}
-    </div>
+          {t('book_appointment')}
+        </h2>
+        <AppointmentForm
+            id="appointment-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleBookAppointment();
+            }}
+        >
+          <AppointmentInput>
+            <label htmlFor="title-input">{t('title')}:</label>
+            <TitleInput
+                id="title-input"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+            />
+          </AppointmentInput>
+          <AppointmentInput>
+            <label htmlFor="description-input">{t('description')}:</label>
+            <DescriptionInput
+                id="description-input"
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+            />
+          </AppointmentInput>
+          <AppointmentInput>
+            <label htmlFor="start-date-input">{t('start_date')}:</label>
+            <StartDateInput
+                id="start-date-input"
+                type="datetime-local"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                required
+            />
+          </AppointmentInput>
+          <AppointmentInput>
+            <label htmlFor="end-date-input">{t('end_date')}:</label>
+            <EndDateInput
+                id="end-date-input"
+                type="datetime-local"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                required
+            />
+          </AppointmentInput>
+          <AppointmentSubmit id="appointment-submit" type="submit">
+            {t('book_and_export')}
+          </AppointmentSubmit>
+        </AppointmentForm>
+
+        <div className="upload-section">
+          <h3>{t('upload_ics')}</h3>
+          <input type="file" onChange={handleFileUpload} />
+        </div>
+
+        <CalendarSection>
+          <h3>{t('events_calendar')}</h3>
+          <Calendar
+              onChange={setCalendarDate}
+              value={calendarDate}
+              tileContent={({ date }) => {
+                const eventsOnDate = uploadedEvents.filter(
+                    (event) =>
+                        new Date(event.start).toDateString() === date.toDateString()
+                );
+
+                if (eventsOnDate.length > 0) {
+                  return (
+                      <div>
+                        {eventsOnDate.map((event, index) => (
+                            <EventDot
+                                key={index}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePopoverOpen(event);
+                                }}
+                            >
+                              ●
+                            </EventDot>
+                        ))}
+                      </div>
+                  );
+                }
+                return null;
+              }}
+          />
+        </CalendarSection>
+
+        {selectedEvent && (
+            <ReactPopover
+                isOpen={popoverOpen}
+                body={
+                  <PopoverBody>
+                    <h4>{selectedEvent.summary}</h4>
+                    <p>{selectedEvent.description}</p>
+                    <p>
+                      {t('Start')}: {new Date(selectedEvent.start).toLocaleString()}
+                    </p>
+                    <p>
+                      {t('End')}: {new Date(selectedEvent.end).toLocaleString()}
+                    </p>
+                    <button onClick={handlePopoverClose}>{t('Close')}</button>
+                  </PopoverBody>
+                }
+                onOuterAction={handlePopoverClose}
+            >
+              <div />
+            </ReactPopover>
+        )}
+      </AppointmentContainer>
   );
 };
 

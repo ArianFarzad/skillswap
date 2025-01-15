@@ -24,8 +24,10 @@ export const NavArea = styled.nav`
   gap: 10em;
   padding: 1.5em;
   margin-top: 16em;
-  border-radius: 1em;
-
+  width: 100%;
+  justify-content: space-between;
+  height: 2em;
+    
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 2em;
@@ -50,17 +52,17 @@ export const ListArea = styled.ul`
 `;
 
 export const StyledLink = styled(Link)`
-  text-decoration: none;
-  font-size: 1.3em;
-  color: black;
+    text-decoration: none;
+    font-size: 1.3em;
+    color: black;
 
-  &:hover {
-    color: var(--primary-color);
-  }
+    &:hover {
+        color: var(--primary-color);
+    }
 
-  @media (max-width: 768px) {
-    font-size: 1em;
-  }
+    @media (max-width: 768px) {
+        font-size: 1em;
+    }
 `;
 
 export const Logout = styled.p`

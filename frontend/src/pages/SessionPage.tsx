@@ -6,7 +6,15 @@ import Chat from '../components/Chat';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
-import '../style/SessionPage.css';
+import {
+  SessionContent,
+  CalendarContainer,
+  FeedbackToggle,
+  ChatContainer,
+  ToggleButton,
+  ButtonText,
+  FeedbackContainer,
+} from '../style/pages/SessionPage.style';
 
 const SessionPage: React.FC = () => {
   const { t } = useTranslation();
@@ -18,32 +26,31 @@ const SessionPage: React.FC = () => {
   return (
     <>
       <TranslationBar />
-      <div className="session-content">
-        <div className={isFeedbackVisible ? 'hide' : 'calendar-container'}>
+      <SessionContent>
+        <CalendarContainer className={isFeedbackVisible ? 'hide' : ''}>
           <BookAppointment />
-        </div>
-        <div className="chat-container">
+        </CalendarContainer>
+        <ChatContainer>
           <Chat sessionId={sessionId} senderId={senderId} />
-        </div>
-        <div className="feedback-toggle">
-          <button
-            className="toggle-btn"
+        </ChatContainer>
+        <FeedbackToggle>
+          <ToggleButton
             data-testid="toggle-feedback-btn"
             onClick={() => setIsFeedbackVisible(!isFeedbackVisible)}
           >
             {isFeedbackVisible ? (
-              <span className={'btn-text'}>{t('book_appointment')}</span>
+              <ButtonText>{t('book_appointment')}</ButtonText>
             ) : (
-              <span className={'btn-text'}>{t('give_feedback')}</span>
+              <ButtonText>{t('give_feedback')}</ButtonText>
             )}
-          </button>
-        </div>
+          </ToggleButton>
+        </FeedbackToggle>
         {isFeedbackVisible && (
-          <div className={'feedback-container'}>
+          <FeedbackContainer>
             <Feedback sessionId={sessionId} senderId={senderId} />
-          </div>
+          </FeedbackContainer>
         )}
-      </div>
+      </SessionContent>
     </>
   );
 };

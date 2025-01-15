@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import '../style/Feedback.css';
+import {
+  FeedbackCard,
+  FeedbackHeader,
+  FeedbacksList,
+  FeedbackSubmitButton,
+  Star,
+  StarRating,
+  FlexRow,
+  FeedbackTextarea,
+} from '../style/components/Feedback.style';
 
 interface FeedbackData {
   sessionId: string | undefined;
@@ -17,7 +26,6 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    // Fetch Feedbacks
     axios
       .get(`http://localhost:8000/api/feedback/session/${sessionId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -25,7 +33,6 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
       .then((res) => setFeedbacks(res.data))
       .catch((error) => console.error('Error fetching feedbacks:', error));
 
-    // Fetch Average Rating
     axios
       .get(
         `http://localhost:8000/api/feedback/user/${senderId}/average-rating`,
@@ -60,8 +67,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   return (
     <>
       <h2>{t('rate_session')}</h2>
-      <textarea
-        className="feedback-textarea"
+      <FeedbackTextarea
         placeholder={t('enter_feedback')}
         rows={5}
         cols={50}
@@ -69,50 +75,46 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         value={comment}
         onChange={(e) => setComment(e.target.value)}
       />
-      <div className="flex-row">
-        <div className="star-rating">
+      <FlexRow>
+        <StarRating>
           {[...Array(5)].map((_, index) => (
-            <span
-              className="star"
-              key={index}
-              onClick={() => handleRating(index + 1)}
-            >
+            <Star key={index} onClick={() => handleRating(index + 1)}>
               {index < rating ? '★' : '☆'}
-            </span>
+            </Star>
           ))}
-        </div>
-        <button className="feedback-submit-btn" onClick={handleSendFeedback}>
+        </StarRating>
+        <FeedbackSubmitButton onClick={handleSendFeedback}>
           {t('submit_feedback')}
-        </button>
-      </div>
+        </FeedbackSubmitButton>
+      </FlexRow>
       {feedbackSuccess && <p>{t('feedback_sent')}</p>}
       <h2>{t('feedbacks_for_session')}</h2>
-      <div className="feedbacks-list">
+      <FeedbacksList>
         {feedbacks.map((feedback, index) => (
-          <div key={index} className="feedback-card">
-            <div className="feedback-header">
+          <FeedbackCard key={index}>
+            <FeedbackHeader>
               <p>
                 <strong>{feedback.userId.name}</strong>
               </p>
               <p>
                 {'★'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating)}
               </p>
-            </div>
+            </FeedbackHeader>
             <p>{feedback.feedback}</p>
-          </div>
+          </FeedbackCard>
         ))}
-      </div>
+      </FeedbacksList>
       {averageRating !== null && (
-        <div className="flex-row">
+        <FlexRow>
           <h3>{t('average_rating')}</h3>
           <p>
             {[...Array(5)].map((_, index) => (
-              <span key={index}>
+              <Star key={index}>
                 {index < Math.ceil(averageRating) ? '★' : '☆'}
-              </span>
+              </Star>
             ))}
           </p>
-        </div>
+        </FlexRow>
       )}
     </>
   );
