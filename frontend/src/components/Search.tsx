@@ -6,6 +6,7 @@ import NavBar from './NavBar';
 import '../style/search.css';
 import { Footer } from './Footer';
 import TranslationBar from './TranslationBar';
+import axiosInstance from '../utils/axiosInstance';
 
 interface Profile {
   id: string; // Mapped from _id
@@ -38,13 +39,8 @@ const Search = () => {
 
       console.log('Fetching profiles with token:', token);
 
-      const response = await axios.get(
-        `http://localhost:8000/api/profiles/search?keyword=${encodeURIComponent(keyword)}&filter=${encodeURIComponent(filter)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await axiosInstance.get(
+        `/api/profiles/search?keyword=${encodeURIComponent(keyword)}&filter=${encodeURIComponent(filter)}`
       );
 
       console.log('Profiles fetched:', response.data);
@@ -84,21 +80,16 @@ const Search = () => {
   const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/sessions/check?user1=${myUserId}&user2=${otherUserId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        }
+      const response = await axiosInstance.get(
+        `/api/sessions/check?user1=${myUserId}&user2=${otherUserId}`
       );
 
       let sessionId = response.data.sessionId;
 
       if (!sessionId) {
         // If no session exists, create a new one
-        const createResponse = await axios.post(
-          'http://localhost:8000/api/sessions',
+        const createResponse = await axiosInstance.post(
+          '/api/sessions',
           {
             tutor: myUserId,
             student: otherUserId,

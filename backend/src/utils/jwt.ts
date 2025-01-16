@@ -21,6 +21,10 @@ export const verifyToken = (
     console.log('Token verified successfully');
     next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      console.error('Token has expired');
+      return res.status(401).json({ error: 'Token has expired' });
+    }
     console.error('Token verification failed:', error);
     res.status(401).json({ error: 'Token is not valid' });
   }

@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import {
-  createProfile,
-  getMyProfile,
-  updateProfile,
-  deleteProfile,
-  addSkill,
-  removeSkill,
   addInterest,
-  removeInterest,
+  addSkill,
+  createProfile,
+  deleteProfile,
   getAllProfiles,
+  getMyProfile,
   getProfileById,
-  searchProfilesBySkills,
+  removeInterest,
+  removeSkill,
+  searchProfiles,
   searchProfilesByInterests,
-  searchProfiles
+  searchProfilesBySkills,
+  updateProfile,
 } from '../controllers/profileController';
 import { verifyToken } from '../utils/jwt';
 
@@ -26,11 +26,10 @@ router.post('/skills', verifyToken, addSkill);
 router.delete('/skills', verifyToken, removeSkill);
 router.post('/interests', verifyToken, addInterest);
 router.delete('/interests', verifyToken, removeInterest);
-router.get('/all', getAllProfiles);
+router.get('/all', verifyToken, getAllProfiles);
 router.get('/search', verifyToken, searchProfiles);
-router.get('/:profileId', getProfileById);
-router.get('/search/skills', searchProfilesBySkills); 
-router.get('/search/interests', searchProfilesByInterests);
-
+router.get('/:profileId', verifyToken, getProfileById);
+router.get('/search/skills', verifyToken, searchProfilesBySkills);
+router.get('/search/interests', verifyToken, searchProfilesByInterests);
 
 export default router;

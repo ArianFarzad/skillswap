@@ -42,7 +42,12 @@ export const login = async (req: Request, res: Response) => {
     console.log('Logging in user with email:', email);
     const user = await User.findOne({ email });
 
-    if (!user || (await bcrypt.compare(password, user.password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      console.warn('Invalid credentials.', email);
+      return res.status(400).json({ error: 'Invalid credentials' });
+    }
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       console.warn('Invalid credentials.', email);
       return res.status(400).json({ error: 'Invalid credentials' });
     }

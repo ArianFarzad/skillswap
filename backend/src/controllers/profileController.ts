@@ -43,7 +43,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
       console.warn('Profile not found for user:', req.user.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
-    console.log('Profile fetched successfully:', profile);
+    console.log('Profile fetched successfully:', profile.name);
     res.json(profile);
   } catch (error) {
     console.error('Error fetching profile:', error);
