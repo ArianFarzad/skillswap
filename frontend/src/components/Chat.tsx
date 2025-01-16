@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import BookAppointment from './BookAppointment.tsx';
+import BookAppointment from './BookAppointment';
 import axios from 'axios';
-import TranslationBar from './TranslationBar.tsx';
+import TranslationBar from './TranslationBar';
 import '../style/chat.css';
 
 const Chat: React.FC = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const { sessionId } = useParams<{ sessionId: string }>();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');

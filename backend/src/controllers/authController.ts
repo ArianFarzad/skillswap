@@ -3,8 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import Profile from '../models/Profile';
-
-// authController.ts
+import { env } from '../config/config';
 
 export const register = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
@@ -51,11 +50,11 @@ export const login = async (req: Request, res: Response) => {
       console.warn('Invalid credentials for email:', email);
       return res.status(400).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ userId: user._id }, env.JWT_SECRET!, {
       expiresIn: '1h',
     });
     console.log('User logged in successfully:', user);
-    res.json({ token, userId: user._id }); // Rückgabe von token und userId
+    res.json({ token, userId: user._id });
   } catch (error: unknown) {
     console.error('Error logging in user:', error);
     res.status(500).json({ error: 'Server error' });

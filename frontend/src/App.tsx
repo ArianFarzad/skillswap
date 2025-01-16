@@ -1,14 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Profile from './components/Profile';
 import { Welcome } from './components/Welcome';
-import Settings from './components/Settings';
 import Search from './components/Search';
 import ProfilePage from './components/ProfilePage';
 import Register from './components/Register';
 import Login from './components/Login';
-import BookAppointment from './components/BookAppointment';
-import Chat from './components/Chat'; // Importieren der Chat-Komponente
+import Chat from './components/Chat';
 
 function App() {
   return (

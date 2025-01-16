@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import Session from '../models/Session';
 import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
-
+import { env } from '../config/config';
 
 interface PopulatedSession {
   tutor: {
@@ -90,14 +90,14 @@ export const sendReminderEmails = async () => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASS,
       },
     });
 
     for (const session of sessions as unknown as PopulatedSession[]) {
       const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: env.EMAIL_USER,
         to: [session.tutor.email, session.student.email],
         subject: 'Session Reminder',
         text: `Reminder: You have a session scheduled on ${session.date}`,
@@ -136,8 +136,6 @@ export const completeSession = async (req: Request, res: Response) => {
   }
 };
 
-
-// ...existing code...
 export const sendMessageInSession = async (req: Request, res: Response) => {
   const { sessionId } = req.params;
   const { content } = req.body;
@@ -172,7 +170,10 @@ export const getSessionMessages = async (req: Request, res: Response) => {
   const { sessionId } = req.params;
 
   try {
-    const session = await Session.findById(sessionId).populate('messages.sender', 'name');
+    const session = await Session.findById(sessionId).populate(
+      'messages.sender',
+      'name'
+    );
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }

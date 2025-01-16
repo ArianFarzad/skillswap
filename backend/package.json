@@ -10,7 +10,8 @@
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
     "format": "prettier --write .",
     "start:all": "concurrently \"npm start\" \"cd ../frontend && npm run dev\"",
-    "install:all": "npm install && cd ../frontend && npm install"
+    "install:all": "npm install && cd ../frontend && npm install",
+    "test:all": "npm test && cd ../frontend && npm test"
   },
   "license": "MIT",
   "dependencies": {

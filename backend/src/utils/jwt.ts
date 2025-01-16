@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import { env } from '../config/config';
 
 interface CustomJwtPayload extends jwt.JwtPayload {
   userId: string;
@@ -16,7 +17,7 @@ export const verifyToken = (
     return res.status(401).json({ error: 'No token, authorization denied' });
   }
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET!) as CustomJwtPayload;
+    req.user = jwt.verify(token, env.JWT_SECRET!) as CustomJwtPayload;
     console.log('Token verified successfully');
     next();
   } catch (error) {

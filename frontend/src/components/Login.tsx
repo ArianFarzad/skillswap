@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import TranslationBar from './TranslationBar.tsx';
+import TranslationBar from './TranslationBar';
 import '../style/login.css';
 import logo from '../assets/logo.png';
 
