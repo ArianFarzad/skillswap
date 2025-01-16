@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
 import Session from '../models/Session';
 import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
@@ -28,7 +27,7 @@ export const createSession = async (req: Request, res: Response) => {
   }
 };
 
-export const getSessions = async (req: Request, res: Response) => {
+export const getSessions = async (_req: Request, res: Response) => {
   try {
     const sessions = await Session.find()
       .populate('tutor', 'email name')
@@ -135,37 +134,6 @@ export const completeSession = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
-export const sendMessageInSession = async (req: Request, res: Response) => {
-  const { sessionId } = req.params;
-  const { content } = req.body;
-  const senderId = req.user?.userId as unknown as ObjectId;
-  if (!senderId) {
-    return res.status(400).json({ error: 'Sender ID is required' });
-  }
-
-  try {
-    const session = await Session.findById(sessionId);
-    if (!session) {
-      return res.status(404).json({ error: 'Session not found' });
-    }
-
-    const newMessage = {
-      sender: senderId,
-      content,
-      timestamp: new Date(),
-    };
-
-    session.messages.push(newMessage);
-    await session.save();
-
-    res.status(201).json(newMessage);
-  } catch (error) {
-    console.error('Error sending message in session:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
 export const getSessionDetails = async (req: Request, res: Response) => {
   const { sessionId } = req.params;
 

@@ -8,6 +8,12 @@ import '../style/chat.css';
 import { IMessage } from '../models/Message';
 import { IFeedback } from '../models/Feedback';
 import { IUser } from '../models/User';
+import socket, {
+  connectSocket,
+  disconnectSocket,
+  onNewMessage,
+  sendMessage,
+} from '../utils/socket';
 
 const Chat: React.FC = () => {
   const {
@@ -32,6 +38,8 @@ const Chat: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!sessionId) return;
+
     // Fetch Messages
     axios
       .get(`http://localhost:8000/api/sessions/${sessionId}`, {
@@ -67,25 +75,27 @@ const Chat: React.FC = () => {
       )
       .then((res) => setAverageRating(res.data.averageRating))
       .catch((error) => console.error('Error fetching average rating:', error));
+
+    connectSocket(sessionId);
+
+    const handleNewMessage = (message: IMessage) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    };
+
+    // Listen for new messages
+    onNewMessage(handleNewMessage);
+
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+      disconnectSocket(); // Disconnect from Socket.IO when component unmounts
+    };
   }, [sessionId, senderId]);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      axios
-        .post(
-          `http://localhost:8000/api/sessions/${sessionId}/messages`,
-          { content: newMessage },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        )
-        .then((res) => {
-          setMessages((prevMessages) => [...prevMessages, res.data]);
-          setNewMessage('');
-        })
-        .catch((error) => console.error('Error sending message:', error));
+      // Notify other clients in real time via Socket.IO
+      sendMessage(sessionId!, senderId, newMessage);
+      setNewMessage('');
     }
   };
 

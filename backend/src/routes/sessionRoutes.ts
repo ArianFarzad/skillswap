@@ -5,7 +5,6 @@ import {
   deleteSession,
   getSessionDetails,
   getSessions,
-  sendMessageInSession,
   updateSession,
 } from '../controllers/sessionController';
 import { verifyToken } from '../utils/jwt';
@@ -17,7 +16,6 @@ router.get('/', verifyToken, getSessions);
 router.get('/check', verifyToken, checkSession);
 router.put('/:sessionId', verifyToken, updateSession);
 router.delete('/:sessionId', verifyToken, deleteSession);
-router.post('/:sessionId/messages', verifyToken, sendMessageInSession);
 router.get('/:sessionId', verifyToken, getSessionDetails);
 
 export default router;

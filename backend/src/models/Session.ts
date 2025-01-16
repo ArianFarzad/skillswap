@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-interface IMessage {
+export interface IMessage {
   sender: mongoose.Types.ObjectId;
   content: string;
   timestamp: Date;
