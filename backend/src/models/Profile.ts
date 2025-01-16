@@ -1,11 +1,11 @@
-import { Schema, model, Document, ValidatorProps, Types } from 'mongoose';
+import { Document, model, Schema, Types, ValidatorProps } from 'mongoose';
 
 interface IProfile extends Document {
   userId: Types.ObjectId;
   name: string;
   skills: string[];
   interests: string[];
-  points: number; // Neues Feld für Punkte
+  points: number;
 }
 
 const profileSchema = new Schema<IProfile>({
@@ -31,7 +31,7 @@ const profileSchema = new Schema<IProfile>({
         `${props.value} exceeds the maximum allowed length (50)`,
     },
   },
-  points: { type: Number, default: 0 }, // Neues Feld für Punkte
+  points: { type: Number, default: 0 },
 });
 
 const Profile = model<IProfile>('Profile', profileSchema);

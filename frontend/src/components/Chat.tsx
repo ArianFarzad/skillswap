@@ -5,6 +5,9 @@ import BookAppointment from './BookAppointment';
 import axios from 'axios';
 import TranslationBar from './TranslationBar';
 import '../style/chat.css';
+import { IMessage } from '../models/Message';
+import { IFeedback } from '../models/Feedback';
+import { IUser } from '../models/User';
 
 const Chat: React.FC = () => {
   const {
@@ -13,15 +16,16 @@ const Chat: React.FC = () => {
     t: (key: keyof typeof import('../../public/locales/en.json')) => string;
   } = useTranslation();
   const { sessionId } = useParams<{ sessionId: string }>();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const senderId = localStorage.getItem('myUserId') || '';
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
-  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbacks, setFeedbacks] = useState<IFeedback[]>([]);
   const [averageRating, setAverageRating] = useState<number | null>(null);
-  const [isFeedbackVisible, setIsFeedbackVisible] = useState(false); // Zustand für Sichtbarkeit
+  const [isFeedbackVisible, setIsFeedbackVisible] = useState(false);
+  const [otherPerson, setOtherPerson] = useState<IUser | null>(null);
 
   const handleRating = (value: number) => {
     setRating(value);
@@ -30,17 +34,26 @@ const Chat: React.FC = () => {
   useEffect(() => {
     // Fetch Messages
     axios
-      .get(`http://localhost:8000/api/sessions/${sessionId}/messages`, {
+      .get(`http://localhost:8000/api/sessions/${sessionId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
-      .then((res) => setMessages(res.data))
+      .then((res) => {
+        setMessages(res.data.messages);
+
+        const otherPerson =
+          res.data.tutor._id === senderId ? res.data.student : res.data.tutor;
+        setOtherPerson(otherPerson);
+      })
       .catch((error) => console.error('Error fetching messages:', error));
 
     // Fetch Feedbacks
     axios
-      .get(`http://localhost:8000/api/feedback/session/${sessionId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
+      .get<IFeedback[]>(
+        `http://localhost:8000/api/feedback/session/${sessionId}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+      )
       .then((res) => setFeedbacks(res.data))
       .catch((error) => console.error('Error fetching feedbacks:', error));
 
@@ -102,7 +115,7 @@ const Chat: React.FC = () => {
         <div className="chat-container">
           <div className="chat-content">
             <h2>
-              {t('chat_with')} Session {sessionId}
+              {t('chat_with')} {otherPerson?.name}
             </h2>
             <div className="messages-list">
               {messages.map((msg, index) => (

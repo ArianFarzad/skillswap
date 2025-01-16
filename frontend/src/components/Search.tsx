@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import '../style/search.css';
 import { Footer } from './Footer';
-import TranslationBar from './TranslationBar.tsx';
+import TranslationBar from './TranslationBar';
 
 interface Profile {
   id: string; // Mapped from _id
@@ -84,7 +84,6 @@ const Search = () => {
   const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
     try {
-      // Check if a session exists between the two users
       const response = await axios.get(
         `http://localhost:8000/api/sessions/check?user1=${myUserId}&user2=${otherUserId}`,
         {

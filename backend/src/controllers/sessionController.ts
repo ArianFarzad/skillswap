@@ -166,19 +166,25 @@ export const sendMessageInSession = async (req: Request, res: Response) => {
   }
 };
 
-export const getSessionMessages = async (req: Request, res: Response) => {
+export const getSessionDetails = async (req: Request, res: Response) => {
   const { sessionId } = req.params;
 
   try {
-    const session = await Session.findById(sessionId).populate(
-      'messages.sender',
-      'name'
-    );
+    const session = await Session.findById(sessionId)
+      .populate('messages.sender', 'name')
+      .populate('tutor', 'name')
+      .populate('student', 'name');
+
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
 
-    res.json(session.messages);
+    const response = {
+      messages: session.messages,
+      tutor: session.tutor,
+      student: session.student,
+    };
+    res.json(response);
   } catch (error) {
     console.error('Error fetching session messages:', error);
     res.status(500).json({ error: 'Server error' });
@@ -187,7 +193,6 @@ export const getSessionMessages = async (req: Request, res: Response) => {
 
 export const checkSession = async (req: Request, res: Response) => {
   const { user1, user2 } = req.query;
-
   try {
     const session = await Session.findOne({
       $or: [

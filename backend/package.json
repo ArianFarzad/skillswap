@@ -5,6 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "start": "ts-node src/server.ts",
+    "dev": "nodemon src/server.ts",
     "build": "tsc",
     "test": "jest",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
@@ -47,6 +48,7 @@
     "eslint": "^9.16.0",
     "globals": "^15.13.0",
     "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
