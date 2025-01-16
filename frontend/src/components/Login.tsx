@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import TranslationBar from './TranslationBar';
 import '../style/login.css';
 import logo from '../assets/logo.png';
+import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const Login: React.FC = () => {
   const {
@@ -20,19 +21,13 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        'http://localhost:8000/api/auth/login',
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axiosInstance.post('/api/auth/login', {
+        email,
+        password,
+      });
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('myUserId', response.data.userId); // Speichern Sie die userId
-      console.log(
-        'Login erfolgreich, userId gespeichert:',
-        response.data.userId
-      );
+      localStorage.setItem('myUserId', response.data.userId);
+      console.log('Login successful, saved userId:', response.data.userId);
       setMessage(t('login_success'));
       navigate('/profile');
     } catch (error) {

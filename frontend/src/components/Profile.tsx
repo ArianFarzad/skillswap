@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../style/profile.css';
 import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import { Footer } from './Footer';
 import TranslationBar from './TranslationBar';
+import axiosInstance from '../utils/axiosInstance';
 
 interface ProfileType {
   skills: string[];
@@ -13,7 +14,11 @@ interface ProfileType {
 }
 
 const Profile = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
@@ -28,11 +33,7 @@ const Profile = () => {
           return;
         }
         console.log('Fetching profile with token:', token);
-        const response = await axios.get('http://localhost:8000/api/profiles', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axiosInstance.get('/api/profiles');
         console.log('Profile fetched:', response.data);
         setProfile(response.data);
       } catch (error) {
@@ -51,7 +52,9 @@ const Profile = () => {
       }
     };
 
-    fetchProfile();
+    fetchProfile().catch((error) =>
+      console.error('Error fetching profile:', error)
+    );
   }, []);
 
   const handleAddSkill = async () => {
@@ -66,8 +69,8 @@ const Profile = () => {
         return;
       }
       console.log('Adding skill with token:', token, 'and skill:', newSkill);
-      const response = await axios.post(
-        'http://localhost:8000/api/profiles/skills',
+      const response = await axiosInstance.post(
+        '/api/profiles/skills',
         { skill: newSkill },
         {
           headers: {
@@ -102,15 +105,9 @@ const Profile = () => {
         return;
       }
       console.log('Removing skill with token:', token, 'and skill:', skill);
-      const response = await axios.delete(
-        'http://localhost:8000/api/profiles/skills',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: { skill },
-        }
-      );
+      const response = await axiosInstance.delete('/api/profiles/skills', {
+        data: { skill },
+      });
       console.log('Skill removed:', response.data);
       setProfile(response.data);
     } catch (error) {
@@ -146,15 +143,9 @@ const Profile = () => {
         'and interest:',
         newInterest
       );
-      const response = await axios.post(
-        'http://localhost:8000/api/profiles/interests',
-        { interest: newInterest },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post('/api/profiles/interests', {
+        interest: newInterest,
+      });
       console.log('Interest added:', response.data);
       setProfile(response.data);
       setNewInterest('');
@@ -187,15 +178,9 @@ const Profile = () => {
         'and interest:',
         interest
       );
-      const response = await axios.delete(
-        'http://localhost:8000/api/profiles/interests',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: { interest },
-        }
-      );
+      const response = await axiosInstance.delete('/api/profiles/interests', {
+        data: { interest },
+      });
       console.log('Interest removed:', response.data);
       setProfile(response.data);
     } catch (error) {

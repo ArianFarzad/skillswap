@@ -170,7 +170,7 @@ export const checkSession = async (req: Request, res: Response) => {
     });
 
     if (session) {
-      console.log('Session found:', session);
+      console.log('Session found:', session._id);
       res.json({ sessionId: session._id });
     } else {
       console.log('No session found');

@@ -70,5 +70,6 @@
   "Please_enter_a_password": "Please enter a password",
   "Already_have_an_account?": "Already have an account?",
   "user_name": "Username",
-  "close": "Close"
+  "close": "Close",
+  "register_intro_message": "At SkillSwap, we connect you with other users to share your skills while benefiting from the skills of others."
 }

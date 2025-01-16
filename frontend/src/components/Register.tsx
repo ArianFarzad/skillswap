@@ -4,10 +4,15 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import '../style/register.css';
 import logo from '../assets/logo.png';
-import TranslationBar from './TranslationBar.tsx';
+import TranslationBar from './TranslationBar';
+import axiosInstance from '../utils/axiosInstance';
 
 const Register = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +22,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8000/api/auth/register', {
+      await axiosInstance.post('/api/auth/register', {
         name,
         email,
         password,
@@ -47,19 +52,13 @@ const Register = () => {
             width={300}
             alt=""
           />
-          <h2 className={'info-text'}>
-            {t(
-              'At SkillSwap, we connect you with other users to share your skills while benefiting from the skills of others.'
-            )}
-          </h2>
+          <h2 className={'info-text'}>{t('register_intro_message')}</h2>
         </div>
         <div className="register-area">
           <h1 data-testid={'register-headline'}>{t('register')}</h1>
           <p>{t('Please_fill_in_your_details_to_register')}</p>
           <form className="register-form" onSubmit={handleSubmit}>
-            <label htmlFor={'input-name'}>
-              {t('Please_enter_an_username')}
-            </label>
+            <label htmlFor={'input-name'}>{t('Please_enter_a_username')}</label>
             <input
               type="text"
               id={'input-name'}

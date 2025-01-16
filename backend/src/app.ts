@@ -8,12 +8,21 @@ import calendarRoutes from './routes/calendarRoutes';
 import sessionRoutes from './routes/sessionRoutes';
 import feedbackRoutes from './routes/feedbackRoutes';
 import { env } from './config/config';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 // Middleware
-app.use(cors()); // activate CORS
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 app.use((_req, res, next) => {
   res.setHeader(
     'Content-Security-Policy',

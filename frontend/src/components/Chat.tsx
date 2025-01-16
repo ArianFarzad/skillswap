@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BookAppointment from './BookAppointment';
-import axios from 'axios';
 import TranslationBar from './TranslationBar';
 import '../style/chat.css';
 import { IMessage } from '../models/Message';
@@ -15,6 +14,7 @@ import socket, {
   sendMessage,
 } from '../utils/socket';
 import SendIcon from '@mui/icons-material/Send';
+import axiosInstance from '../utils/axiosInstance';
 
 const Chat: React.FC = () => {
   const {
@@ -41,10 +41,8 @@ const Chat: React.FC = () => {
     if (!sessionId) return;
 
     // Fetch Messages
-    axios
-      .get(`http://localhost:8000/api/sessions/${sessionId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
+    axiosInstance
+      .get(`/api/sessions/${sessionId}`)
       .then((res) => {
         setMessages(res.data.messages);
 
@@ -55,24 +53,16 @@ const Chat: React.FC = () => {
       .catch((error) => console.error('Error fetching messages:', error));
 
     // Fetch Feedbacks
-    axios
-      .get<IFeedback[]>(
-        `http://localhost:8000/api/feedback/session/${sessionId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      )
+    axiosInstance
+      .get<IFeedback[]>(`/api/feedback/session/${sessionId}`)
       .then((res) => setFeedbacks(res.data))
       .catch((error) => console.error('Error fetching feedbacks:', error));
 
     // Fetch Average Rating
-    axios
-      .get(
-        `http://localhost:8000/api/feedback/user/${senderId}/average-rating`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      )
+    axiosInstance
+      .get(`/api/feedback/user/${senderId}/average-rating`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
       .then((res) => setAverageRating(res.data.averageRating))
       .catch((error) => console.error('Error fetching average rating:', error));
 
@@ -104,14 +94,13 @@ const Chat: React.FC = () => {
   };
 
   const handleSendFeedback = () => {
-    axios
-      .post(
-        'http://localhost:8000/api/feedback',
-        { sessionId, userId: senderId, rating, feedback: comment || ' ' },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      )
+    axiosInstance
+      .post('/api/feedback', {
+        sessionId,
+        userId: senderId,
+        rating,
+        feedback: comment || ' ',
+      })
       .then(() => {
         setFeedbackSuccess(true);
         setTimeout(() => setFeedbackSuccess(false), 3000);

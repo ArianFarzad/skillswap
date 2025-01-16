@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import NavBar from './NavBar';
 import { Footer } from './Footer';
 import '../style/profilePage.css';
+import axiosInstance from '../utils/axiosInstance';
 
 interface ProfileData {
   name: string;
@@ -31,9 +32,7 @@ const ProfilePage: React.FC = () => {
 
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/profiles/${profileId}`
-        );
+        const response = await axiosInstance.get(`/api/profiles/${profileId}`);
         setProfileData(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {

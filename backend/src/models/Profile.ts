@@ -1,6 +1,6 @@
 import { Document, model, Schema, Types, ValidatorProps } from 'mongoose';
 
-interface IProfile extends Document {
+export interface IProfile extends Document {
   userId: Types.ObjectId;
   name: string;
   skills: string[];
