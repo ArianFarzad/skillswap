@@ -166,25 +166,41 @@
     padding: 0.5em;
     border-radius: 10px;
     margin-bottom: 0.5em;
-    align-self: flex-end;
+    text-align: right;
 }
 
 .my-message > p {
     color: white;
+    padding-left: 1em;
+    padding-right: 0.5em;
+    text-align: left;
 }
 
 .their-message {
+    text-align: right;
     background-color: var(--background-color-secondary);
     color: var(--secondary-color);
     padding: 0.5em;
     border-radius: 10px;
     margin-bottom: 0.5em;
-    align-self: flex-start;
+}
+
+.their-message p {
+    padding-left: 1em;
+    padding-right: 0.5em;
+    text-align: left;
 }
 
 .messages-list {
     height: 30em;
     overflow-y: scroll;
+}
+
+.timestamp {
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+    display: block;
+    margin-top: 0.25em;
 }
 
 @media (max-width: 600px) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import BookAppointment from './BookAppointment';
@@ -14,6 +14,7 @@ import socket, {
   onNewMessage,
   sendMessage,
 } from '../utils/socket';
+import SendIcon from '@mui/icons-material/Send';
 
 const Chat: React.FC = () => {
   const {
@@ -32,10 +33,9 @@ const Chat: React.FC = () => {
   const [averageRating, setAverageRating] = useState<number | null>(null);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false);
   const [otherPerson, setOtherPerson] = useState<IUser | null>(null);
-
-  const handleRating = (value: number) => {
-    setRating(value);
-  };
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const messagesListRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -91,6 +91,10 @@ const Chat: React.FC = () => {
     };
   }, [sessionId, senderId]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const handleSendMessage = () => {
     if (newMessage.trim()) {
       // Notify other clients in real time via Socket.IO
@@ -115,6 +119,17 @@ const Chat: React.FC = () => {
       .catch((error) => console.error('Error sending feedback:', error));
   };
 
+  const handleRating = (value: number) => {
+    setRating(value);
+  };
+
+  const handleScroll = () => {
+    if (messagesListRef.current) {
+      const { scrollHeight, clientHeight, scrollTop } = messagesListRef.current;
+      setShowScrollToBottom(scrollHeight - clientHeight - scrollTop > 100);
+    }
+  };
+
   return (
     <>
       <TranslationBar />
@@ -127,7 +142,11 @@ const Chat: React.FC = () => {
             <h2>
               {t('chat_with')} {otherPerson?.name}
             </h2>
-            <div className="messages-list">
+            <div
+              className="messages-list"
+              ref={messagesListRef}
+              onScroll={handleScroll}
+            >
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -138,10 +157,25 @@ const Chat: React.FC = () => {
                   <p>
                     <strong>{msg.sender.name}:</strong> {msg.content}
                   </p>
-                  <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                  <span className={'timestamp'}>
+                    {new Date(msg.timestamp).toLocaleTimeString()}
+                  </span>
                 </div>
               ))}
+              <div ref={messagesEndRef}></div>
             </div>
+
+            {showScrollToBottom && (
+              <button
+                className="scroll-to-bottom-btn"
+                onClick={() =>
+                  messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+                }
+              >
+                ▼▼
+              </button>
+            )}
+
             <div className="message-input">
               <input
                 type="text"
@@ -151,7 +185,7 @@ const Chat: React.FC = () => {
                 onChange={(e) => setNewMessage(e.target.value)}
               />
               <button className="send-msg-btn" onClick={handleSendMessage}>
-                &#9993;
+                <SendIcon />
               </button>
             </div>
           </div>

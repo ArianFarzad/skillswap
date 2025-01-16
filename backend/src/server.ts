@@ -34,7 +34,10 @@ io.on('connection', (socket) => {
     }
 
     try {
-      const session = await Session.findById(sessionId);
+      const session = await Session.findById(sessionId)
+        .populate('tutor', 'name')
+        .populate('student', 'name');
+
       if (!session) {
         console.error('Session not found');
         return;
@@ -50,7 +53,9 @@ io.on('connection', (socket) => {
       await session.save();
 
       // Emit the message to all clients in the session room
+      await session.populate('messages.sender', 'name');
       const savedMessage = session.messages[session.messages.length - 1];
+
       io.to(sessionId).emit('newMessage', savedMessage);
     } catch (error) {
       console.error('Error handling message:', error);
