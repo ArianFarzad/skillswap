@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next';
 import '../style/NavBar.css';
 
 const NavBar: React.FC = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const navigate = useNavigate();
 
   const handleLogout = () => {

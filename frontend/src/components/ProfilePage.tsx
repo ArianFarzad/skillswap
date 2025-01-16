@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import NavBar from './NavBar.tsx';
-import { Footer } from './Footer.tsx';
+import NavBar from './NavBar';
+import { Footer } from './Footer';
 import '../style/profilePage.css';
 
 interface ProfileData {
@@ -14,7 +14,11 @@ interface ProfileData {
 }
 
 const ProfilePage: React.FC = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const { profileId } = useParams<{ profileId: string }>();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [message, setMessage] = useState('');
@@ -42,7 +46,9 @@ const ProfilePage: React.FC = () => {
       }
     };
 
-    fetchProfile();
+    fetchProfile().catch((error) => {
+      console.error('Unexpected error during profile fetch:', error);
+    });
   }, [profileId]);
 
   return (
@@ -58,7 +64,7 @@ const ProfilePage: React.FC = () => {
             <div className={'profile-info'}>
               <div className={'left-column'}>
                 <div className={'user-name'}>
-                  <h3>{t('User name')} </h3>
+                  <h3>{t('user_name')} </h3>
                   <p>{profileData.name}</p>
                 </div>
                 <div className={'user-email'}>

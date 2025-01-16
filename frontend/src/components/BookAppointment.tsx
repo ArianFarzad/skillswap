@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import Popover from 'react-popover';
 import '../style/bookAppointment.css';
+import { Value } from 'react-calendar/dist/cjs/shared/types';
 
 interface Event {
   summary: string;
@@ -16,19 +17,23 @@ interface Event {
 }
 
 const BookAppointment: React.FC = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [uploadedEvents, setUploadedEvents] = useState<Event[]>([]);
-  const [calendarDate, setCalendarDate] = useState<Date>(new Date());
+  const [calendarDate, setCalendarDate] = useState<Value>(new Date());
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const validateDate = (): boolean => {
     if (new Date(endDate) < new Date(startDate)) {
-      alert(t('End date must be after start date.'));
+      alert('End date must be after start date.');
       return false;
     }
     return true;
@@ -76,10 +81,10 @@ END:VCALENDAR
           }
         );
         setUploadedEvents((prevEvents) => [...prevEvents, ...response.data]);
-        alert(t('File uploaded successfully.'));
+        alert('File uploaded successfully.');
       } catch (error) {
         console.error('Error uploading file:', error);
-        alert(t('Error uploading file.'));
+        alert('Error uploading file.');
       }
     }
   };
@@ -162,7 +167,7 @@ END:VCALENDAR
       <div className="calendar-section">
         <h3>{t('events_calendar')}</h3>
         <Calendar
-          onChange={setCalendarDate}
+          onChange={(value: Value) => setCalendarDate(value)}
           value={calendarDate}
           tileContent={({ date }) => {
             const eventsOnDate = uploadedEvents.filter(
@@ -197,13 +202,9 @@ END:VCALENDAR
             <div>
               <h4>{selectedEvent.summary}</h4>
               <p>{selectedEvent.description}</p>
-              <p>
-                {t('Start')}: {new Date(selectedEvent.start).toLocaleString()}
-              </p>
-              <p>
-                {t('End')}: {new Date(selectedEvent.end).toLocaleString()}
-              </p>
-              <button onClick={handlePopoverClose}>{t('Close')}</button>
+              <p>Start: {new Date(selectedEvent.start).toLocaleString()}</p>
+              <p>End': {new Date(selectedEvent.end).toLocaleString()}</p>
+              <button onClick={handlePopoverClose}>{t('close')}</button>
             </div>
           }
           onOuterAction={handlePopoverClose}

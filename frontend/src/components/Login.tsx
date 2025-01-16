@@ -7,7 +7,11 @@ import '../style/login.css';
 import logo from '../assets/logo.png';
 
 const Login: React.FC = () => {
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
