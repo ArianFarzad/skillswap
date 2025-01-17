@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import App from '../App';
-import { mockI18n } from './testUtils/mocks.ts';
+import { mockI18n } from './testUtils/mocks';
 
 mockI18n();
 
@@ -34,7 +34,7 @@ describe('App Component', () => {
     expect(screen.getByTestId('search-headline')).toBeInTheDocument();
   });
 
-  test('renders ProfilePage component on /profiles/:profileId route', () => {
+  test('renders UserInfos component on /profiles/:profileId route', () => {
     window.history.pushState({}, 'Profile Page', '/profiles/1');
     render(<App />);
     expect(screen.getByTestId('profilePage-headline')).toBeInTheDocument();

@@ -1,10 +1,21 @@
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../style/profile.css';
 import { useTranslation } from 'react-i18next';
-import NavBar from './NavBar';
-import { Footer } from './Footer';
-import TranslationBar from './TranslationBar';
+import {
+  Button,
+  Container,
+  FormArea,
+  Headline,
+  Headline2,
+  Input,
+  InputContainer,
+  Item,
+  ItemContainer,
+  List,
+  MainContainer,
+  RemoveButton,
+} from '../style/components/Profile.style';
+import axiosInstance from '../utils/axiosInstance';
 
 interface ProfileType {
   skills: string[];
@@ -12,8 +23,12 @@ interface ProfileType {
   points: number;
 }
 
-const Profile = () => {
-  const { t } = useTranslation();
+const Profile: React.FC = () => {
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   const [profile, setProfile] = useState<ProfileType | null>(null);
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
@@ -28,11 +43,7 @@ const Profile = () => {
           return;
         }
         console.log('Fetching profile with token:', token);
-        const response = await axios.get('http://localhost:8000/api/profiles', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axiosInstance.get('/api/profiles');
         console.log('Profile fetched:', response.data);
         setProfile(response.data);
       } catch (error) {
@@ -51,7 +62,9 @@ const Profile = () => {
       }
     };
 
-    fetchProfile();
+    fetchProfile().catch((error) =>
+      console.error('Error fetching profile:', error)
+    );
   }, []);
 
   const handleAddSkill = async () => {
@@ -66,8 +79,8 @@ const Profile = () => {
         return;
       }
       console.log('Adding skill with token:', token, 'and skill:', newSkill);
-      const response = await axios.post(
-        'http://localhost:8000/api/profiles/skills',
+      const response = await axiosInstance.post(
+        '/api/profiles/skills',
         { skill: newSkill },
         {
           headers: {
@@ -102,15 +115,9 @@ const Profile = () => {
         return;
       }
       console.log('Removing skill with token:', token, 'and skill:', skill);
-      const response = await axios.delete(
-        'http://localhost:8000/api/profiles/skills',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: { skill },
-        }
-      );
+      const response = await axiosInstance.delete('/api/profiles/skills', {
+        data: { skill },
+      });
       console.log('Skill removed:', response.data);
       setProfile(response.data);
     } catch (error) {
@@ -146,15 +153,9 @@ const Profile = () => {
         'and interest:',
         newInterest
       );
-      const response = await axios.post(
-        'http://localhost:8000/api/profiles/interests',
-        { interest: newInterest },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post('/api/profiles/interests', {
+        interest: newInterest,
+      });
       console.log('Interest added:', response.data);
       setProfile(response.data);
       setNewInterest('');
@@ -187,15 +188,9 @@ const Profile = () => {
         'and interest:',
         interest
       );
-      const response = await axios.delete(
-        'http://localhost:8000/api/profiles/interests',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: { interest },
-        }
-      );
+      const response = await axiosInstance.delete('/api/profiles/interests', {
+        data: { interest },
+      });
       console.log('Interest removed:', response.data);
       setProfile(response.data);
     } catch (error) {
@@ -216,85 +211,77 @@ const Profile = () => {
 
   return (
     <>
-      <TranslationBar />
-      <NavBar />
-
-      <div className="profile-container">
-        <h2 id="profile-headline" data-testid={'profile-headline'}>
-          {t('profile')}
-        </h2>
+      <MainContainer>
+        <Headline data-testid={'profile-headline'}>{t('profile')}</Headline>
         {message && <p>{message}</p>}
         {profile && (
-          <div className="form-area">
-            <div className="skill-area">
-              <h3 className="skill-interest-headline">{t('skills')}</h3>
-              <ul className="skill-list">
+          <FormArea>
+            <Container>
+              <Headline2>{t('skills')}</Headline2>
+              <List>
                 {profile.skills.map((skill) => (
                   <li key={skill}>
-                    <div className="skill-item-container">
-                      <p className="skill-item">{skill}</p>
-                      <button
-                        className="skill-btn"
+                    <ItemContainer>
+                      <Item>{skill}</Item>
+                      <RemoveButton
                         data-testid={`remove-skill-${skill}`}
                         onClick={() => handleRemoveSkill(skill)}
                       >
                         &#10006;
-                      </button>
-                    </div>
+                      </RemoveButton>
+                    </ItemContainer>
                   </li>
                 ))}
-              </ul>
-              <div className="skill-input">
-                <input
+              </List>
+              <InputContainer>
+                <Input
                   type="text"
                   placeholder={t('new_skill')}
                   data-testid="input-skill"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                 />
-                <button onClick={handleAddSkill} data-testid="add-skill-button">
+                <Button onClick={handleAddSkill} data-testid="add-skill-button">
                   &#10133;
-                </button>
-              </div>
-            </div>
-            <div className="interest-area">
-              <h3 className="skill-interest-headline">{t('interests')}</h3>
-              <ul className="interest-list">
+                </Button>
+              </InputContainer>
+            </Container>
+            <Container>
+              <Headline2>{t('interests')}</Headline2>
+              <List>
                 {profile.interests.map((interest) => (
                   <li key={interest}>
-                    <div className="interest-item-container">
-                      <p className="interest-item">{interest}</p>
-                      <button
-                        className={'interest-btn'}
+                    <ItemContainer>
+                      <Item>{interest}</Item>
+                      <RemoveButton
                         onClick={() => handleRemoveInterest(interest)}
                         data-testid={`remove-interest-${interest}`}
                       >
                         &#10006;
-                      </button>
-                    </div>
+                      </RemoveButton>
+                    </ItemContainer>
                   </li>
                 ))}
-              </ul>
-              <div className="interest-input">
-                <input
+              </List>
+              <InputContainer>
+                <Input
                   type="text"
                   placeholder={t('new_interest')}
                   data-testid="input-interest"
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
                 />
-                <button
+                <Button
                   onClick={handleAddInterest}
                   data-testid="add-interest-button"
                 >
                   &#10133;
-                </button>
-              </div>
-            </div>
-          </div>
+                </Button>
+              </InputContainer>
+            </Container>
+          </FormArea>
         )}
-      </div>
-      <Footer />
+      </MainContainer>
     </>
   );
 };

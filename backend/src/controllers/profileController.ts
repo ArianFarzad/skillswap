@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Profile from '../models/Profile';
-import mongoose from 'mongoose';
+import Profile, { IProfile } from '../models/Profile';
+import mongoose, { FilterQuery } from 'mongoose';
 
 declare module 'express' {
   export interface Request {
@@ -36,12 +36,14 @@ export const getMyProfile = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
     console.log('Fetching profile for user:', req.user.userId);
-    const profile = await Profile.findOne({ userId: req.user.userId });
+    const profile = (await Profile.findOne({
+      userId: req.user.userId,
+    })) as IProfile;
     if (!profile) {
       console.warn('Profile not found for user:', req.user.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
-    console.log('Profile fetched successfully:', profile);
+    console.log('Profile fetched successfully:', profile.name);
     res.json(profile);
   } catch (error) {
     console.error('Error fetching profile:', error);
@@ -49,18 +51,17 @@ export const getMyProfile = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllProfiles = async (req: Request, res: Response) => {
+export const getAllProfiles = async (_req: Request, res: Response) => {
   try {
     console.log('Fetching all profiles');
     const profiles = await Profile.find();
-    console.log('Profiles fetched successfully:', profiles);
+    console.log('Profiles fetched successfully.');
     res.json(profiles);
   } catch (error) {
     console.error('Error fetching all profiles:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
-
 
 export const updateProfile = async (req: Request, res: Response) => {
   const { name, skills, interests, addSkill, removeSkill } = req.body;
@@ -71,7 +72,10 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
     console.log('Updating profile for user:', req.user.userId);
 
-    const updateFields: any = {};
+    const updateFields: Partial<IProfile> & {
+      $push?: { skills?: string };
+      $pull?: { skills?: string };
+    } = {};
     if (name) updateFields.name = name;
     if (skills) updateFields.skills = skills;
     if (interests) updateFields.interests = interests;
@@ -123,7 +127,7 @@ export const searchProfiles = async (req: Request, res: Response) => {
   console.log('searchProfiles query:', req.query);
 
   try {
-    const query: any = {};
+    const query: FilterQuery<IProfile> = {};
 
     if (keyword) {
       const keywordRegex = new RegExp(keyword as string, 'i');
@@ -141,7 +145,9 @@ export const searchProfiles = async (req: Request, res: Response) => {
     }
 
     if (interests) {
-      const interestsArray = Array.isArray(interests) ? interests : [interests as string];
+      const interestsArray = Array.isArray(interests)
+        ? interests
+        : [interests as string];
       query.interests = { $all: interestsArray };
     }
 
@@ -163,10 +169,10 @@ export const searchProfiles = async (req: Request, res: Response) => {
 
     const profiles = await Profile.find(query);
 
-    console.log('Profiles found:', profiles);
     if (profiles.length === 0) {
       return res.status(404).json({ message: 'No profiles found' });
     }
+    console.log('Profiles found. Count:', profiles.length);
 
     res.json(profiles);
   } catch (error) {
@@ -174,9 +180,6 @@ export const searchProfiles = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
-
-
 
 export const getProfileById = async (req: Request, res: Response) => {
   const { profileId } = req.params;
@@ -206,7 +209,6 @@ export const getProfileById = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
 
 export const addSkill = async (req: Request, res: Response) => {
   const { skill } = req.body;
@@ -257,7 +259,12 @@ export const addInterest = async (req: Request, res: Response) => {
       console.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Adding interest for user:', req.user.userId, 'Interest:', interest);
+    console.log(
+      'Adding interest for user:',
+      req.user.userId,
+      'Interest:',
+      interest
+    );
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user.userId },
       { $push: { interests: interest } },
@@ -278,7 +285,12 @@ export const removeInterest = async (req: Request, res: Response) => {
       console.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Removing interest for user:', req.user.userId, 'Interest:', interest);
+    console.log(
+      'Removing interest for user:',
+      req.user.userId,
+      'Interest:',
+      interest
+    );
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user.userId },
       { $pull: { interests: interest } },
@@ -311,7 +323,10 @@ export const searchProfilesBySkills = async (req: Request, res: Response) => {
   }
 };
 
-export const searchProfilesByInterests = async (req: Request, res: Response) => {
+export const searchProfilesByInterests = async (
+  req: Request,
+  res: Response
+) => {
   const { interests } = req.query;
   try {
     console.log('Searching profiles with interests:', interests);

@@ -1,50 +1,68 @@
-import app from './app';
-import { createServer } from 'http';
 import { Server } from 'socket.io';
-import Message from './models/Message';
+import Session, { IMessage } from './models/Session';
+import * as http from 'node:http';
+import app from './app';
 
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const server = http.createServer(app);
+
+const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:5173'], // Fügen Sie hier beide URLs hinzu
+    origin: ['http://localhost:5173'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Authorization'],
   },
 });
 
+app.set('socketio', io);
+
 io.on('connection', (socket) => {
-  console.log('Benutzer verbunden:', socket.id);
+  console.log('User connected:', socket.id);
+
+  socket.on('joinSession', (sessionId) => {
+    console.log(`User ${socket.id} 'joined session ${sessionId}`);
+    socket.join(sessionId);
+  });
 
   socket.on('sendMessage', async (data) => {
-    const { senderId, receiverId, content } = data;
-    console.log('Empfangene Nachricht:', { senderId, receiverId, content });
-    
-    // Überprüfen Sie, ob senderId und receiverId definiert sind
-    if (!senderId || !receiverId) {
-      console.error('SenderId oder ReceiverId ist undefined');
+    const { sessionId, senderId, content } = data;
+
+    console.log('Received message:', { sessionId, senderId, content });
+
+    if (!sessionId || !senderId) {
+      console.error('Session ID or Sender ID is missing');
       return;
     }
 
-    // Nachricht in der Datenbank speichern
     try {
-      const message = new Message({
+      const session = await Session.findById(sessionId)
+        .populate('tutor', 'name')
+        .populate('student', 'name');
+
+      if (!session) {
+        console.error('Session not found');
+        return;
+      }
+
+      const newMessage: IMessage = {
         sender: senderId,
-        receiver: receiverId,
         content,
         timestamp: new Date(),
-      });
-      await message.save();
+      };
 
-      // Nachricht an den Empfänger senden
-      io.to(receiverId).emit('receiveMessage', message);
+      session.messages.push(newMessage);
+      await session.save();
+
+      // Emit the message to all clients in the session room
+      await session.populate('messages.sender', 'name');
+      const savedMessage = session.messages[session.messages.length - 1];
+
+      io.to(sessionId).emit('newMessage', savedMessage);
     } catch (error) {
-      console.error('Fehler beim Speichern der Nachricht:', error);
+      console.error('Error handling message:', error);
     }
   });
 });
 
-
-
-httpServer.listen(8000, () => {
+server.listen(8000, () => {
   console.log('Server läuft auf Port 8000');
 });

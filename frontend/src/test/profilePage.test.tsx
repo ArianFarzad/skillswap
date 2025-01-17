@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import axios from 'axios';
-import ProfilePage from '../components/ProfilePage';
+import UserInfos from '../components/UserInfos.tsx';
 
 vi.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -21,9 +21,9 @@ const renderWithProviders = (ui: React.ReactElement) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
 };
 
-describe('ProfilePage Component', () => {
-  test('renders ProfilePage component', async () => {
-    renderWithProviders(<ProfilePage />);
+describe('UserInfos Component', () => {
+  test('renders UserInfos component', async () => {
+    renderWithProviders(<UserInfos />);
     await waitFor(() => {
       expect(screen.getByTestId('profilePage-headline')).toBeInTheDocument();
     });
@@ -39,7 +39,7 @@ describe('ProfilePage Component', () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: profileData });
 
-    renderWithProviders(<ProfilePage />);
+    renderWithProviders(<UserInfos />);
 
     await waitFor(() => {
       expect(screen.getByText('John Doe')).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe('ProfilePage Component', () => {
   test('shows error message if fetching profile fails', async () => {
     mockedAxios.get.mockRejectedValueOnce(new Error('Network Error'));
 
-    renderWithProviders(<ProfilePage />);
+    renderWithProviders(<UserInfos />);
 
     await waitFor(() => {
       expect(

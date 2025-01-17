@@ -1,25 +1,31 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import profileRoutes from './routes/profileRoutes';
 import gamificationRoutes from './routes/gamificationRoutes';
 import calendarRoutes from './routes/calendarRoutes';
-import messageRoutes from './routes/messageRoutes';
-import sessionRoutes from './routes/sessionRoutes'; // Importieren Sie die Session-Routen
-import feedbackRoutes from "./routes/feedbackRoutes";
-
-dotenv.config();
+import sessionRoutes from './routes/sessionRoutes';
+import feedbackRoutes from './routes/feedbackRoutes';
+import { env } from './config/config';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 // Middleware
-app.use(cors()); // Aktivieren Sie CORS
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
-app.use((req, res, next) => {
+app.use(cookieParser());
+app.use((_req, res, next) => {
   res.setHeader(
-    "Content-Security-Policy",
+    'Content-Security-Policy',
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
   );
   next();
@@ -30,12 +36,12 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profiles', profileRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/calendar', calendarRoutes);
-app.use('/api/messages', messageRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/feedback', feedbackRoutes);
 
 // MongoDB-Verbindung
-mongoose.connect(process.env.MONGO_URI!)
+mongoose
+  .connect(env.MONGO_URI!)
   .then(() => {
     console.log('MongoDB connected');
   })

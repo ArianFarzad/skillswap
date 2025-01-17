@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import { ObjectId } from 'mongodb';
 import Session from '../models/Session';
 import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
-
+import { env } from '../config/config';
 
 interface PopulatedSession {
   tutor: {
@@ -28,7 +27,7 @@ export const createSession = async (req: Request, res: Response) => {
   }
 };
 
-export const getSessions = async (req: Request, res: Response) => {
+export const getSessions = async (_req: Request, res: Response) => {
   try {
     const sessions = await Session.find()
       .populate('tutor', 'email name')
@@ -90,14 +89,14 @@ export const sendReminderEmails = async () => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASS,
       },
     });
 
     for (const session of sessions as unknown as PopulatedSession[]) {
       const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: env.EMAIL_USER,
         to: [session.tutor.email, session.student.email],
         subject: 'Session Reminder',
         text: `Reminder: You have a session scheduled on ${session.date}`,
@@ -135,49 +134,25 @@ export const completeSession = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
-
-// ...existing code...
-export const sendMessageInSession = async (req: Request, res: Response) => {
+export const getSessionDetails = async (req: Request, res: Response) => {
   const { sessionId } = req.params;
-  const { content } = req.body;
-  const senderId = req.user?.userId as unknown as ObjectId;
-  if (!senderId) {
-    return res.status(400).json({ error: 'Sender ID is required' });
-  }
 
   try {
-    const session = await Session.findById(sessionId);
+    const session = await Session.findById(sessionId)
+      .populate('messages.sender', 'name')
+      .populate('tutor', 'name')
+      .populate('student', 'name');
+
     if (!session) {
       return res.status(404).json({ error: 'Session not found' });
     }
 
-    const newMessage = {
-      sender: senderId,
-      content,
-      timestamp: new Date(),
+    const response = {
+      messages: session.messages,
+      tutor: session.tutor,
+      student: session.student,
     };
-
-    session.messages.push(newMessage);
-    await session.save();
-
-    res.status(201).json(newMessage);
-  } catch (error) {
-    console.error('Error sending message in session:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
-export const getSessionMessages = async (req: Request, res: Response) => {
-  const { sessionId } = req.params;
-
-  try {
-    const session = await Session.findById(sessionId).populate('messages.sender', 'name');
-    if (!session) {
-      return res.status(404).json({ error: 'Session not found' });
-    }
-
-    res.json(session.messages);
+    res.json(response);
   } catch (error) {
     console.error('Error fetching session messages:', error);
     res.status(500).json({ error: 'Server error' });
@@ -186,7 +161,6 @@ export const getSessionMessages = async (req: Request, res: Response) => {
 
 export const checkSession = async (req: Request, res: Response) => {
   const { user1, user2 } = req.query;
-
   try {
     const session = await Session.findOne({
       $or: [
@@ -196,7 +170,7 @@ export const checkSession = async (req: Request, res: Response) => {
     });
 
     if (session) {
-      console.log('Session found:', session);
+      console.log('Session found:', session._id);
       res.json({ sessionId: session._id });
     } else {
       console.log('No session found');

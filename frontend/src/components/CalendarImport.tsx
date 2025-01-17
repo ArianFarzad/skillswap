@@ -1,5 +1,5 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import axiosInstance from '../utils/axiosInstance';
 
 interface Event {
   summary: string;
@@ -30,8 +30,8 @@ const CalendarImport: React.FC = () => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post<Event[]>(
-        'http://localhost:8000/api/calendar/import',
+      const response = await axiosInstance.post<Event[]>(
+        '/api/calendar/import',
         formData,
         {
           headers: {

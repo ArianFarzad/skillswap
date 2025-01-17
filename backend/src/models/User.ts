@@ -1,5 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import jwt from 'jsonwebtoken';
+import { env } from '../config/config';
 
 interface IUser extends Document {
   email: string;
@@ -15,10 +16,9 @@ const userSchema = new Schema<IUser>({
 });
 
 userSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ userId: this._id }, process.env.JWT_SECRET!, {
+  return jwt.sign({ userId: this._id }, env.JWT_SECRET!, {
     expiresIn: '1h',
   });
-  return token;
 };
 
 const User = model<IUser>('User', userSchema);

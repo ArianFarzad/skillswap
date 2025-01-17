@@ -66,7 +66,10 @@
   "Please_enter_your_email": "Bitte geben Sie Ihre E-Mail-Adresse ein",
   "Please_enter_your_password": "Bitte geben Sie Ihr Passwort ein",
   "Please_fill_in_your_details_to_register": "Bitte füllen Sie Ihre Daten aus, um sich zu registrieren",
-  "Please_enter_an_username": "Bitte geben Sie einen Benutzernamen ein",
+  "Please_enter_a_username": "Bitte geben Sie einen Benutzernamen ein",
   "Please_enter_a_password": "Bitte geben Sie ein Passwort ein",
-  "Already_have_an_account?": "Bereits ein Konto?"
+  "Already_have_an_account?": "Bereits ein Konto?",
+  "user_name": "Benutzername",
+  "close": "Schließen",
+  "register_intro_message": "Bei SkillSwap verbinden wir Sie mit anderen Nutzern, um Ihre Fähigkeiten zu teilen und von den Fähigkeiten anderer zu profitieren."
 }

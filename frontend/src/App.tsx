@@ -1,27 +1,24 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Profile from './components/Profile';
-import { Welcome } from './components/Welcome';
-import Settings from './components/Settings';
-import Search from './components/Search';
-import ProfilePage from './components/ProfilePage';
-import Register from './components/Register';
-import Login from './components/Login';
-import BookAppointment from './components/BookAppointment';
-import Chat from './components/Chat'; // Importieren der Chat-Komponente
+import UserProfilePage from './pages/UserProfilePage';
+import WelcomePage from './pages/WelcomePage';
+import SearchPage from './pages/SearchPage';
+import UserInfosPage from './pages/UserInfosPage';
+import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/LoginPage';
+import SessionPage from './pages/SessionPage';
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/profiles/:profileId" element={<ProfilePage />} />
-          <Route path="/chat/:sessionId" element={<Chat />} />
-          <Route path="/" element={<Welcome />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/profiles/:profileId" element={<UserInfosPage />} />
+          <Route path="/chat/:sessionId" element={<SessionPage />} />
+          <Route path="/" element={<WelcomePage />} />
         </Routes>
       </div>
     </Router>
