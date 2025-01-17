@@ -1,26 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import TranslationBar from './TranslationBar.tsx';
-import '../style/welcom.css';
+import React from 'react';
+import {
+  MainContainer,
+  WelcomeText,
+  Headline,
+} from '../style/components/Welcome.style';
 
-export const Welcome = () => {
+const Welcome: React.FC = () => {
   const { t } = useTranslation();
 
   return (
-    <>
-      <TranslationBar />
-      <div className="main-container">
-        <h1 id="welcome-headline" data-testid={'welcome-headline'}>
-          {t('welcome')}
-        </h1>
-        <p id="welcome-text">{t('connect_learn_grow')}</p>
-        <Link to="/login" className="link">
-          {t('login')}
-        </Link>
-        <Link to="/register" className="link">
-          {t('register')}
-        </Link>
-      </div>
-    </>
+    <MainContainer>
+      <Headline data-testid={'welcome-headline'}>{t('welcome')}</Headline>
+      <WelcomeText>{t('connect_learn_grow')}</WelcomeText>
+      <Link to="/login">{t('login')}</Link>
+      <Link to="/register">{t('register')}</Link>
+    </MainContainer>
   );
 };
+
+export default Welcome;

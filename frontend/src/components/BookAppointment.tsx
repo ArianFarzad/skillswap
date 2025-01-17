@@ -4,10 +4,22 @@ import { format } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import Popover from 'react-popover';
-import '../style/bookAppointment.css';
+import ReactPopover from 'react-popover';
+import {
+  AppointmentContainer,
+  AppointmentForm,
+  AppointmentInput,
+  AppointmentSubmit,
+  CalendarSection,
+  DescriptionInput,
+  EndDateInput,
+  EventDot,
+  PopoverBody,
+  StartDateInput,
+  TitleInput,
+} from '../style/components/BookAppointment.style';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
+import axiosInstance from '../utils/axiosInstance';
 
 interface Event {
   summary: string;
@@ -71,8 +83,8 @@ END:VCALENDAR
       formData.append('file', file);
 
       try {
-        const response = await axios.post<Event[]>(
-          'http://localhost:8000/api/calendar/import',
+        const response = await axiosInstance.post<Event[]>(
+          '/api/calendar/import',
           formData,
           {
             headers: {
@@ -100,71 +112,73 @@ END:VCALENDAR
   };
 
   return (
-    <div className="appointment-container">
+    <AppointmentContainer>
       <h2
         className="appointment-headline"
         data-testid="bookAppointment-headline"
       >
         {t('book_appointment')}
       </h2>
-      <form
+      <AppointmentForm
         id="appointment-form"
         onSubmit={(e) => {
           e.preventDefault();
           handleBookAppointment();
         }}
       >
-        <div className="appointment-input">
+        <AppointmentInput>
           <label htmlFor="title-input">{t('title')}:</label>
-          <input
+          <TitleInput
             id="title-input"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-        </div>
-        <div className="appointment-input">
+        </AppointmentInput>
+        <AppointmentInput>
           <label htmlFor="description-input">{t('description')}:</label>
-          <input
+          <DescriptionInput
             id="description-input"
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
-        </div>
-        <div className="appointment-input">
+        </AppointmentInput>
+        <AppointmentInput>
           <label htmlFor="start-date-input">{t('start_date')}:</label>
-          <input
+          <StartDateInput
             id="start-date-input"
             type="datetime-local"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             required
           />
-        </div>
-        <div className="appointment-input">
+        </AppointmentInput>
+        <AppointmentInput>
           <label htmlFor="end-date-input">{t('end_date')}:</label>
-          <input
+          <EndDateInput
             id="end-date-input"
             type="datetime-local"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEndDate(e.target.value)
+            }
             required
           />
-        </div>
-        <button id="appointment-submit" type="submit">
+        </AppointmentInput>
+        <AppointmentSubmit id="appointment-submit" type="submit">
           {t('book_and_export')}
-        </button>
-      </form>
+        </AppointmentSubmit>
+      </AppointmentForm>
 
       <div className="upload-section">
         <h3>{t('upload_ics')}</h3>
         <input type="file" onChange={handleFileUpload} />
       </div>
 
-      <div className="calendar-section">
+      <CalendarSection>
         <h3>{t('events_calendar')}</h3>
         <Calendar
           onChange={(value: Value) => setCalendarDate(value)}
@@ -179,13 +193,15 @@ END:VCALENDAR
               return (
                 <div>
                   {eventsOnDate.map((event, index) => (
-                    <span
+                    <EventDot
                       key={index}
-                      className="event-dot"
-                      onClick={() => handlePopoverOpen(event)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePopoverOpen(event);
+                      }}
                     >
                       ●
-                    </span>
+                    </EventDot>
                   ))}
                 </div>
               );
@@ -193,26 +209,26 @@ END:VCALENDAR
             return null;
           }}
         />
-      </div>
+      </CalendarSection>
 
       {selectedEvent && (
-        <Popover
+        <ReactPopover
           isOpen={popoverOpen}
           body={
-            <div>
+            <PopoverBody>
               <h4>{selectedEvent.summary}</h4>
               <p>{selectedEvent.description}</p>
               <p>Start: {new Date(selectedEvent.start).toLocaleString()}</p>
               <p>End': {new Date(selectedEvent.end).toLocaleString()}</p>
               <button onClick={handlePopoverClose}>{t('close')}</button>
-            </div>
+            </PopoverBody>
           }
           onOuterAction={handlePopoverClose}
         >
           <div />
-        </Popover>
+        </ReactPopover>
       )}
-    </div>
+    </AppointmentContainer>
   );
 };
 

@@ -30,7 +30,9 @@
     "react-popover": "^0.5.10",
     "react-router-dom": "^7.0.2",
     "react-tooltip": "^5.28.0",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "styled": "^1.0.0",
+    "styled-components": "^6.1.14"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.26.0",

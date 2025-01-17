@@ -1,16 +1,7 @@
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+import '../index.css';
+import styled from 'styled-components';
 
-.main-container {
+export const MainContainer = styled.div`
   display: flex;
   justify-content: center;
   color: rgb(212, 209, 209);
@@ -19,34 +10,22 @@
   text-align: center;
   background: rgba(255, 255, 255, 0.8);
   padding: 2rem;
-  border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   height: 100vh;
   background: linear-gradient(45deg, #8d8e98, #a59793, #7b829c, #ae9f9f);
   animation: gradientAnimation 15s ease infinite;
-}
+`;
 
-#welcome-headline {
+export const Headline = styled.h1`
   font-size: 3em;
   font-weight: bold;
   margin-bottom: 1em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
+`;
 
-#welcome-text {
+export const WelcomeText = styled.p`
   font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 2em;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.link {
-  text-decoration: underline;
-  color: #007bff;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.link:hover {
-  color: #0056b3;
-}
+`;

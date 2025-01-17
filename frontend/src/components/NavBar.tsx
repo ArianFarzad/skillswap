@@ -1,7 +1,13 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import '../style/NavBar.css';
+import {
+  Banner,
+  NavArea,
+  ListArea,
+  StyledLink,
+  Logout,
+} from '../style/components/NavBar.style';
 
 const NavBar: React.FC = () => {
   const {
@@ -17,21 +23,21 @@ const NavBar: React.FC = () => {
   };
 
   return (
-    <div className={'banner'}>
-      <nav className="nav-area">
-        <ul className="list-area">
-          <li className="list-item">
-            <Link to="/profile">&#128100;{t('profile')} </Link>
+    <Banner>
+      <NavArea>
+        <ListArea>
+          <li>
+            <StyledLink to="/profile">&#128100;{t('profile')} </StyledLink>
           </li>
-          <li className="list-item">
-            <Link to="/search">&#128270;{t('search')}</Link>
+          <li>
+            <StyledLink to="/search">&#128270;{t('search')}</StyledLink>
           </li>
-        </ul>
-        <p className={'logout'} onClick={handleLogout}>
+        </ListArea>
+        <Logout className={'logout'} onClick={handleLogout}>
           {t('logout')}
-        </p>
-      </nav>
-    </div>
+        </Logout>
+      </NavArea>
+    </Banner>
   );
 };
 

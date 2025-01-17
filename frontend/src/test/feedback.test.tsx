@@ -1,9 +1,9 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { mockI18n } from './testUtils/mocks.ts';
+import { mockI18n } from './testUtils/mocks';
 import { BrowserRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import axios from 'axios';
-import Chat from '../components/Chat';
+import Feedback from '../components/Feedback';
 import React, { act } from 'react';
 
 mockI18n();
@@ -55,8 +55,7 @@ describe('Feedback functionality in Chat component', () => {
   });
 
   it('displays a list of feedbacks for the session', async () => {
-    renderWithRouter(<Chat />);
-    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
+    renderWithRouter(<Feedback sessionId={''} senderId={''} />);
 
     const feedbackElements = await screen.findAllByText(
       /Great session!|Excellent!/
@@ -68,15 +67,13 @@ describe('Feedback functionality in Chat component', () => {
   });
 
   it('shows the average rating as star icons', async () => {
-    renderWithRouter(<Chat />);
-    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
+    renderWithRouter(<Feedback sessionId={''} senderId={''} />);
     const averageRatingElement = await screen.findByText('★★★★☆');
     expect(averageRatingElement).toBeInTheDocument();
   });
 
   it('shows a success message after submitting feedback', async () => {
-    renderWithRouter(<Chat />);
-    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
+    renderWithRouter(<Feedback sessionId={''} senderId={''}/>);
     const textarea = screen.getByPlaceholderText('enter_feedback');
     const stars = screen.getAllByText('☆');
     const submitButton = screen.getByText('submit_feedback');
@@ -96,8 +93,7 @@ describe('Feedback functionality in Chat component', () => {
   it('handles feedback submission errors gracefully', async () => {
     mockedAxios.post.mockRejectedValueOnce(new Error('Network Error'));
 
-    renderWithRouter(<Chat />);
-    fireEvent.click(screen.getByTestId('toggle-feedback-btn'));
+    renderWithRouter(<Feedback sessionId={''} senderId={''} />);
     const textarea = screen.getByPlaceholderText('enter_feedback');
     const stars = screen.getAllByText('☆');
     const submitButton = screen.getByText('submit_feedback');
