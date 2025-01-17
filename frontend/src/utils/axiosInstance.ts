@@ -14,33 +14,39 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
+// for token refresh
+const refreshInstance = axios.create({
+  baseURL: 'http://localhost:8000',
+  withCredentials: true,
+});
+
 axiosInstance.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-      if (
-          error.response?.status === 401 &&
-          !originalRequest._retry // to prevent infinite-loops
-      ) {
-        originalRequest._retry = true;
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry // to prevent infinite-loops
+    ) {
+      originalRequest._retry = true;
 
-        try {
-          const refreshResponse = await axiosInstance.post('api/auth/refresh');
+      try {
+        const refreshResponse = await refreshInstance.post('/api/auth/refresh');
 
-          const newToken = refreshResponse.data.token;
-          localStorage.setItem('token', newToken);
+        const newToken = refreshResponse.data.token;
+        localStorage.setItem('token', newToken);
 
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          // TODO add navigation to login page 16/01/2025, yb
-          return axiosInstance(originalRequest);
-        } catch (err) {
-          localStorage.removeItem('token');
-          return Promise.reject(err);
-        }
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        localStorage.removeItem('token');
+        window.location.href = '/login'; // Force reload to login page
+        return Promise.reject(refreshError);
       }
-      return Promise.reject(error);
     }
+    return Promise.reject(error);
+  }
 );
 
 export default axiosInstance;
