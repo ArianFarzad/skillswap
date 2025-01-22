@@ -1,13 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes';
 import profileRoutes from './routes/profileRoutes';
 import gamificationRoutes from './routes/gamificationRoutes';
 import calendarRoutes from './routes/calendarRoutes';
 import sessionRoutes from './routes/sessionRoutes';
 import feedbackRoutes from './routes/feedbackRoutes';
-import { env } from './config/config';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -38,15 +36,5 @@ app.use('/api/gamification', gamificationRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/feedback', feedbackRoutes);
-
-// MongoDB-Verbindung
-mongoose
-  .connect(env.MONGO_URI!)
-  .then(() => {
-    console.log('MongoDB connected');
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-  });
 
 export default app;

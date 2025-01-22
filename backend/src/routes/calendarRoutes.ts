@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import multer from 'multer';
 import ical from 'ical';
 import fs from 'fs';
+import logger from '../utils/logger';
+
 const router = express.Router();
 
 // Multer-Konfiguration für Datei-Uploads
@@ -25,7 +27,7 @@ router.post('/import', upload.single('file'), (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ error: 'Keine Datei hochgeladen' });
   }
-  console.log('Received file:', req.file);
+  logger.info('Received file:', req.file);
   const filePath = req.file.path;
 
   fs.readFile(filePath, 'utf8', (err, data) => {

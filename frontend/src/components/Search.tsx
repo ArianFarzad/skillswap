@@ -15,6 +15,7 @@ import {
   ProfilesGrid,
 } from '../style/components/Search.style';
 import axiosInstance from '../utils/axiosInstance';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 interface Profile {
   id: string;
@@ -41,7 +42,7 @@ const Search: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        console.error('No token found');
+        loggerInstance.error('No token found');
         return;
       }
 
@@ -66,18 +67,18 @@ const Search: React.FC = () => {
       setProfiles(mappedProfiles);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(
+        loggerInstance.error(
           `${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`
         );
       } else {
-        console.error(t('unexpected_error'));
+        loggerInstance.error(t('unexpected_error'));
       }
     }
   }, [keyword, filter, t]);
 
   useEffect(() => {
     fetchProfiles().catch((error) => {
-      console.error('Error fetching profiles:', error);
+      loggerInstance.error('Error fetching profiles:', error);
     });
   }, [fetchProfiles]);
 
@@ -109,7 +110,7 @@ const Search: React.FC = () => {
 
       navigate(`/chat/${sessionId}`);
     } catch (error) {
-      console.error('Error handling chat request:', error);
+      loggerInstance.error('Error handling chat request:', error);
     }
   };
 

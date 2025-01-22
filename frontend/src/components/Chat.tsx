@@ -19,6 +19,7 @@ import socket, {
   sendMessage,
 } from '../utils/socket';
 import SendIcon from '@mui/icons-material/Send';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 interface ChatParams {
   sessionId: string | undefined;
@@ -54,7 +55,9 @@ const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
           res.data.tutor._id === senderId ? res.data.student : res.data.tutor;
         setOtherPerson(otherPerson);
       })
-      .catch((error) => console.error('Error fetching messages:', error));
+      .catch((error) =>
+        loggerInstance.error('Error fetching messages:', error)
+      );
 
     connectSocket(sessionId);
 

@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import axiosInstance from '../utils/axiosInstance';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 interface Event {
   summary: string;
@@ -42,7 +43,7 @@ const CalendarImport: React.FC = () => {
       setEvents(response.data);
       setMessage('Datei erfolgreich importiert.');
     } catch (error) {
-      console.error('Fehler beim Hochladen der .ics-Datei:', error);
+      loggerInstance.error('Fehler beim Hochladen der .ics-Datei:', error);
       setMessage('Fehler beim Hochladen der Datei.');
     }
   };

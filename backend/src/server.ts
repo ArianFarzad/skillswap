@@ -2,9 +2,14 @@ import { Server } from 'socket.io';
 import Session, { IMessage } from './models/Session';
 import * as http from 'node:http';
 import app from './app';
+import logger from './utils/logger';
+import { connectToDatabase } from './database';
+import { env, loadEnv } from './config/config';
 
+// Create an HTTP server
 const server = http.createServer(app);
 
+// Set up Socket.IO
 const io = new Server(server, {
   cors: {
     origin: ['http://localhost:5173'],
@@ -16,20 +21,20 @@ const io = new Server(server, {
 app.set('socketio', io);
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
-
   socket.on('joinSession', (sessionId) => {
-    console.log(`User ${socket.id} 'joined session ${sessionId}`);
+    logger.info(`Socket ${socket.id} 'joined session ${sessionId}`);
     socket.join(sessionId);
   });
 
   socket.on('sendMessage', async (data) => {
     const { sessionId, senderId, content } = data;
 
-    console.log('Received message:', { sessionId, senderId, content });
+    logger.info(
+      `Received message: Session: ${sessionId}, Sender: ${senderId}, Content: ${content}`
+    );
 
     if (!sessionId || !senderId) {
-      console.error('Session ID or Sender ID is missing');
+      logger.error('Session ID or Sender ID is missing');
       return;
     }
 
@@ -39,7 +44,7 @@ io.on('connection', (socket) => {
         .populate('student', 'name');
 
       if (!session) {
-        console.error('Session not found');
+        logger.error('Session not found');
         return;
       }
 
@@ -58,11 +63,20 @@ io.on('connection', (socket) => {
 
       io.to(sessionId).emit('newMessage', savedMessage);
     } catch (error) {
-      console.error('Error handling message:', error);
+      logger.error(`Error handling message: ${error}`);
     }
   });
 });
 
-server.listen(8000, () => {
-  console.log('Server läuft auf Port 8000');
-});
+(async () => {
+  try {
+    loadEnv('');
+    await connectToDatabase(env.MONGO_URI!);
+    server.listen(8000, () => {
+      logger.info('Server is running on port 8000');
+    });
+  } catch (error) {
+    logger.error(`Failed to start server: ${error}`);
+    process.exit(1);
+  }
+})();

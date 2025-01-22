@@ -1,40 +1,15 @@
 import request from 'supertest';
 import app from '../app';
-import mongoose from 'mongoose';
-import User from '../models/User';
-import Profile from '../models/Profile';
-import dotenv from 'dotenv';
+import User, { IUser } from '../models/User';
+import Profile, { IProfile } from '../models/Profile';
+import { env } from '../config/config';
+import { setupTestDB } from './testSetup';
 
-dotenv.config({ path: '.env.test' });
-
-beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI!, {
-
-  });
-  await User.deleteMany({});
-  await Profile.deleteMany({});
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-afterEach(async () => {
-  await User.deleteMany({});
-  await Profile.deleteMany({});
-});
+setupTestDB('.env.test');
 
 describe('Profile Routes', () => {
   it('should create a new profile', async () => {
-    const user = new User({
-      email: 'test@example.com',
-      password: 'password123',
-      name: 'Test User',
-    });
-    await user.save();
-
-    const token = user.generateAuthToken();
-    console.log('Generated token:', token);
+    const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
       .post('/api/profiles')
@@ -45,57 +20,23 @@ describe('Profile Routes', () => {
         interests: ['Coding'],
       });
 
-    console.log('Response:', res.body);
     expect(res.statusCode).toEqual(201);
     expect(res.body).toHaveProperty('name', 'Test User');
   });
 
   it('should get a profile', async () => {
-    const user = new User({
-      email: 'test@example.com',
-      password: 'password123',
-      name: 'Test User',
-    });
-    await user.save();
-
-    const profile = new Profile({
-      userId: user._id,
-      name: 'Test User',
-      skills: ['JavaScript', 'Node.js'],
-      interests: ['Coding'],
-    });
-    await profile.save();
-
-    const token = user.generateAuthToken();
-    console.log('Generated token:', token);
+    const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
       .get('/api/profiles')
       .set('Authorization', `Bearer ${token}`);
 
-    console.log('Response:', res.body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('name', 'Test User');
   });
 
   it('should update a profile', async () => {
-    const user = new User({
-      email: 'test@example.com',
-      password: 'password123',
-      name: 'Test User',
-    });
-    await user.save();
-
-    const profile = new Profile({
-      userId: user._id,
-      name: 'Test User',
-      skills: ['JavaScript', 'Node.js'],
-      interests: ['Coding'],
-    });
-    await profile.save();
-
-    const token = user.generateAuthToken();
-    console.log('Generated token:', token);
+    const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
       .put('/api/profiles')
@@ -106,49 +47,23 @@ describe('Profile Routes', () => {
         interests: ['Machine Learning'],
       });
 
-    console.log('Response:', res.body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('name', 'Updated User');
   });
 
   it('should delete a profile', async () => {
-    const user = new User({
-      email: 'test@example.com',
-      password: 'password123',
-      name: 'Test User',
-    });
-    await user.save();
-
-    const profile = new Profile({
-      userId: user._id,
-      name: 'Test User',
-      skills: ['JavaScript', 'Node.js'],
-      interests: ['Coding'],
-    });
-    await profile.save();
-
-    const token = user.generateAuthToken();
-    console.log('Generated token:', token);
+    const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
       .delete('/api/profiles')
       .set('Authorization', `Bearer ${token}`);
 
-    console.log('Response:', res.body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty('message', 'Profile deleted');
   });
 
   it('should validate skills and interests length', async () => {
-    const user = new User({
-      email: 'test@example.com',
-      password: 'password123',
-      name: 'Test User',
-    });
-    await user.save();
-
-    const token = user.generateAuthToken();
-    console.log('Generated token:', token);
+    const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
       .post('/api/profiles')
@@ -164,31 +79,41 @@ describe('Profile Routes', () => {
   });
 
   it('should search profiles by skills', async () => {
-    const user = new User({
-      email: 'test@example.com',
-      password: 'password123',
-      name: 'Test User',
-    });
-    await user.save();
-
-    const profile = new Profile({
-      userId: user._id,
-      name: 'Test User',
-      skills: ['JavaScript', 'Node.js'],
-      interests: ['Coding'],
-    });
-    await profile.save();
-
-    const token = user.generateAuthToken();
-    console.log('Generated token:', token);
+    const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
       .get('/api/profiles/search/skills?skills=JavaScript')
       .set('Authorization', `Bearer ${token}`);
 
-    console.log('Response:', res.body);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveLength(1);
     expect(res.body[0]).toHaveProperty('name', 'Test User');
   });
 });
+
+export const createTestUserWithProfile = async (
+  userData: Partial<IUser>,
+  profileData: Partial<IProfile>
+) => {
+  const user = new User({
+    email: userData.email || 'test@example.com',
+    password: userData.password || 'password123',
+    name: userData.name || 'Test User',
+  });
+  await user.save();
+
+  const token = user.generateAuthToken(env.JWT_SECRET);
+
+  let profile;
+  if (profileData) {
+    profile = new Profile({
+      userId: user._id,
+      name: profileData.name || user.name,
+      skills: profileData.skills || ['JavaScript', 'Node.js'],
+      interests: profileData.interests || ['Coding'],
+    });
+    await profile.save();
+  }
+
+  return { user, token, profile };
+};

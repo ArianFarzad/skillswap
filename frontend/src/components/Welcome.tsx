@@ -2,14 +2,17 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import {
+  Headline,
   MainContainer,
   WelcomeText,
-  Headline,
 } from '../style/components/Welcome.style';
 
 const Welcome: React.FC = () => {
-  const { t } = useTranslation();
-
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
   return (
     <MainContainer>
       <Headline data-testid={'welcome-headline'}>{t('welcome')}</Headline>

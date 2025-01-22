@@ -1,24 +1,8 @@
 import request from 'supertest';
 import app from '../app';
-import mongoose from 'mongoose';
-import User from '../models/User';
-import dotenv from 'dotenv';
+import { setupTestDB } from './testSetup';
 
-dotenv.config({ path: '.env.test' });
-
-beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI!, {
-
-  });
-});
-
-afterAll(async () => {
-  await mongoose.connection.close();
-});
-
-afterEach(async () => {
-  await User.deleteMany({});
-});
+setupTestDB('.env.test');
 
 describe('Auth Routes', () => {
   it('should register a new user', async () => {
@@ -33,21 +17,29 @@ describe('Auth Routes', () => {
   }, 10000); // Timeout von 10 Sekunden
 
   it('should not register a user with an existing email', async () => {
-    const email = `test${Date.now()}@example.com`;
-    await request(app).post('/api/auth/register').send({
+    const email = `test@example.com`;
+
+    const firstRes = await request(app).post('/api/auth/register').send({
       email,
       password: 'password123',
       name: 'Test User',
     });
 
-    const res = await request(app).post('/api/auth/register').send({
+    expect(firstRes.statusCode).toEqual(201);
+    expect(firstRes.body).toHaveProperty(
+      'message',
+      'User registered successfully'
+    );
+
+    const secondRes = await request(app).post('/api/auth/register').send({
       email,
       password: 'password123',
       name: 'Test User',
     });
-  
-   
-  }, 10000); // Timeout von 10 Sekunden
+
+    expect(secondRes.statusCode).toEqual(400);
+    expect(secondRes.body).toHaveProperty('error', 'User already exists');
+  });
 
   it('should login a user with correct credentials', async () => {
     const email = `test${Date.now()}@example.com`;

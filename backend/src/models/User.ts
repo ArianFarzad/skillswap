@@ -1,12 +1,11 @@
 import { Document, model, Schema } from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { env } from '../config/config';
 
-interface IUser extends Document {
+export interface IUser extends Document {
   email: string;
   password: string;
   name: string;
-  generateAuthToken: () => string;
+  generateAuthToken: (secret: string) => string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -15,10 +14,8 @@ const userSchema = new Schema<IUser>({
   name: { type: String, required: true },
 });
 
-userSchema.methods.generateAuthToken = function () {
-  return jwt.sign({ userId: this._id }, env.JWT_SECRET!, {
-    expiresIn: '1h',
-  });
+userSchema.methods.generateAuthToken = function (secret: string) {
+  return jwt.sign({ userId: this._id }, secret, { expiresIn: '1h' });
 };
 
 const User = model<IUser>('User', userSchema);

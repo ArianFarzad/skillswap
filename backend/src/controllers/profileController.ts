@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Profile, { IProfile } from '../models/Profile';
 import mongoose, { FilterQuery } from 'mongoose';
+import logger from '../utils/logger';
 
 declare module 'express' {
   export interface Request {
@@ -13,7 +14,7 @@ declare module 'express' {
 export const createProfile = async (req: Request, res: Response) => {
   const { name, skills, interests } = req.body;
   try {
-    console.log('Creating profile for user:', req.user!.userId);
+    logger.info(`Creating profile for user: ${req.user?.userId}`);
     const profile = new Profile({
       userId: req.user!.userId,
       name,
@@ -21,10 +22,10 @@ export const createProfile = async (req: Request, res: Response) => {
       interests,
     });
     await profile.save();
-    console.log('Profile created successfully:', profile);
+    logger.info(`Profile created successfully: ${profile}`);
     res.status(201).json(profile);
   } catch (error) {
-    console.error('Error creating profile:', error);
+    logger.error(`Error creating profile: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -32,33 +33,33 @@ export const createProfile = async (req: Request, res: Response) => {
 export const getMyProfile = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Fetching profile for user:', req.user.userId);
+    logger.info(`Fetching profile for user: ${req.user.userId}`);
     const profile = (await Profile.findOne({
       userId: req.user.userId,
     })) as IProfile;
     if (!profile) {
-      console.warn('Profile not found for user:', req.user.userId);
+      logger.warn('Profile not found for user:', req.user.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
-    console.log('Profile fetched successfully:', profile.name);
+    logger.info(`Profile fetched successfully: ${profile.name}`);
     res.json(profile);
   } catch (error) {
-    console.error('Error fetching profile:', error);
+    logger.error('Error fetching profile:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
 export const getAllProfiles = async (_req: Request, res: Response) => {
   try {
-    console.log('Fetching all profiles');
+    logger.info('Fetching all profiles');
     const profiles = await Profile.find();
-    console.log('Profiles fetched successfully.');
+    logger.info('Profiles fetched successfully.');
     res.json(profiles);
   } catch (error) {
-    console.error('Error fetching all profiles:', error);
+    logger.error('Error fetching all profiles:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -67,10 +68,10 @@ export const updateProfile = async (req: Request, res: Response) => {
   const { name, skills, interests, addSkill, removeSkill } = req.body;
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Updating profile for user:', req.user.userId);
+    logger.info('Updating profile for user:', req.user.userId);
 
     const updateFields: Partial<IProfile> & {
       $push?: { skills?: string };
@@ -88,13 +89,13 @@ export const updateProfile = async (req: Request, res: Response) => {
       { new: true }
     );
     if (!profile) {
-      console.warn('Profile not found for user:', req.user.userId);
+      logger.warn('Profile not found for user:', req.user.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
-    console.log('Profile updated successfully:', profile);
+    logger.info('Profile updated successfully:', profile);
     res.json(profile);
   } catch (error) {
-    console.error('Error updating profile:', error);
+    logger.error('Error updating profile:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -102,29 +103,33 @@ export const updateProfile = async (req: Request, res: Response) => {
 export const deleteProfile = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Deleting profile for user:', req.user.userId);
-    const profile = await Profile.findOneAndDelete({ userId: req.user.userId });
+    logger.info(`Deleting profile for user: ${req.user.userId}`);
+    const profile = (await Profile.findOneAndDelete({
+      userId: req.user.userId,
+    }).lean()) as IProfile | null;
+
     if (!profile) {
-      console.warn('Profile not found for user:', req.user.userId);
+      logger.warn(`Profile not found for user: ${req.user.userId}`);
       return res.status(404).json({ error: 'Profile not found' });
     }
-    console.log('Profile deleted successfully:', profile);
+
+    logger.info(`Profile deleted successfully: ${profile}`);
     res.json({ message: 'Profile deleted' });
   } catch (error) {
-    console.error('Error deleting profile:', error);
+    logger.error(`Error deleting profile: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
 export const searchProfiles = async (req: Request, res: Response) => {
-  console.log('searchProfiles function called');
+  logger.info('searchProfiles function called');
   const { keyword, skills, interests, name, email, filter } = req.query;
   const userId = req.user?.userId;
 
-  console.log('searchProfiles query:', req.query);
+  logger.info('searchProfiles query:', req.query);
 
   try {
     const query: FilterQuery<IProfile> = {};
@@ -172,11 +177,11 @@ export const searchProfiles = async (req: Request, res: Response) => {
     if (profiles.length === 0) {
       return res.status(404).json({ message: 'No profiles found' });
     }
-    console.log('Profiles found. Count:', profiles.length);
+    logger.info('Profiles found. Count:', profiles.length);
 
     res.json(profiles);
   } catch (error) {
-    console.error('Error searching profiles:', error);
+    logger.error('Error searching profiles:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -187,25 +192,25 @@ export const getProfileById = async (req: Request, res: Response) => {
   try {
     // Check if `profileId` is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(profileId)) {
-      console.error('Invalid profileId format:', profileId);
+      logger.error('Invalid profileId format:', profileId);
       return res.status(400).json({ message: 'Invalid profileId format' });
     }
 
     // Convert profileId to ObjectId
     const objectId = new mongoose.Types.ObjectId(profileId);
-    console.log('Converted profileId to ObjectId:', objectId);
+    logger.info('Converted profileId to ObjectId:', objectId);
 
     // Find profile by profileId
     const profile = await Profile.findById(objectId);
 
     if (!profile) {
-      console.log('No profile found for profileId:', objectId);
+      logger.info('No profile found for profileId:', objectId);
       return res.status(404).json({ message: 'Profile not found' });
     }
 
     res.json(profile);
   } catch (error) {
-    console.error('Error fetching profile:', error);
+    logger.error('Error fetching profile:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -214,19 +219,19 @@ export const addSkill = async (req: Request, res: Response) => {
   const { skill } = req.body;
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Adding skill for user:', req.user.userId, 'Skill:', skill);
+    logger.info(`Adding skill for user: ${req.user.userId}, Skill: ${skill}`);
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user.userId },
       { $push: { skills: skill } },
       { new: true }
     );
-    console.log('Skill added successfully:', profile);
+    logger.info(`Skill added successfully: ${profile}`);
     res.json(profile);
   } catch (error) {
-    console.error('Error adding skill:', error);
+    logger.error(`Error adding skill: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -235,19 +240,19 @@ export const removeSkill = async (req: Request, res: Response) => {
   const { skill } = req.body;
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log('Removing skill for user:', req.user.userId, 'Skill:', skill);
+    logger.info('Removing skill for user:', req.user.userId, 'Skill:', skill);
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user.userId },
       { $pull: { skills: skill } },
       { new: true }
     );
-    console.log('Skill removed successfully:', profile);
+    logger.info('Skill removed successfully:', profile);
     res.json(profile);
   } catch (error) {
-    console.error('Error removing skill:', error);
+    logger.error('Error removing skill:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -256,24 +261,21 @@ export const addInterest = async (req: Request, res: Response) => {
   const { interest } = req.body;
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log(
-      'Adding interest for user:',
-      req.user.userId,
-      'Interest:',
-      interest
+    logger.info(
+      `Adding interest for user: ${req.user.userId}, Interest: ${interest}`
     );
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user.userId },
       { $push: { interests: interest } },
       { new: true }
     );
-    console.log('Interest added successfully:', profile);
+    logger.info(`Interest added successfully: ${profile}`);
     res.json(profile);
   } catch (error) {
-    console.error('Error adding interest:', error);
+    logger.error(`Error adding interest: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -282,10 +284,10 @@ export const removeInterest = async (req: Request, res: Response) => {
   const { interest } = req.body;
   try {
     if (!req.user) {
-      console.warn('Unauthorized access attempt');
+      logger.warn('Unauthorized access attempt');
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    console.log(
+    logger.info(
       'Removing interest for user:',
       req.user.userId,
       'Interest:',
@@ -296,10 +298,10 @@ export const removeInterest = async (req: Request, res: Response) => {
       { $pull: { interests: interest } },
       { new: true }
     );
-    console.log('Interest removed successfully:', profile);
+    logger.info('Interest removed successfully:', profile);
     res.json(profile);
   } catch (error) {
-    console.error('Error removing interest:', error);
+    logger.error('Error removing interest:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -307,7 +309,7 @@ export const removeInterest = async (req: Request, res: Response) => {
 export const searchProfilesBySkills = async (req: Request, res: Response) => {
   const { skills } = req.query;
   try {
-    console.log('Searching profiles with skills:', skills);
+    logger.info('Searching profiles with skills:', skills);
     const skillsArray = Array.isArray(skills) ? skills : [skills];
     const stringSkillsArray = skillsArray.filter(
       (skill) => typeof skill === 'string'
@@ -315,10 +317,10 @@ export const searchProfilesBySkills = async (req: Request, res: Response) => {
     const profiles = await Profile.find({
       skills: { $in: stringSkillsArray },
     });
-    console.log('Profiles found:', profiles);
+    logger.info('Profiles found:', profiles);
     res.json(profiles);
   } catch (error) {
-    console.error('Error searching profiles by skills:', error);
+    logger.error('Error searching profiles by skills:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -329,7 +331,7 @@ export const searchProfilesByInterests = async (
 ) => {
   const { interests } = req.query;
   try {
-    console.log('Searching profiles with interests:', interests);
+    logger.info('Searching profiles with interests:', interests);
     const interestsArray = Array.isArray(interests) ? interests : [interests];
     const stringInterestsArray = interestsArray.filter(
       (interest) => typeof interest === 'string'
@@ -337,10 +339,10 @@ export const searchProfilesByInterests = async (
     const profiles = await Profile.find({
       interests: { $in: stringInterestsArray },
     });
-    console.log('Profiles found:', profiles);
+    logger.info('Profiles found:', profiles);
     res.json(profiles);
   } catch (error) {
-    console.error('Error searching profiles by interests:', error);
+    logger.error('Error searching profiles by interests:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
