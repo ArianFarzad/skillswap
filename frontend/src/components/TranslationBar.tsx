@@ -4,6 +4,7 @@ import {
   LangButton,
   TranslationBarContainer,
 } from '../style/components/TranslationBar.style';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 const TranslationBar: React.FC = () => {
   const { i18n } = useTranslation();
@@ -13,7 +14,9 @@ const TranslationBar: React.FC = () => {
     setLanguage(lng);
     i18n
       .changeLanguage(lng)
-      .catch((error) => console.error('Failed to change language:', error));
+      .catch((error) =>
+        loggerInstance.error('Failed to change language:', error)
+      );
   };
 
   return (

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Profile from '../models/Profile';
+import logger from '../utils/logger';
 
 export const addPoints = async (req: Request, res: Response) => {
   const { userId, points } = req.body;
@@ -14,7 +15,7 @@ export const addPoints = async (req: Request, res: Response) => {
     }
     res.json({ points: profile.points });
   } catch (error) {
-    console.error('Error adding points:', error);
+    logger.error(`Error adding points: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -27,7 +28,7 @@ export const getPoints = async (req: Request, res: Response) => {
     }
     res.json({ points: profile.points });
   } catch (error) {
-    console.error('Error fetching points:', error);
+    logger.error(`Error fetching points: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };

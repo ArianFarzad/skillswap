@@ -3,6 +3,7 @@ import Session from '../models/Session';
 import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
 import { env } from '../config/config';
+import logger from '../utils/logger';
 
 interface PopulatedSession {
   tutor: {
@@ -22,7 +23,7 @@ export const createSession = async (req: Request, res: Response) => {
     await session.save();
     res.status(201).json(session);
   } catch (error) {
-    console.error('Error creating session:', error);
+    logger.error('Error creating session:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -34,7 +35,7 @@ export const getSessions = async (_req: Request, res: Response) => {
       .populate('student', 'email name');
     res.json(sessions);
   } catch (error) {
-    console.error('Error fetching sessions:', error);
+    logger.error('Error fetching sessions:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -55,7 +56,7 @@ export const updateSession = async (req: Request, res: Response) => {
     }
     res.json(session);
   } catch (error) {
-    console.error('Error updating session:', error);
+    logger.error('Error updating session:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -69,7 +70,7 @@ export const deleteSession = async (req: Request, res: Response) => {
     }
     res.json({ message: 'Session deleted' });
   } catch (error) {
-    console.error('Error deleting session:', error);
+    logger.error('Error deleting session:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -105,7 +106,7 @@ export const sendReminderEmails = async () => {
       await transporter.sendMail(mailOptions);
     }
   } catch (error) {
-    console.error('Error sending reminder emails:', error);
+    logger.error('Error sending reminder emails:', error);
   }
 };
 
@@ -130,7 +131,7 @@ export const completeSession = async (req: Request, res: Response) => {
 
     res.json({ message: 'Session completed and points added' });
   } catch (error) {
-    console.error('Error completing session:', error);
+    logger.error('Error completing session:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -154,7 +155,7 @@ export const getSessionDetails = async (req: Request, res: Response) => {
     };
     res.json(response);
   } catch (error) {
-    console.error('Error fetching session messages:', error);
+    logger.error('Error fetching session messages:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -170,14 +171,14 @@ export const checkSession = async (req: Request, res: Response) => {
     });
 
     if (session) {
-      console.log('Session found:', session._id);
+      logger.info('Session found:', session._id);
       res.json({ sessionId: session._id });
     } else {
-      console.log('No session found');
+      logger.info('No session found');
       res.json({ sessionId: null });
     }
   } catch (error) {
-    console.error('Error checking session:', error);
+    logger.error('Error checking session:', error);
     res.status(500).json({ error: 'Server error' });
   }
 };

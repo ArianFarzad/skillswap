@@ -20,6 +20,7 @@ import {
 } from '../style/components/BookAppointment.style';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import axiosInstance from '../utils/axiosInstance';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 interface Event {
   summary: string;
@@ -95,7 +96,7 @@ END:VCALENDAR
         setUploadedEvents((prevEvents) => [...prevEvents, ...response.data]);
         alert('File uploaded successfully.');
       } catch (error) {
-        console.error('Error uploading file:', error);
+        loggerInstance.error('Error uploading file:', error);
         alert('Error uploading file.');
       }
     }

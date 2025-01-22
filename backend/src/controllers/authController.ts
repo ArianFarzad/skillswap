@@ -4,15 +4,16 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 import Profile from '../models/Profile';
 import { env } from '../config/config';
+import logger from '../utils/logger';
 
 export const register = async (req: Request, res: Response) => {
   const { email, password, name } = req.body;
   try {
-    console.log('Registering user with email:', email);
+    logger.info(`Registering user with email: ${email}`);
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ email, password: hashedPassword, name });
     await user.save();
-    console.log('User registered successfully:', user);
+    logger.info(`Registered user with email: ${email}`);
 
     // Profil mit userId und name erstellen
     const profile = new Profile({
@@ -23,15 +24,15 @@ export const register = async (req: Request, res: Response) => {
       interests: [],
     });
     await profile.save();
-    console.log('Profile created successfully:', profile);
+    logger.info(`Profile created successfully: ${profile}`);
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error: unknown) {
     if (error instanceof Error && (error as { code?: number }).code === 11000) {
-      console.error('Error registering user: Duplicate email');
-      return res.status(400).json({ error: 'Email already exists' });
+      logger.error('Error registering user: Duplicate email');
+      return res.status(400).json({ error: 'User already exists' });
     }
-    console.error('Error registering user:', error);
+    logger.error(`Error registering user: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -39,16 +40,16 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    console.log('Logging in user with email:', email);
+    logger.info(`Logging in user with email: ${email}`);
     const user = await User.findOne({ email });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      console.warn('Invalid credentials.', email);
+    if (!user) {
+      logger.warn(`Invalid Email: ${email}`);
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      console.warn('Invalid credentials.', email);
+    if (!(await bcrypt.compare(password, user.password))) {
+      logger.warn(`Invalid password for Email: ${email}`);
       return res.status(400).json({ error: 'Invalid credentials' });
     }
 
@@ -72,14 +73,14 @@ export const login = async (req: Request, res: Response) => {
 
     res.json({ token, userId: user._id });
   } catch (error: unknown) {
-    console.error('Error logging in user:', error);
+    logger.error(`Error logging in user: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
 
 export const refreshToken = async (req: Request, res: Response) => {
   try {
-    console.log('Refreshing token');
+    logger.info('Refreshing token...');
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
       return res.status(401).json({ error: 'No refresh token provided' });
@@ -99,7 +100,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     return res.json({ token: newAccessToken });
   } catch (error) {
-    console.error('Error refreshing token:', error);
+    logger.error(`Error refreshing token: ${error}`);
     res.status(500).json({ error: 'Invalid refresh token' });
   }
 };

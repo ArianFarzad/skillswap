@@ -12,6 +12,7 @@ import {
 } from '../style/components/Login.style';
 import axiosInstance from '../utils/axiosInstance';
 import axios from 'axios';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 const Login: React.FC = () => {
   const {
@@ -33,7 +34,10 @@ const Login: React.FC = () => {
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('myUserId', response.data.userId);
-      console.log('Login successful, saved userId:', response.data.userId);
+      loggerInstance.info(
+        'Login successful, saved userId:',
+        response.data.userId
+      );
       setMessage(t('login_success'));
       navigate('/profile');
     } catch (error) {

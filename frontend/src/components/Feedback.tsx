@@ -6,11 +6,13 @@ import {
   FeedbackHeader,
   FeedbacksList,
   FeedbackSubmitButton,
+  FeedbackTextarea,
+  FlexRow,
   Star,
   StarRating,
-  FlexRow,
-  FeedbackTextarea,
 } from '../style/components/Feedback.style';
+import loggerInstance from '../utils/loggerInstance.ts';
+import { IFeedback } from '../models/Feedback';
 
 interface FeedbackData {
   sessionId: string | undefined;
@@ -20,10 +22,14 @@ interface FeedbackData {
 const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   const [comment, setComment] = useState('');
   const [feedbackSuccess, setFeedbackSuccess] = useState(false);
-  const [feedbacks, setFeedbacks] = useState([]);
+  const [feedbacks, setFeedbacks] = useState<IFeedback[]>([]);
   const [averageRating, setAverageRating] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
-  const { t } = useTranslation();
+  const {
+    t,
+  }: {
+    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
+  } = useTranslation();
 
   useEffect(() => {
     axios
@@ -31,7 +37,9 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
       .then((res) => setFeedbacks(res.data))
-      .catch((error) => console.error('Error fetching feedbacks:', error));
+      .catch((error) =>
+        loggerInstance.error('Error fetching feedbacks:', error)
+      );
 
     axios
       .get(
@@ -41,7 +49,9 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         }
       )
       .then((res) => setAverageRating(res.data.averageRating))
-      .catch((error) => console.error('Error fetching average rating:', error));
+      .catch((error) =>
+        loggerInstance.error('Error fetching average rating:', error)
+      );
   }, [sessionId, senderId]);
 
   const handleSendFeedback = () => {
@@ -57,7 +67,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         setFeedbackSuccess(true);
         setTimeout(() => setFeedbackSuccess(false), 3000);
       })
-      .catch((error) => console.error('Error sending feedback:', error));
+      .catch((error) => loggerInstance.error('Error sending feedback:', error));
   };
 
   const handleRating = (value: number) => {

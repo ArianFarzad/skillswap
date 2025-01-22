@@ -16,6 +16,7 @@ import {
   RemoveButton,
 } from '../style/components/Profile.style';
 import axiosInstance from '../utils/axiosInstance';
+import loggerInstance from '../utils/loggerInstance.ts';
 
 interface ProfileType {
   skills: string[];
@@ -42,13 +43,13 @@ const Profile: React.FC = () => {
           setMessage('No token found');
           return;
         }
-        console.log('Fetching profile with token:', token);
+        loggerInstance.info('Fetching profile with token:', token);
         const response = await axiosInstance.get('/api/profiles');
-        console.log('Profile fetched:', response.data);
+        loggerInstance.info('Profile fetched:', response.data);
         setProfile(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          console.error(
+          loggerInstance.error(
             'Error fetching profile:',
             error.response?.data?.message || error.message
           );
@@ -56,14 +57,14 @@ const Profile: React.FC = () => {
             `Error fetching profile: ${error.response?.data?.message || error.message}`
           );
         } else {
-          console.error('An unexpected error occurred:', error);
+          loggerInstance.error('An unexpected error occurred:', error);
           setMessage('An unexpected error occurred');
         }
       }
     };
 
     fetchProfile().catch((error) =>
-      console.error('Error fetching profile:', error)
+      loggerInstance.error('Error fetching profile:', error)
     );
   }, []);
 
@@ -78,7 +79,12 @@ const Profile: React.FC = () => {
         setMessage('No token found');
         return;
       }
-      console.log('Adding skill with token:', token, 'and skill:', newSkill);
+      loggerInstance.info(
+        'Adding skill with token:',
+        token,
+        'and skill:',
+        newSkill
+      );
       const response = await axiosInstance.post(
         '/api/profiles/skills',
         { skill: newSkill },
@@ -88,12 +94,12 @@ const Profile: React.FC = () => {
           },
         }
       );
-      console.log('Skill added:', response.data);
+      loggerInstance.info('Skill added:', response.data);
       setProfile(response.data);
       setNewSkill('');
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(
+        loggerInstance.error(
           'Error adding skill:',
           error.response?.data?.message || error.message
         );
@@ -101,7 +107,7 @@ const Profile: React.FC = () => {
           `Error adding skill: ${error.response?.data?.message || error.message}`
         );
       } else {
-        console.error('An unexpected error occurred:', error);
+        loggerInstance.error('An unexpected error occurred:', error);
         setMessage('An unexpected error occurred');
       }
     }
@@ -114,15 +120,20 @@ const Profile: React.FC = () => {
         setMessage('No token found');
         return;
       }
-      console.log('Removing skill with token:', token, 'and skill:', skill);
+      loggerInstance.info(
+        'Removing skill with token:',
+        token,
+        'and skill:',
+        skill
+      );
       const response = await axiosInstance.delete('/api/profiles/skills', {
         data: { skill },
       });
-      console.log('Skill removed:', response.data);
+      loggerInstance.info('Skill removed:', response.data);
       setProfile(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(
+        loggerInstance.error(
           'Error removing skill:',
           error.response?.data?.message || error.message
         );
@@ -130,7 +141,7 @@ const Profile: React.FC = () => {
           `Error removing skill: ${error.response?.data?.message || error.message}`
         );
       } else {
-        console.error('An unexpected error occurred:', error);
+        loggerInstance.error('An unexpected error occurred:', error);
         setMessage('An unexpected error occurred');
       }
     }
@@ -147,7 +158,7 @@ const Profile: React.FC = () => {
         setMessage('No token found');
         return;
       }
-      console.log(
+      loggerInstance.info(
         'Adding interest with token:',
         token,
         'and interest:',
@@ -156,12 +167,12 @@ const Profile: React.FC = () => {
       const response = await axiosInstance.post('/api/profiles/interests', {
         interest: newInterest,
       });
-      console.log('Interest added:', response.data);
+      loggerInstance.info('Interest added:', response.data);
       setProfile(response.data);
       setNewInterest('');
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(
+        loggerInstance.error(
           'Error adding interest:',
           error.response?.data?.message || error.message
         );
@@ -169,7 +180,7 @@ const Profile: React.FC = () => {
           `Error adding interest: ${error.response?.data?.message || error.message}`
         );
       } else {
-        console.error('An unexpected error occurred:', error);
+        loggerInstance.error('An unexpected error occurred:', error);
         setMessage('An unexpected error occurred');
       }
     }
@@ -182,7 +193,7 @@ const Profile: React.FC = () => {
         setMessage('No token found');
         return;
       }
-      console.log(
+      loggerInstance.info(
         'Removing interest with token:',
         token,
         'and interest:',
@@ -191,11 +202,11 @@ const Profile: React.FC = () => {
       const response = await axiosInstance.delete('/api/profiles/interests', {
         data: { interest },
       });
-      console.log('Interest removed:', response.data);
+      loggerInstance.info('Interest removed:', response.data);
       setProfile(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error(
+        loggerInstance.error(
           'Error removing interest:',
           error.response?.data?.message || error.message
         );
@@ -203,7 +214,7 @@ const Profile: React.FC = () => {
           `Error removing interest: ${error.response?.data?.message || error.message}`
         );
       } else {
-        console.error('An unexpected error occurred:', error);
+        loggerInstance.error('An unexpected error occurred:', error);
         setMessage('An unexpected error occurred');
       }
     }
