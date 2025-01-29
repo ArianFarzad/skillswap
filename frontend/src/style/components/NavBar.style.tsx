@@ -1,7 +1,7 @@
 import '../index.css';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import banner from '../../assets/banner.png';
+import banner from '../../assets/banner2.png';
 
 export const Banner = styled.div`
   background-image: url(${banner});
@@ -27,7 +27,7 @@ export const NavArea = styled.nav`
   width: 100%;
   justify-content: space-between;
   height: 2em;
-    
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 2em;
@@ -52,25 +52,34 @@ export const ListArea = styled.ul`
 `;
 
 export const StyledLink = styled(Link)`
-    text-decoration: none;
-    font-size: 1.3em;
-    color: black;
+  display: flex;
+  text-decoration: none;
+  font-size: 1.3em;
+  align-content: center;
+  color: var(--text-color);
 
-    &:hover {
-        color: var(--primary-color);
-    }
+  &:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-on-button);
+    border-radius: 0.5em;
+    padding: 0.5em;
+    transition: background-color 0.5s ease;
+  }
 
-    @media (max-width: 768px) {
-        font-size: 1em;
-    }
+  @media (max-width: 768px) {
+    font-size: 1em;
+  }
 `;
 
 export const Logout = styled.p`
   margin: auto 0;
   font-size: 1.3em;
+  color: var(--text-color);
+  display: flex;
+  align-content: center;
 
   &:hover {
-    color: var(--primary-color);
+    color: darkred;
     cursor: pointer;
   }
 

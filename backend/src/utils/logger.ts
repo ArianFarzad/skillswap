@@ -2,7 +2,7 @@ import winston from 'winston';
 import { env } from '../config/config';
 
 const logger = winston.createLogger({
-  level: env.NODE_ENV === 'production' ? 'warn' : 'debug',
+  level: env.NODE_ENV === 'production' ? 'warn' : 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {

@@ -36,9 +36,21 @@ axiosInstance.interceptors.response.use(
 
         const newToken = refreshResponse.data.token;
         localStorage.setItem('token', newToken);
+        localStorage.setItem('myUserId', refreshResponse.data.userId);
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return axiosInstance(originalRequest);
+        const retriedResponse = await axiosInstance(originalRequest);
+
+        // Automatically redirect if a token was refreshed successfully
+        const redirectPath =
+          new URLSearchParams(window.location.search).get('redirect') ||
+          '/profile';
+
+        if (redirectPath) {
+          window.location.href = redirectPath;
+        }
+
+        return retriedResponse;
       } catch (refreshError) {
         localStorage.removeItem('token');
         window.location.href = '/login'; // Force reload to login page

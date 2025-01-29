@@ -1,37 +1,50 @@
 import { vi } from 'vitest';
-import axios from 'axios';
 
-export const mockNavigate = vi.fn();
-export const mockedAxios = axios as jest.Mocked<typeof axios>;
+vi.mock('../../utils/axiosInstance', async () => {
+  const actual = await vi.importActual('../../utils/axiosInstance');
+  return {
+    ...actual,
+    default: {
+      post: vi.fn(),
+    },
+  };
+});
 
-export const mockReactRouter = () => {
-  vi.mock('react-router-dom', async (importOriginal) => {
-    const actual =
-      (await importOriginal()) as typeof import('react-router-dom');
-    return {
-      ...actual,
-      useNavigate: () => mockNavigate,
-    };
-  });
+vi.mock('react-hot-toast', async (importOriginal) => {
+  const actual = (await importOriginal()) as {
+    default: { success: () => void; error: () => void };
+  };
+  return {
+    ...actual,
+    default: {
+      ...actual.default,
+      success: vi.fn(),
+      error: vi.fn(),
+    },
+  };
+});
+
+vi.mock('react-router-dom', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
+  return {
+    ...actual,
+    useNavigate: vi.fn(() => vi.fn()),
+  };
+});
+
+vi.mock('file-saver', () => ({
+  saveAs: vi.fn(),
+}));
+
+vi.mock('../../utils/toastUtils', () => ({
+  showErrorMessage: vi.fn(),
+}));
+
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
 };
 
-export const mockI18n = () => {
-  vi.mock('react-i18next', async () => {
-    const actual = await vi.importActual('react-i18next');
-    return {
-      ...actual,
-      useTranslation: () => ({
-        t: (key: string) => key,
-        i18n: {
-          changeLanguage: vi.fn(),
-        },
-      }),
-    };
-  });
-};
-
-// Call this in each test file to initialize the mocks
-export const initializeMocks = () => {
-  mockReactRouter();
-  vi.mock('axios');
-};
+Object.defineProperty(global, 'localStorage', { value: localStorageMock });

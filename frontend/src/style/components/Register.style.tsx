@@ -7,7 +7,8 @@ export const RegisterArea = styled.div`
   padding: 2rem;
   border-left: 2px solid #5e5e63;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
+  background-color: var(--background-color);
+  height: 83vh;
   flex: 1;
 `;
 
@@ -42,6 +43,7 @@ export const Input = styled.input`
 export const Label = styled.label`
   font-size: 1rem;
   margin-bottom: 0.5rem;
+  color: var(--text-color);
 `;
 
 export const Button = styled.button`

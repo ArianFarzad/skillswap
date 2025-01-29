@@ -1,13 +1,22 @@
 import React from 'react';
-import TranslationBar from '../components/TranslationBar';
+import SettingsBar from '../components/SettingsBar.tsx';
 import Welcome from '../components/Welcome';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
 
 const WelcomePage: React.FC = () => {
+  const { t } = useTypedTranslation();
+
   return (
-    <>
-      <TranslationBar />
-      <Welcome />
-    </>
+    <HelmetProvider>
+      <>
+        <Helmet>
+          <title>{t('welcome')}</title>
+        </Helmet>
+        <SettingsBar />
+        <Welcome />
+      </>
+    </HelmetProvider>
   );
 };
 

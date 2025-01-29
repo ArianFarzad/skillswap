@@ -22,7 +22,7 @@ app.set('socketio', io);
 
 io.on('connection', (socket) => {
   socket.on('joinSession', (sessionId) => {
-    logger.info(`Socket ${socket.id} 'joined session ${sessionId}`);
+    logger.debug(`Socket ${socket.id} 'joined session ${sessionId}`);
     socket.join(sessionId);
   });
 

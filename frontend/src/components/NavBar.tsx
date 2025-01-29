@@ -1,24 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import {
   Banner,
-  NavArea,
   ListArea,
-  StyledLink,
   Logout,
+  NavArea,
+  StyledLink,
 } from '../style/components/NavBar.style';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import PersonIcon from '@mui/icons-material/Person';
+import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const NavBar: React.FC = () => {
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+  const { t } = useTypedTranslation();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('myUserId');
     navigate('/login');
   };
 
@@ -27,14 +27,21 @@ const NavBar: React.FC = () => {
       <NavArea>
         <ListArea>
           <li>
-            <StyledLink to="/profile">&#128100;{t('profile')} </StyledLink>
+            <StyledLink to="/profile">
+              <PersonIcon />
+              &nbsp;{t('profile')}
+            </StyledLink>
           </li>
           <li>
-            <StyledLink to="/search">&#128270;{t('search')}</StyledLink>
+            <StyledLink to="/search">
+              <SearchIcon />
+              &nbsp;{t('search')}
+            </StyledLink>
           </li>
         </ListArea>
         <Logout className={'logout'} onClick={handleLogout}>
-          {t('logout')}
+          <LogoutIcon />
+          &nbsp;{t('logout')}
         </Logout>
       </NavArea>
     </Banner>

@@ -17,39 +17,27 @@ export const AppointmentForm = styled.form`
   flex: 1;
 `;
 
+export const Headline = styled.h2`
+  color: var(--primary-color);
+  border: 1px solid var(--text-color);
+  padding: 0.7em;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+`;
+
+export const Label = styled.label`
+  font-size: 0.9em;
+  color: var(--text-color);
+`;
+
 export const AppointmentInput = styled.div`
   display: flex;
   flex-direction: column;
+  width: 50%;
 `;
 
-export const TitleInput = styled.input`
-  width: 208px;
-  padding: var(--input-padding);
-  margin-top: 0.5em;
-  border: var(--input-border);
-  border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
-`;
-
-export const DescriptionInput = styled.input`
-  width: 208px;
-  padding: var(--input-padding);
-  margin-top: 0.5em;
-  border: var(--input-border);
-  border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
-`;
-
-export const StartDateInput = styled.input`
-  width: 208px;
-  padding: var(--input-padding);
-  margin-top: 0.5em;
-  border: var(--input-border);
-  border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
-`;
-
-export const EndDateInput = styled.input`
+export const StyledInput = styled.input`
   width: 208px;
   padding: var(--input-padding);
   margin-top: 0.5em;
@@ -59,12 +47,26 @@ export const EndDateInput = styled.input`
 `;
 
 export const AppointmentSubmit = styled.button`
-  margin-top: 2em;
   padding: var(--input-padding);
   background-color: var(--primary-color);
   border: none;
   color: white;
   border-radius: var(--button-border-redius);
+  margin: 0;
+
+  &:hover {
+    background-color: var(--primary-color-hover);
+    cursor: pointer;
+  }
+`;
+
+export const FileSelect = styled.input`
+  padding: var(--input-padding);
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+  border-radius: var(--button-border-redius);
+  margin: 0;
 
   &:hover {
     background-color: var(--primary-color-hover);
@@ -74,6 +76,16 @@ export const AppointmentSubmit = styled.button`
 
 export const CalendarSection = styled.div`
   transform: scale(0.9);
+
+  .react-calendar {
+    max-width: 100%;
+    background-color: var(--calendar-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 1em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    width: 100%;
+  }
 `;
 
 export const EventDot = styled.span`
@@ -89,9 +101,10 @@ export const EventDot = styled.span`
 
 export const PopoverBody = styled.div`
   padding: 20px;
-  background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: var(--background-color);
+  color: var(--text-color);
   width: 250px;
 
   h4 {
@@ -106,7 +119,7 @@ export const PopoverBody = styled.div`
   button {
     padding: 5px 10px;
     background-color: #007bff;
-    color: white;
+    color: var(--text-color-on-button);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -122,4 +135,25 @@ export const PopoverBody = styled.div`
 
 export const Popover = styled.div`
   z-index: 9999;
+`;
+
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1em;
+`;
+
+export const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+`;
+
+export const ButtonRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
 `;

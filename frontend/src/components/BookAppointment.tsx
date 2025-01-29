@@ -3,7 +3,6 @@ import { saveAs } from 'file-saver';
 import { format } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { useTranslation } from 'react-i18next';
 import ReactPopover from 'react-popover';
 import {
   AppointmentContainer,
@@ -11,16 +10,22 @@ import {
   AppointmentInput,
   AppointmentSubmit,
   CalendarSection,
-  DescriptionInput,
-  EndDateInput,
+  StyledInput,
   EventDot,
+  Headline,
+  Label,
   PopoverBody,
-  StartDateInput,
-  TitleInput,
+  Column,
+  Row,
+  ButtonRow,
+  FileSelect,
 } from '../style/components/BookAppointment.style';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import axiosInstance from '../utils/axiosInstance';
 import loggerInstance from '../utils/loggerInstance.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { toast } from 'react-hot-toast';
+import { showErrorMessage } from '../utils/toastUtils.ts';
 
 interface Event {
   summary: string;
@@ -30,11 +35,8 @@ interface Event {
 }
 
 const BookAppointment: React.FC = () => {
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+  const { t } = useTypedTranslation();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -46,7 +48,7 @@ const BookAppointment: React.FC = () => {
 
   const validateDate = (): boolean => {
     if (new Date(endDate) < new Date(startDate)) {
-      alert('End date must be after start date.');
+      showErrorMessage('end_date_before_start_date', t);
       return false;
     }
     return true;
@@ -94,10 +96,10 @@ END:VCALENDAR
           }
         );
         setUploadedEvents((prevEvents) => [...prevEvents, ...response.data]);
-        alert('File uploaded successfully.');
+        toast('File uploaded successfully.', { icon: '📅' });
       } catch (error) {
         loggerInstance.error('Error uploading file:', error);
-        alert('Error uploading file.');
+        showErrorMessage('error_uploading_file', t);
       }
     }
   };
@@ -113,123 +115,136 @@ END:VCALENDAR
   };
 
   return (
-    <AppointmentContainer>
-      <h2
+    <>
+      <Headline
         className="appointment-headline"
         data-testid="bookAppointment-headline"
       >
         {t('book_appointment')}
-      </h2>
-      <AppointmentForm
-        id="appointment-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleBookAppointment();
-        }}
-      >
-        <AppointmentInput>
-          <label htmlFor="title-input">{t('title')}:</label>
-          <TitleInput
-            id="title-input"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </AppointmentInput>
-        <AppointmentInput>
-          <label htmlFor="description-input">{t('description')}:</label>
-          <DescriptionInput
-            id="description-input"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </AppointmentInput>
-        <AppointmentInput>
-          <label htmlFor="start-date-input">{t('start_date')}:</label>
-          <StartDateInput
-            id="start-date-input"
-            type="datetime-local"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            required
-          />
-        </AppointmentInput>
-        <AppointmentInput>
-          <label htmlFor="end-date-input">{t('end_date')}:</label>
-          <EndDateInput
-            id="end-date-input"
-            type="datetime-local"
-            value={endDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEndDate(e.target.value)
-            }
-            required
-          />
-        </AppointmentInput>
-        <AppointmentSubmit id="appointment-submit" type="submit">
-          {t('book_and_export')}
-        </AppointmentSubmit>
-      </AppointmentForm>
-
-      <div className="upload-section">
-        <h3>{t('upload_ics')}</h3>
-        <input type="file" onChange={handleFileUpload} />
-      </div>
-
-      <CalendarSection>
-        <h3>{t('events_calendar')}</h3>
-        <Calendar
-          onChange={(value: Value) => setCalendarDate(value)}
-          value={calendarDate}
-          tileContent={({ date }) => {
-            const eventsOnDate = uploadedEvents.filter(
-              (event) =>
-                new Date(event.start).toDateString() === date.toDateString()
-            );
-
-            if (eventsOnDate.length > 0) {
-              return (
-                <div>
-                  {eventsOnDate.map((event, index) => (
-                    <EventDot
-                      key={index}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handlePopoverOpen(event);
-                      }}
-                    >
-                      ●
-                    </EventDot>
-                  ))}
-                </div>
+      </Headline>
+      <AppointmentContainer>
+        <CalendarSection>
+          <Calendar
+            onChange={(value: Value) => setCalendarDate(value)}
+            value={calendarDate}
+            className={'react-calendar'}
+            tileContent={({ date }) => {
+              const eventsOnDate = uploadedEvents.filter(
+                (event) =>
+                  new Date(event.start).toDateString() === date.toDateString()
               );
-            }
-            return null;
-          }}
-        />
-      </CalendarSection>
 
-      {selectedEvent && (
-        <ReactPopover
-          isOpen={popoverOpen}
-          body={
-            <PopoverBody>
-              <h4>{selectedEvent.summary}</h4>
-              <p>{selectedEvent.description}</p>
-              <p>Start: {new Date(selectedEvent.start).toLocaleString()}</p>
-              <p>End': {new Date(selectedEvent.end).toLocaleString()}</p>
-              <button onClick={handlePopoverClose}>{t('close')}</button>
-            </PopoverBody>
-          }
-          onOuterAction={handlePopoverClose}
+              if (eventsOnDate.length > 0) {
+                return (
+                  <div>
+                    {eventsOnDate.map((event, index) => (
+                      <EventDot
+                        key={index}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePopoverOpen(event);
+                        }}
+                      >
+                        ●
+                      </EventDot>
+                    ))}
+                  </div>
+                );
+              }
+              return null;
+            }}
+          />
+        </CalendarSection>
+
+        {selectedEvent && (
+          <ReactPopover
+            isOpen={popoverOpen}
+            body={
+              <PopoverBody>
+                <h4>{selectedEvent.summary}</h4>
+                <p>{selectedEvent.description}</p>
+                <p>Start: {new Date(selectedEvent.start).toLocaleString()}</p>
+                <p>End': {new Date(selectedEvent.end).toLocaleString()}</p>
+                <button onClick={handlePopoverClose}>{t('close')}</button>
+              </PopoverBody>
+            }
+            onOuterAction={handlePopoverClose}
+          >
+            <div />
+          </ReactPopover>
+        )}
+
+        <AppointmentForm
+          id="appointment-form"
+          data-testid="appointment-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleBookAppointment();
+          }}
         >
-          <div />
-        </ReactPopover>
-      )}
-    </AppointmentContainer>
+          <Row>
+            <Column>
+              <AppointmentInput>
+                <Label htmlFor="title-input">{t('title')}</Label>
+                <StyledInput
+                  id="title-input"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </AppointmentInput>
+              <AppointmentInput>
+                <Label htmlFor="description-input">{t('description')}</Label>
+                <StyledInput
+                  id="description-input"
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </AppointmentInput>
+            </Column>
+            <Column>
+              <AppointmentInput>
+                <Label htmlFor="start-date-input">{t('start_date')}</Label>
+                <StyledInput
+                  id="start-date-input"
+                  type="datetime-local"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  required
+                />
+              </AppointmentInput>
+              <AppointmentInput>
+                <Label htmlFor="end-date-input">{t('end_date')}</Label>
+                <StyledInput
+                  id="end-date-input"
+                  type="datetime-local"
+                  value={endDate}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEndDate(e.target.value)
+                  }
+                  required
+                />
+              </AppointmentInput>
+            </Column>
+          </Row>
+          <ButtonRow>
+            <div className="upload-section">
+              <FileSelect type="file" onChange={handleFileUpload} />
+            </div>
+            <AppointmentSubmit
+              data-testid="book-appointment-button"
+              id="appointment-submit"
+              type="submit"
+            >
+              {t('book_and_export')}
+            </AppointmentSubmit>
+          </ButtonRow>
+        </AppointmentForm>
+      </AppointmentContainer>
+    </>
   );
 };
 

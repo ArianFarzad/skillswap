@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './style/index.css';
 import App from './App';
-import './i18n'; // Importieren Sie die i18n-Konfiguration
+import './i18n';
+import { Toaster } from 'react-hot-toast';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,5 +11,6 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <App />
+    <Toaster />
   </React.StrictMode>
 );

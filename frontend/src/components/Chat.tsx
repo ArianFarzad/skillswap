@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   ChatContent,
+  Headline,
   MessageInput,
   MessagesList,
   MsgTextField,
@@ -9,8 +9,6 @@ import {
   SendMsgBtn,
   TheirMessage,
 } from '../style/components/Chat.style';
-import { IMessage } from '../models/Message';
-import { IUser } from '../models/User';
 import axiosInstance from '../utils/axiosInstance';
 import socket, {
   connectSocket,
@@ -20,22 +18,28 @@ import socket, {
 } from '../utils/socket';
 import SendIcon from '@mui/icons-material/Send';
 import loggerInstance from '../utils/loggerInstance.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import { IMessage, IUser } from '../models/models.ts';
 
 interface ChatParams {
   sessionId: string | undefined;
   senderId: string;
+  onMessagesCountChange: (count: number) => void;
 }
 
-const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+const Chat: React.FC<ChatParams> = ({
+  sessionId,
+  senderId,
+  onMessagesCountChange,
+}) => {
+  const { t } = useTypedTranslation();
+
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [otherPerson, setOtherPerson] = useState<IUser | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [exchangedMessagesCount, setExchangedMessagesCount] = useState(0);
   const messagesListRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -63,6 +67,7 @@ const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
 
     const handleNewMessage = (message: IMessage) => {
       setMessages((prevMessages) => [...prevMessages, message]);
+      setExchangedMessagesCount((prevCount) => prevCount + 1);
     };
 
     // Listen for new messages
@@ -73,6 +78,10 @@ const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
       disconnectSocket(); // Disconnect from Socket.IO when component unmounts
     };
   }, [senderId, sessionId]);
+
+  useEffect(() => {
+    onMessagesCountChange(exchangedMessagesCount);
+  }, [exchangedMessagesCount, onMessagesCountChange]);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -91,10 +100,14 @@ const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
 
   return (
     <ChatContent>
-      <h2>
+      <Headline>
         {t('chat_with')} {otherPerson?.name}
-      </h2>
-      <MessagesList ref={messagesListRef} onScroll={handleScroll}>
+      </Headline>
+      <MessagesList
+        scrollBottomShowed={showScrollToBottom}
+        ref={messagesListRef}
+        onScroll={handleScroll}
+      >
         {messages.map((msg, index) => {
           const isMyMessage = msg.sender._id === senderId;
           return isMyMessage ? (
@@ -122,7 +135,7 @@ const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
           }
         >
-          ▼▼
+          <KeyboardDoubleArrowDownIcon />
         </button>
       )}
       <MessageInput>
@@ -133,6 +146,12 @@ const Chat: React.FC<ChatParams> = ({ sessionId, senderId }) => {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setNewMessage(e.target.value)
           }
+          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleSendMessage();
+            }
+          }}
         />
         <SendMsgBtn onClick={handleSendMessage}>
           <SendIcon />
