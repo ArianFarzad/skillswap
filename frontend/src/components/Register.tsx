@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import {
   Button,
   Headline,
@@ -12,17 +10,16 @@ import {
   RegisterMessage,
 } from '../style/components/Register.style';
 import axiosInstance from '../utils/axiosInstance';
+import toast from 'react-hot-toast';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { showToastError } from '../utils/toastUtils.ts';
 
 const Register = () => {
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+  const { t } = useTypedTranslation();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,16 +30,10 @@ const Register = () => {
         email,
         password,
       });
-      setMessage(t('register_success'));
+      toast.success(t('register_success'));
       navigate('/login');
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setMessage(
-          `${t('error_registering_user')}: ${error.response?.data?.message || error.message}`
-        );
-      } else {
-        setMessage(t('unexpected_error'));
-      }
+      showToastError(error, t);
     }
   };
 
@@ -84,8 +75,9 @@ const Register = () => {
           <RegisterMessage onClick={() => navigate('/login')}>
             {t('Already_have_an_account?')}
           </RegisterMessage>
-          <Button type="submit">{t('register')}</Button>
-          {message && <p>{message}</p>}
+          <Button data-testid={'register-button'} type="submit">
+            {t('register')}
+          </Button>
         </form>
       </RegisterArea>
     </>

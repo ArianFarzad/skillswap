@@ -1,29 +1,28 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Form,
   Headline,
   Input,
+  Label,
   LoginArea,
   LoginMessage,
   Paragraph,
 } from '../style/components/Login.style';
 import axiosInstance from '../utils/axiosInstance';
-import axios from 'axios';
 import loggerInstance from '../utils/loggerInstance.ts';
+import { showToastError } from '../utils/toastUtils.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
 
 const Login: React.FC = () => {
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+  const { t } = useTypedTranslation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/profile';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,18 +35,11 @@ const Login: React.FC = () => {
       localStorage.setItem('myUserId', response.data.userId);
       loggerInstance.info(
         'Login successful, saved userId:',
-        response.data.userId
+        response.data.userId,
       );
-      setMessage(t('login_success'));
-      navigate('/profile');
+      navigate(redirect);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setMessage(
-          `${t('login_error')}: ${error.response?.data?.message || error.message}`
-        );
-      } else {
-        setMessage(t('unexpected_error'));
-      }
+      showToastError(error, t);
     }
   };
 
@@ -57,7 +49,7 @@ const Login: React.FC = () => {
         <Headline data-testid={'login-headline'}>{t('login')}</Headline>
         <Paragraph>{t('please_enter_details')}</Paragraph>
         <Form onSubmit={handleSubmit}>
-          <label htmlFor={'input-email'}>{t('Please_enter_your_email')}</label>
+          <Label htmlFor={'input-email'}>{t('Please_enter_your_email')}</Label>
           <Input
             type="email"
             id={'input-email'}
@@ -66,9 +58,9 @@ const Login: React.FC = () => {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <label htmlFor={'input-password'}>
+          <Label htmlFor={'input-password'}>
             {t('Please_enter_your_password')}
-          </label>
+          </Label>
           <Input
             type="password"
             id={'input-password'}
@@ -80,8 +72,9 @@ const Login: React.FC = () => {
           <LoginMessage onClick={() => navigate('/register')}>
             {t('new_here')}
           </LoginMessage>
-          <Button type="submit">{t('login')}</Button>
-          {message && <p>{message}</p>}
+          <Button data-testid={'login-button'} type="submit">
+            {t('login')}
+          </Button>
         </Form>
       </LoginArea>
     </>

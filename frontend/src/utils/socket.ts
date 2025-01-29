@@ -1,5 +1,6 @@
 import { io, Socket } from 'socket.io-client';
-import { IMessage } from '../models/Message';
+
+import { IMessage } from '../models/models.ts';
 
 const socket: Socket = io('http://localhost:8000', {
   autoConnect: false,

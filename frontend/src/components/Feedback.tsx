@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   FeedbackCard,
   FeedbackHeader,
@@ -8,11 +6,15 @@ import {
   FeedbackSubmitButton,
   FeedbackTextarea,
   FlexRow,
+  Headline,
   Star,
   StarRating,
 } from '../style/components/Feedback.style';
 import loggerInstance from '../utils/loggerInstance.ts';
-import { IFeedback } from '../models/Feedback';
+import { IFeedback } from '../models/models.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { toast } from 'react-hot-toast';
+import axiosInstance from '../utils/axiosInstance';
 
 interface FeedbackData {
   sessionId: string | undefined;
@@ -21,51 +23,48 @@ interface FeedbackData {
 
 const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   const [comment, setComment] = useState('');
-  const [feedbackSuccess, setFeedbackSuccess] = useState(false);
   const [feedbacks, setFeedbacks] = useState<IFeedback[]>([]);
   const [averageRating, setAverageRating] = useState<number | null>(null);
   const [rating, setRating] = useState(0);
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+  const { t } = useTypedTranslation();
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8000/api/feedback/session/${sessionId}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
+  const fetchFeedbacks = useCallback(() => {
+    axiosInstance
+      .get(`/api/feedback/session/${sessionId}`)
       .then((res) => setFeedbacks(res.data))
       .catch((error) =>
         loggerInstance.error('Error fetching feedbacks:', error)
       );
+  }, [sessionId]);
 
-    axios
-      .get(
-        `http://localhost:8000/api/feedback/user/${senderId}/average-rating`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      )
+  const fetchAverageRating = useCallback(() => {
+    axiosInstance
+      .get(`/api/feedback/user/${senderId}/average-rating`)
       .then((res) => setAverageRating(res.data.averageRating))
       .catch((error) =>
         loggerInstance.error('Error fetching average rating:', error)
       );
-  }, [sessionId, senderId]);
+  }, [senderId]);
+
+  useEffect(() => {
+    fetchFeedbacks();
+    fetchAverageRating();
+  }, [fetchFeedbacks, fetchAverageRating]);
 
   const handleSendFeedback = () => {
-    axios
-      .post(
-        'http://localhost:8000/api/feedback',
-        { sessionId, userId: senderId, rating, feedback: comment || ' ' },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      )
+    axiosInstance
+      .post('/api/feedback', {
+        sessionId,
+        userId: senderId,
+        rating,
+        feedback: comment || ' ',
+      })
       .then(() => {
-        setFeedbackSuccess(true);
-        setTimeout(() => setFeedbackSuccess(false), 3000);
+        toast.success(t('feedback_submitted'), { icon: '🚀' });
+        setRating(0);
+        setComment('');
+        fetchFeedbacks();
+        fetchAverageRating();
       })
       .catch((error) => loggerInstance.error('Error sending feedback:', error));
   };
@@ -76,7 +75,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
 
   return (
     <>
-      <h2>{t('rate_session')}</h2>
+      <Headline>{t('rate_session')}</Headline>
       <FeedbackTextarea
         placeholder={t('enter_feedback')}
         rows={5}
@@ -97,8 +96,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
           {t('submit_feedback')}
         </FeedbackSubmitButton>
       </FlexRow>
-      {feedbackSuccess && <p>{t('feedback_sent')}</p>}
-      <h2>{t('feedbacks_for_session')}</h2>
+      <Headline>{t('feedbacks_for_session')}</Headline>
       <FeedbacksList>
         {feedbacks.map((feedback, index) => (
           <FeedbackCard key={index}>
@@ -116,7 +114,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
       </FeedbacksList>
       {averageRating !== null && (
         <FlexRow>
-          <h3>{t('average_rating')}</h3>
+          <Headline>{t('average_rating')}</Headline>
           <p>
             {[...Array(5)].map((_, index) => (
               <Star key={index}>

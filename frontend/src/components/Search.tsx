@@ -1,21 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useTranslation } from 'react-i18next';
 import {
   AllProfilesContainer,
   AllProfilesHeadline,
+  Box,
+  BoxContainer,
   FilterContainer,
   FilterInput,
   KeywordInput,
   ProfileCard,
   ProfileCardButton,
-  ProfileCardText,
   ProfileCardTitle,
   ProfilesGrid,
+  UserPoints,
 } from '../style/components/Search.style';
 import axiosInstance from '../utils/axiosInstance';
 import loggerInstance from '../utils/loggerInstance.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import ChatIcon from '@mui/icons-material/Chat';
+import { Popover, Typography } from '@mui/material';
+import { showToastError } from '../utils/toastUtils.ts';
 
 interface Profile {
   id: string;
@@ -28,24 +32,17 @@ interface Profile {
 }
 
 const Search: React.FC = () => {
-  const {
-    t,
-  }: {
-    t: (key: keyof typeof import('../../public/locales/en.json')) => string;
-  } = useTranslation();
+  const { t } = useTypedTranslation();
+
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [keyword, setKeyword] = useState('');
   const [filter, setFilter] = useState('');
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [popoverContent, setPopoverContent] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const fetchProfiles = useCallback(async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        loggerInstance.error('No token found');
-        return;
-      }
-
       const response = await axiosInstance.get(
         `/api/profiles/search?keyword=${encodeURIComponent(keyword)}&filter=${encodeURIComponent(filter)}`
       );
@@ -66,19 +63,14 @@ const Search: React.FC = () => {
 
       setProfiles(mappedProfiles);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        loggerInstance.error(
-          `${t('error_fetching_profiles')}: ${error.response?.data?.message || error.message}`
-        );
-      } else {
-        loggerInstance.error(t('unexpected_error'));
-      }
+      showToastError(error, t);
     }
   }, [keyword, filter, t]);
 
   useEffect(() => {
     fetchProfiles().catch((error) => {
       loggerInstance.error('Error fetching profiles:', error);
+      showToastError(error);
     });
   }, [fetchProfiles]);
 
@@ -92,31 +84,41 @@ const Search: React.FC = () => {
       let sessionId = response.data.sessionId;
 
       if (!sessionId) {
-        const createResponse = await axiosInstance.post(
-          '/api/sessions',
-          {
-            tutor: myUserId,
-            student: otherUserId,
-            date: new Date(),
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          }
-        );
+        const createResponse = await axiosInstance.post('/api/sessions', {
+          tutor: myUserId,
+          student: otherUserId,
+          date: new Date(),
+        });
         sessionId = createResponse.data._id;
       }
 
       navigate(`/chat/${sessionId}`);
     } catch (error) {
       loggerInstance.error('Error handling chat request:', error);
+      showToastError(error);
     }
   };
 
-  const handleNameClick = (userId: string) => {
-    navigate(`/profiles/${userId}`);
+  const handleBoxClick = (
+    type: 'skills' | 'interests',
+    profile: Profile,
+    event: React.MouseEvent<HTMLElement>
+  ) => {
+    const content = type === 'skills' ? profile.skills : profile.interests;
+    if (content.length === 0) {
+      setPopoverContent([t('no_content_available')]);
+    } else {
+      setPopoverContent(content);
+    }
+    setAnchorEl(event.currentTarget);
   };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <div className="search-area">
@@ -151,28 +153,47 @@ const Search: React.FC = () => {
           ) : (
             profiles.map((profile) => (
               <ProfileCard key={profile.id}>
-                <ProfileCardTitle onClick={() => handleNameClick(profile.id)}>
-                  {profile.name}
-                </ProfileCardTitle>
-                <ProfileCardText>
-                  {t('skills')}: {profile.skills.join(', ')}
-                </ProfileCardText>
-                <ProfileCardText>
-                  {t('interests')}: {profile.interests.join(', ')}
-                </ProfileCardText>
-                <ProfileCardText>
-                  {t('points')}: {profile.points}
-                </ProfileCardText>
+                <ProfileCardTitle>{profile.name}</ProfileCardTitle>
+
+                <BoxContainer>
+                  <Box
+                    text={'skill'}
+                    onClick={(e) => handleBoxClick('skills', profile, e)}
+                  >
+                    <strong>{t('skills')}</strong>
+                  </Box>
+                  <Box
+                    text={'interest'}
+                    onClick={(e) => handleBoxClick('interests', profile, e)}
+                  >
+                    <strong>{t('interests')}</strong>
+                  </Box>
+                </BoxContainer>
+                <UserPoints>{profile.points} P</UserPoints>
                 <ProfileCardButton
                   onClick={() => handleChatRequest(profile.userId)}
                 >
-                  {t('chat_with')} {profile.name}
+                  <ChatIcon />
                 </ProfileCardButton>
               </ProfileCard>
             ))
           )}
         </ProfilesGrid>
       </AllProfilesContainer>
+
+      {/* Popover für Skills/Interessen */}
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handlePopoverClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <Typography sx={{ p: 2 }}>{popoverContent.join(', ')}</Typography>
+      </Popover>
     </div>
   );
 };

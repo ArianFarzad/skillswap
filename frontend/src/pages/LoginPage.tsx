@@ -1,18 +1,27 @@
 import React from 'react';
-import TranslationBar from '../components/TranslationBar';
+import SettingsBar from '../components/SettingsBar.tsx';
 import Intro from '../components/Intro';
 import Login from '../components/Login';
 import { MainContainer } from '../style/pages/LoginPage.style';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
 
 const LoginPage: React.FC = () => {
+  const { t } = useTypedTranslation();
+
   return (
-    <>
-      <TranslationBar />
-      <MainContainer>
-        <Intro />
-        <Login />
-      </MainContainer>
-    </>
+    <HelmetProvider>
+      <>
+        <Helmet>
+          <title>SkillSwap - {t('login')}</title>
+        </Helmet>
+        <SettingsBar />
+        <MainContainer>
+          <Intro />
+          <Login />
+        </MainContainer>
+      </>
+    </HelmetProvider>
   );
 };
 

@@ -19,6 +19,10 @@ export const Paragraph = styled.p`
   color: #666;
 `;
 
+export const Label = styled.label`
+  color: var(--text-color);
+`;
+
 export const Form = styled.form`
   display: flex;
   flex-direction: column;

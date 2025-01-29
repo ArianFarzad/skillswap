@@ -12,7 +12,10 @@
     "format": "prettier --write .",
     "start:all": "concurrently \"npm start\" \"cd ../frontend && npm run dev\"",
     "install:all": "npm install && cd ../frontend && npm install",
-    "test:all": "npm test && cd ../frontend && npm test"
+    "test:all": "npm test && cd ../frontend && npm test",
+    "lint:all": "npm run lint && cd ../frontend && npm run lint",
+    "format:all": "npm run format && cd ../frontend && npm run format",
+    "pre-commit": "npm run lint:all && npm run format:all"
   },
   "license": "MIT",
   "dependencies": {

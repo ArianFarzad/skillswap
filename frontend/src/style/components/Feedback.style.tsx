@@ -4,6 +4,7 @@ export const FeedbackCard = styled.div`
   background-color: var(--background-color-secondary);
   padding: 1em;
   border-radius: 5px;
+  color: var(--text-color);
 `;
 
 export const FeedbackHeader = styled.div`
@@ -16,16 +17,21 @@ export const FeedbacksList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1em;
-  height: 15em;
+  height: 5em;
   overflow-y: auto;
+  scrollbar-width: none;
   padding: 1em;
+`;
+
+export const Headline = styled.h2`
+  color: var(--primary-color);
 `;
 
 export const FeedbackSubmitButton = styled.button`
   padding: 0.75rem;
   font-size: 1rem;
   background-color: var(--primary-color);
-  color: var(--text-color);
+  color: var(--text-color-on-button);
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;

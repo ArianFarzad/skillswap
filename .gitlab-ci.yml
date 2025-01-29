@@ -17,6 +17,8 @@ cache:
 stages:
   - install
   - test
+  - lint
+  - format
 
 install_dependencies:
   stage: install
@@ -24,6 +26,8 @@ install_dependencies:
     - cd backend
     - npm ci
     - npm run build
+    - cd ../frontend
+    - npm ci
   artifacts:
     paths:
       - backend/node_modules/
@@ -44,8 +48,6 @@ test_frontend:
     - mkdir -p frontend/.nyc_output
   script:
     - cd frontend
-    - npm ci
-    - npm run test
     - npm run test:coverage
   artifacts:
     paths:
@@ -56,6 +58,20 @@ test_frontend:
     - install_dependencies
 
 
+lint_frontend:
+  stage: lint
+  script:
+    - cd frontend
+    - npm run lint
+  dependencies:
+    - install_dependencies
 
+format_frontend:
+  stage: format
+  script:
+    - cd frontend
+    - npm run format
+  dependencies:
+    - install_dependencies
 
 

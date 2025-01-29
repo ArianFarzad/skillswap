@@ -3,9 +3,18 @@ import styled from 'styled-components';
 export const ChatContent = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 95vh;
+  height: 88vh;
+  width: 95%;
   gap: 1em;
+  position: relative;
+`;
+
+export const Headline = styled.h2`
+  color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  border: 1px solid var(--text-color);
+  padding: 0.7em;
 `;
 
 export const MessageInput = styled.div`
@@ -14,6 +23,8 @@ export const MessageInput = styled.div`
   width: 100%;
   gap: 0;
   padding-bottom: 1em;
+  position: absolute;
+  bottom: 0;
 `;
 
 export const MsgTextField = styled.input`
@@ -29,7 +40,7 @@ export const SendMsgBtn = styled.button`
   padding: 0.75rem;
   font-size: 1rem;
   background-color: var(--primary-color);
-  color: var(--text-color);
+  color: var(--text-color-on-button);
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -76,7 +87,8 @@ export const TheirMessage = styled.div`
   }
 `;
 
-export const MessagesList = styled.div`
-  height: 30em;
+export const MessagesList = styled.div<{ scrollBottomShowed: boolean }>`
+  height: ${(props) => (props.scrollBottomShowed ? '55vh' : '58vh')};
   overflow-y: scroll;
+  scrollbar-width: none;
 `;

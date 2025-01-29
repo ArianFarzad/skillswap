@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import authRoutes from './routes/authRoutes';
-import profileRoutes from './routes/profileRoutes';
-import gamificationRoutes from './routes/gamificationRoutes';
-import calendarRoutes from './routes/calendarRoutes';
-import sessionRoutes from './routes/sessionRoutes';
-import feedbackRoutes from './routes/feedbackRoutes';
+import authRoutes from './routes/auth.route';
+import profileRoutes from './routes/profile.route';
+import gamificationRoutes from './routes/gamification.route';
+import calendarRoutes from './routes/calendar.route';
+import sessionRoutes from './routes/session.route';
+import feedbackRoutes from './routes/feedback.route';
 import cookieParser from 'cookie-parser';
 
 const app = express();

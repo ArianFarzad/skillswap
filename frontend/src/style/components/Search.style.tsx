@@ -6,9 +6,7 @@ export const AllProfilesContainer = styled.div`
   display: block;
   margin: 0 auto;
   padding: 20px;
-  border-radius: 8px;
   box-shadow: 0 0 10px var(--box-shadow-color);
-  width: 100%;
   height: calc(100vh - 250px);
   overflow: hidden;
 `;
@@ -41,9 +39,9 @@ export const ProfilesGrid = styled.div`
   gap: 1rem;
   margin: 2rem 1rem;
   overflow-y: auto;
+  scrollbar-width: none;
   max-height: calc(100vh - 300px);
   padding-bottom: 1rem;
-
   @media (max-width: 767px) {
     grid-template-columns: 1fr;
   }
@@ -56,6 +54,8 @@ export const ProfileCard = styled.div`
   box-shadow: 0 0 10px var(--box-shadow-color);
   padding: 1rem;
   text-align: center;
+  position: relative;
+  min-height: 8em;
 
   @media (max-width: 767px) {
     padding: 0.5rem;
@@ -64,31 +64,36 @@ export const ProfileCard = styled.div`
 
 export const ProfileCardTitle = styled.h3`
   margin: 0;
-  color: var(--primary-color);
-  cursor: pointer;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--text-color);
+  padding-bottom: 0.3em;
 
   @media (max-width: 767px) {
     font-size: 1.2rem;
   }
 `;
 
-export const ProfileCardText = styled.p`
-  margin: 0.5rem 0;
-  color: var(--secondary-color);
-
-  @media (max-width: 767px) {
-    font-size: 0.9rem;
-  }
+export const UserPoints = styled.p`
+  color: var(--text-color);
+  position: absolute;
+  bottom: 0.5em;
+  left: 1.2em;
+  margin: 0;
+  font-weight: bold;
+  font-size: 1.2rem;
 `;
 
 export const ProfileCardButton = styled.button`
   background-color: var(--primary-color);
-  color: var(--text-color);
+  color: var(--text-color-on-button);
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color var(--button-transition);
+  position: absolute;
+  bottom: 0.5em;
+  right: 1.2em;
 
   &:hover {
     background-color: var(--primary-color-hover);
@@ -98,6 +103,28 @@ export const ProfileCardButton = styled.button`
     padding: 8px 16px;
     font-size: 0.9rem;
   }
+`;
+
+export const Box = styled.div<{ text: string }>`
+  flex: 1;
+  background-color: ${(props) =>
+    props.text === 'skill' ? 'var(--skill-color)' : 'var(--interest-color)'};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    border: 2px solid black;
+  }
+`;
+
+export const BoxContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.3em;
+  margin-top: 0.5em;
+  min-height: 3em;
 `;
 
 export const KeywordInput = styled.input`

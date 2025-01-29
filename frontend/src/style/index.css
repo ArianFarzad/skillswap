@@ -2,7 +2,7 @@
   --primary-color: #1e4e72;
   --primary-color-hover: #0056b3;
   --secondary-color: #333;
-  --text-color: white;
+  --text-color: #333;
   --background-color: #f9f9f9;
   --background-color-nav: #ece6e6;
   --box-shadow-color: rgba(0, 0, 0, 0.1);
@@ -20,6 +20,42 @@
   --gradient-middle: #a59793;
   --gradient-end: #7b829c;
   --gradient-extra: #ae9f9f;
+  --bar-color: #232121;
+  --reverse-text-color: #f9f9f9;
+  --text-color-on-button: #f9f9f9;
+  --calendar-color: #eee7e7;
+  --skill-color: #ff9500;
+  --interest-color: #2ecc71;
+}
+
+body.dark-mode {
+  --primary-color: #1e4e72;
+  --primary-color-hover: #0056b3;
+  --secondary-color: #333;
+  --text-color: #f9f9f9;
+  --background-color: #333;
+  --background-color-nav: #444;
+  --box-shadow-color: rgba(255, 255, 255, 0.1);
+  --box-border-left: 2px solid #5e5e63;
+  --background-color-secondary: #555;
+  --input-border: 2px solid #ccc;
+  --input-border-radius: 5px;
+  --input-border-focus: 2px solid #007bff;
+  --input-padding: 0.75rem;
+  --input-box-shadow: inset 5px 5px 15px 5px rgba(255, 255, 255, 0.3);
+  --link-hover: rgb(91, 134, 172);
+  --button-transition: background-color 0.3s ease;
+  --button-border-redius: 5px;
+  --gradient-start: #8d8e98;
+  --gradient-middle: #a59793;
+  --gradient-end: #7b829c;
+  --gradient-extra: #ae9f9f;
+  --bar-color: #232121;
+  --reverse-text-color: #333;
+  --text-color-on-button: #f9f9f9;
+  --calendar-color: #555;
+  --skill-color: #ff9500;
+  --interest-color: #9b59b6;
 }
 
 html,
@@ -27,10 +63,14 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: var(--background-color);
+  background-color: var(--background-color);
   animation: gradientAnimation 15s ease infinite;
 }
 
 body * {
   font-family: monospace, sans-serif;
+}
+
+.App {
+  background-color: var(--background-color);
 }

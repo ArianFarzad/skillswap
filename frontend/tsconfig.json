@@ -39,7 +39,7 @@
     "noUncheckedSideEffectImports": true
     // Avoids unverified side effects in imports
   },
-  "include": ["src/**/*", "vite.config.ts"],
+  "include": ["src/**/*", "vite.config.ts", "node_modules/vitest/globals.d.ts"],
   // Includes all source files and Vite config
   "exclude": ["node_modules"]
   // Excludes `node_modules` from type-checking
