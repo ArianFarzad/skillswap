@@ -12,7 +12,7 @@ import {
 } from '../style/components/SettingsBar.style';
 import loggerInstance from '../utils/loggerInstance.ts';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { FiArrowLeft } from 'react-icons/fi';
 
 const SettingsBar: React.FC = () => {
   const { i18n } = useTranslation();
@@ -37,15 +37,15 @@ const SettingsBar: React.FC = () => {
     setLang(lng);
   };
 
-  const handleBackspaceClick = () => {
+  const handleGoBack = () => {
     navigate(-1);
   };
 
   return (
     <MainContainer>
       <LeftContainer>
-        <BackspaceButton onClick={handleBackspaceClick}>
-          <ArrowBackIcon />
+        <BackspaceButton onClick={handleGoBack}>
+          <FiArrowLeft />
         </BackspaceButton>
         <Label>
           <StyledInput
@@ -62,13 +62,13 @@ const SettingsBar: React.FC = () => {
           lang={lang}
           currentLang={'en'}
           onClick={() => changeLanguage('en')}
-        ></StyledFlag>
+        />
         <StyledFlag
           code="DE"
           lang={lang}
           currentLang={'de'}
           onClick={() => changeLanguage('de')}
-        ></StyledFlag>
+        />
       </RightContainer>
     </MainContainer>
   );

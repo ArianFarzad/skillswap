@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import {
-  Button,
-  Container,
-  FormArea,
-  Headline,
-  Headline2,
-  Input,
-  InputContainer,
-  Item,
-  ItemContainer,
-  List,
   MainContainer,
+  ProfileHeader,
+  ProfileContent,
+  Section,
+  SectionTitle,
+  SkillList,
+  SkillItem,
+  InterestList,
+  InterestItem,
+  InputGroup,
+  TextInput,
+  AddButton,
   RemoveButton,
+  EditButton,
 } from '../style/components/Profile.style';
 import axiosInstance from '../utils/axiosInstance';
 import loggerInstance from '../utils/loggerInstance.ts';
@@ -20,8 +22,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import toast from 'react-hot-toast';
 import { showToastError } from '../utils/toastUtils.ts';
-
 import { IProfile } from '../models/models.ts';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface ProfileProps {
   profile: IProfile | null;
@@ -33,6 +35,16 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
+  const [editModeSkill, setEditModeSkill] = useState(false);
+  const [editModeInterest, setEditModeInterest] = useState(false);
+
+  const handleEditSkill = () => {
+    setEditModeSkill(!editModeSkill);
+  };
+
+  const handleEditInterest = () => {
+    setEditModeInterest(!editModeInterest);
+  };
 
   const handleAddSkill = async () => {
     if (!newSkill.trim()) {
@@ -97,90 +109,89 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
   };
 
   return (
-    <>
-      <MainContainer>
-        <Headline data-testid={'profile-headline'}>{t('profile')}</Headline>
-        {profile && (
-          <FormArea>
-            <Container>
-              <Headline2>{t('skills')}</Headline2>
-              <List>
-                {profile.skills.map((skill: string) => (
-                  <li key={skill}>
-                    <ItemContainer>
-                      <Item>{skill}</Item>
-                      <RemoveButton
-                        data-testid={`remove-skill-${skill}`}
-                        onClick={() => handleRemoveSkill(skill)}
-                      >
-                        <RemoveIcon className={'react-remove-icon'} />
-                      </RemoveButton>
-                    </ItemContainer>
-                  </li>
-                ))}
-              </List>
-              <InputContainer>
-                <Input
+    <MainContainer>
+      <ProfileHeader>{t('your_profile')}</ProfileHeader>
+      {profile && (
+        <ProfileContent>
+          <Section>
+            <SectionTitle>
+              {t('skills')}{' '}
+              <EditButton onClick={handleEditSkill}>
+                <EditIcon />
+              </EditButton>
+            </SectionTitle>
+            <SkillList>
+              {profile.skills.map((skill) => (
+                <SkillItem key={skill}>
+                  {skill}
+                  {editModeSkill && (
+                    <RemoveButton onClick={() => handleRemoveSkill(skill)}>
+                      <RemoveIcon />
+                    </RemoveButton>
+                  )}
+                </SkillItem>
+              ))}
+            </SkillList>
+            {editModeSkill && (
+              <InputGroup>
+                <TextInput
                   type="text"
                   placeholder={t('new_skill')}
-                  data-testid="input-skill"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyDown={async (e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      await handleAddSkill();
-                    }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddSkill();
                   }}
                 />
-                <Button onClick={handleAddSkill} data-testid="add-skill-button">
-                  <AddIcon className={'react-add-icon'} />
-                </Button>
-              </InputContainer>
-            </Container>
-            <Container>
-              <Headline2>{t('interests')}</Headline2>
-              <List>
-                {profile.interests.map((interest: string) => (
-                  <li key={interest}>
-                    <ItemContainer>
-                      <Item>{interest}</Item>
-                      <RemoveButton
-                        onClick={() => handleRemoveInterest(interest)}
-                        data-testid={`remove-interest-${interest}`}
-                      >
-                        <RemoveIcon className={'react-remove-icon'} />
-                      </RemoveButton>
-                    </ItemContainer>
-                  </li>
-                ))}
-              </List>
-              <InputContainer>
-                <Input
+                <AddButton onClick={handleAddSkill}>
+                  <AddIcon />
+                </AddButton>
+              </InputGroup>
+            )}
+          </Section>
+
+          <Section>
+            <SectionTitle>
+              {t('interests')}
+              <EditButton onClick={handleEditInterest}>
+                <EditIcon />
+              </EditButton>
+            </SectionTitle>
+            <InterestList>
+              {profile.interests.map((interest) => (
+                <InterestItem key={interest}>
+                  {interest}
+                  {editModeInterest && (
+                    <RemoveButton
+                      onClick={() => handleRemoveInterest(interest)}
+                    >
+                      <RemoveIcon />
+                    </RemoveButton>
+                  )}
+                </InterestItem>
+              ))}
+            </InterestList>
+
+            {editModeInterest && (
+              <InputGroup>
+                <TextInput
                   type="text"
                   placeholder={t('new_interest')}
-                  data-testid="input-interest"
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
-                  onKeyDown={async (e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      await handleAddInterest();
-                    }
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddInterest();
                   }}
                 />
-                <Button
-                  onClick={handleAddInterest}
-                  data-testid="add-interest-button"
-                >
-                  <AddIcon className={'react-add-icon'} />
-                </Button>
-              </InputContainer>
-            </Container>
-          </FormArea>
-        )}
-      </MainContainer>
-    </>
+                <AddButton onClick={handleAddInterest}>
+                  <AddIcon />
+                </AddButton>
+              </InputGroup>
+            )}
+          </Section>
+        </ProfileContent>
+      )}
+    </MainContainer>
   );
 };
 

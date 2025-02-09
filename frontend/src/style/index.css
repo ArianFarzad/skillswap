@@ -8,12 +8,16 @@
   --box-shadow-color: rgba(0, 0, 0, 0.1);
   --box-border-left: 2px solid #5e5e63;
   --background-color-secondary: #eee8e8;
-  --input-border: 2px solid #ccc;
-  --input-border-radius: 5px;
+  --input-border: 2px solid var(--border-color);
+  --input-border-radius: 20px / 50%;
   --input-border-focus: 2px solid #007bff;
-  --input-padding: 0.75rem;
-  --input-box-shadow: inset 5px 5px 15px 5px rgba(0, 0, 0, 0.3);
-  --link-hover: rgb(91, 134, 172);
+  --input-border-color-focus: #555555;
+  --input-shadow-focus: 0 0 8px rgba(85, 85, 85, 0.3);
+  --input-outline-focus: none;
+  --input-padding: 0.75em 0 0.75em 1.5em;
+  --input-background: rgba(240, 240, 240, 0.9);
+  --link-color: #007bff;
+  --link-hover: #0056b3;
   --button-transition: background-color 0.3s ease;
   --button-border-redius: 5px;
   --gradient-start: #8d8e98;
@@ -26,6 +30,11 @@
   --calendar-color: #eee7e7;
   --skill-color: #ff9500;
   --interest-color: #2ecc71;
+  --border-color: #cccccc;
+  --info-text-color: #969090;
+  --text-secondary-color: #666666;
+  --error-color: #ff7675;
+  --error-color-hover: #ff5252;
 }
 
 body.dark-mode {
@@ -38,12 +47,16 @@ body.dark-mode {
   --box-shadow-color: rgba(255, 255, 255, 0.1);
   --box-border-left: 2px solid #5e5e63;
   --background-color-secondary: #555;
-  --input-border: 2px solid #ccc;
-  --input-border-radius: 5px;
-  --input-border-focus: 2px solid #007bff;
-  --input-padding: 0.75rem;
-  --input-box-shadow: inset 5px 5px 15px 5px rgba(255, 255, 255, 0.3);
-  --link-hover: rgb(91, 134, 172);
+  --input-border: 2px solid var(--border-color);
+  --input-border-radius: 20px / 50%;
+  --input-border-focus: 2px solid #a6adb0;
+  --input-background: rgba(240, 240, 240, 0.9);
+  --input-border-color-focus: #dacece;
+  --input-shadow-focus: 0 0 8px rgba(85, 85, 85, 0.3);
+  --input-outline-focus: none;
+  --input-padding: 0.75em 0 0.75em 1.5em;
+  --link-color: #007bff;
+  --link-hover: #0056b3;
   --button-transition: background-color 0.3s ease;
   --button-border-redius: 5px;
   --gradient-start: #8d8e98;
@@ -56,6 +69,11 @@ body.dark-mode {
   --calendar-color: #555;
   --skill-color: #ff9500;
   --interest-color: #9b59b6;
+  --border-color: #1e1c1c;
+  --info-text-color: #666;
+  --text-secondary-color: #a0a0a0;
+  --error-color: #ff5252;
+  --error-color-hover: #ff1744;
 }
 
 html,
@@ -68,7 +86,7 @@ body {
 }
 
 body * {
-  font-family: monospace, sans-serif;
+  font-family: 'Lucida Console', Monaco, monospace;
 }
 
 .App {

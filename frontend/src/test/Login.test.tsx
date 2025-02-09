@@ -3,13 +3,17 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Login from '../components/Login';
 import axiosInstance from '../utils/axiosInstance';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './testUtils/i18nTestConfig';
 
 describe('Login Component', () => {
   beforeEach(() => {
     render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>
+      <I18nextProvider i18n={i18n}>
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+      </I18nextProvider>
     );
   });
 
@@ -20,8 +24,8 @@ describe('Login Component', () => {
   });
 
   test('renders login form fields', () => {
-    const emailInput = screen.getByLabelText('Please_enter_your_email');
-    const passwordInput = screen.getByLabelText('Please_enter_your_password');
+    const emailInput = screen.getByLabelText('email_address');
+    const passwordInput = screen.getByLabelText('password');
     const loginButton = screen.getByTestId('login-button');
 
     expect(emailInput).toBeInTheDocument();
@@ -39,8 +43,8 @@ describe('Login Component', () => {
 
     (axiosInstance.post as jest.Mock).mockResolvedValue(mockResponse);
 
-    const emailInput = screen.getByLabelText('Please_enter_your_email');
-    const passwordInput = screen.getByLabelText('Please_enter_your_password');
+    const emailInput = screen.getByLabelText('email_address');
+    const passwordInput = screen.getByLabelText('password');
     const loginButton = screen.getByTestId('login-button');
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });

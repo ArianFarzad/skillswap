@@ -1,50 +1,53 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import {
-  Banner,
+  FilterContainer,
+  FilterInput,
+  KeywordInput,
   ListArea,
-  Logout,
   NavArea,
-  StyledLink,
 } from '../style/components/NavBar.style';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import PersonIcon from '@mui/icons-material/Person';
-import SearchIcon from '@mui/icons-material/Search';
-import LogoutIcon from '@mui/icons-material/Logout';
+import Search from './Search';
+import MyProfile from './MyProfile.tsx';
+import { IProfile } from '../models/models.ts';
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+  profile: IProfile | null;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ profile }) => {
   const { t } = useTypedTranslation();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('myUserId');
-    navigate('/login');
-  };
+  const [keyword, setKeyword] = useState('');
+  const [filter, setFilter] = useState('');
 
   return (
-    <Banner>
-      <NavArea>
-        <ListArea>
-          <li>
-            <StyledLink to="/profile">
-              <PersonIcon />
-              &nbsp;{t('profile')}
-            </StyledLink>
-          </li>
-          <li>
-            <StyledLink to="/search">
-              <SearchIcon />
-              &nbsp;{t('search')}
-            </StyledLink>
-          </li>
-        </ListArea>
-        <Logout className={'logout'} onClick={handleLogout}>
-          <LogoutIcon />
-          &nbsp;{t('logout')}
-        </Logout>
-      </NavArea>
-    </Banner>
+    <NavArea>
+      <ListArea>
+        <MyProfile profile={profile} />
+      </ListArea>
+      <Search keyword={keyword} filter={filter} />
+      <FilterContainer>
+        <KeywordInput
+          type="text"
+          placeholder={t('keyword')}
+          data-testid="keyword-input"
+          value={keyword}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setKeyword(e.target.value)
+          }
+        />
+        <FilterInput
+          type="number"
+          min="0"
+          placeholder={t('filter_by_points')}
+          data-testid="filter-input"
+          value={filter}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFilter(e.target.value)
+          }
+        />
+      </FilterContainer>
+    </NavArea>
   );
 };
 

@@ -1,46 +1,15 @@
 image: node:18
 
-services:
-  - name: mongo:latest
-    alias: mongo
-
-variables:
-  NODE_ENV: 'development'
-  MONGO_URI: "mongodb://mongo:27017/testdb"
-
-cache:
-  key: node-modules
-  paths:
-    - backend/node_modules/
-    - frontend/node_modules/
-
 stages:
-  - install
   - test
-  - lint
-  - format
-
-install_dependencies:
-  stage: install
-  script:
-    - cd backend
-    - npm ci
-    - npm run build
-    - cd ../frontend
-    - npm ci
-  artifacts:
-    paths:
-      - backend/node_modules/
-      - frontend/node_modules/
-
+  - analyze
 
 test_backend:
   stage: test
   script:
     - cd backend
+    - npm ci
     - npm test
-  dependencies:
-    - install_dependencies
 
 test_frontend:
   stage: test
@@ -48,30 +17,28 @@ test_frontend:
     - mkdir -p frontend/.nyc_output
   script:
     - cd frontend
+    - npm ci
     - npm run test:coverage
   artifacts:
     paths:
       - frontend/coverage/src/coverage.svg
     expire_in: 1 week
   coverage: '/All files\s*\|\s*([\d]+(\.\d+)?)%/'
-  dependencies:
-    - install_dependencies
 
-
-lint_frontend:
-  stage: lint
+analyze_backend:
+  stage: analyze
   script:
-    - cd frontend
+    - cd backend
+    - npm ci
     - npm run lint
-  dependencies:
-    - install_dependencies
+    - npm run format
 
-format_frontend:
-  stage: format
+analyze_frontend:
+  stage: analyze
   script:
     - cd frontend
+    - npm ci
+    - npm run lint
     - npm run format
-  dependencies:
-    - install_dependencies
 
 

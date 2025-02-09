@@ -2,17 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AllProfilesContainer,
-  AllProfilesHeadline,
-  Box,
-  BoxContainer,
-  FilterContainer,
-  FilterInput,
-  KeywordInput,
-  ProfileCard,
-  ProfileCardButton,
-  ProfileCardTitle,
-  ProfilesGrid,
+  ProfileList,
+  ProfileListItem,
+  ProfileListItemHeader,
+  ProfileListItemContent,
+  ProfileListItemDetails,
+  ProfileListItemActions,
   UserPoints,
+  Headline,
 } from '../style/components/Search.style';
 import axiosInstance from '../utils/axiosInstance';
 import loggerInstance from '../utils/loggerInstance.ts';
@@ -31,12 +28,15 @@ interface Profile {
   points?: number;
 }
 
-const Search: React.FC = () => {
+interface SearchArgs {
+  keyword: string;
+  filter: string;
+}
+
+const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
   const { t } = useTypedTranslation();
 
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [keyword, setKeyword] = useState('');
-  const [filter, setFilter] = useState('');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [popoverContent, setPopoverContent] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -121,64 +121,53 @@ const Search: React.FC = () => {
   const id = open ? 'simple-popover' : undefined;
 
   return (
-    <div className="search-area">
-      <FilterContainer>
-        <KeywordInput
-          type="text"
-          placeholder={t('keyword')}
-          data-testid="keyword-input"
-          value={keyword}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setKeyword(e.target.value)
-          }
-        />
-        <FilterInput
-          type="number"
-          min="0"
-          placeholder={t('filter_by_points')}
-          data-testid="filter-input"
-          value={filter}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFilter(e.target.value)
-          }
-        />
-      </FilterContainer>
+    <>
       <AllProfilesContainer>
-        <AllProfilesHeadline data-testid="search-headline">
-          {t('all_profiles')}
-        </AllProfilesHeadline>
-        <ProfilesGrid>
+        <Headline>{t('other_users')}</Headline>
+        <ProfileList>
           {profiles.length === 0 ? (
             <div>{t('no_profiles_found')}</div>
           ) : (
             profiles.map((profile) => (
-              <ProfileCard key={profile.id}>
-                <ProfileCardTitle>{profile.name}</ProfileCardTitle>
-
-                <BoxContainer>
-                  <Box
-                    text={'skill'}
-                    onClick={(e) => handleBoxClick('skills', profile, e)}
-                  >
-                    <strong>{t('skills')}</strong>
-                  </Box>
-                  <Box
-                    text={'interest'}
-                    onClick={(e) => handleBoxClick('interests', profile, e)}
-                  >
-                    <strong>{t('interests')}</strong>
-                  </Box>
-                </BoxContainer>
-                <UserPoints>{profile.points} P</UserPoints>
-                <ProfileCardButton
-                  onClick={() => handleChatRequest(profile.userId)}
-                >
-                  <ChatIcon />
-                </ProfileCardButton>
-              </ProfileCard>
+              <ProfileListItem key={profile.id}>
+                <ProfileListItemHeader>
+                  <h3>{profile.name}</h3>
+                  <UserPoints>{profile.points} P</UserPoints>
+                </ProfileListItemHeader>
+                <ProfileListItemContent>
+                  <ProfileListItemDetails>
+                    <div>
+                      <strong>{t('skills')}: </strong>
+                      <span
+                        onClick={(e) => handleBoxClick('skills', profile, e)}
+                      >
+                        {profile.skills.length > 0
+                          ? profile.skills.join(', ')
+                          : t('no_content_available')}
+                      </span>
+                    </div>
+                    <div>
+                      <strong>{t('interests')}: </strong>
+                      <span
+                        onClick={(e) => handleBoxClick('interests', profile, e)}
+                      >
+                        {profile.interests.length > 0
+                          ? profile.interests.join(', ')
+                          : t('no_content_available')}
+                      </span>
+                    </div>
+                  </ProfileListItemDetails>
+                  <ProfileListItemActions>
+                    <button onClick={() => handleChatRequest(profile.userId)}>
+                      <ChatIcon />
+                      {t('chat')}
+                    </button>
+                  </ProfileListItemActions>
+                </ProfileListItemContent>
+              </ProfileListItem>
             ))
           )}
-        </ProfilesGrid>
+        </ProfileList>
       </AllProfilesContainer>
 
       {/* Popover für Skills/Interessen */}
@@ -194,7 +183,7 @@ const Search: React.FC = () => {
       >
         <Typography sx={{ p: 2 }}>{popoverContent.join(', ')}</Typography>
       </Popover>
-    </div>
+    </>
   );
 };
 

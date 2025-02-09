@@ -1,13 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Welcome from '../components/Welcome';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './testUtils/i18nTestConfig';
 
 describe('Welcome Component', () => {
   beforeEach(() => {
     render(
-      <MemoryRouter>
-        <Welcome />
-      </MemoryRouter>
+      <I18nextProvider i18n={i18n}>
+        <MemoryRouter>
+          <Welcome />
+        </MemoryRouter>
+      </I18nextProvider>
     );
   });
 

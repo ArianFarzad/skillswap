@@ -1,21 +1,6 @@
 import '../index.css';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import banner from '../../assets/banner2.png';
-
-export const Banner = styled.div`
-  background-image: url(${banner});
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  width: 100%;
-  height: 30vh;
-  max-height: 50vh;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export const NavArea = styled.nav`
   background-color: var(--background-color-nav);
@@ -23,8 +8,6 @@ export const NavArea = styled.nav`
   flex-direction: row;
   gap: 10em;
   padding: 1.5em;
-  margin-top: 16em;
-  width: 100%;
   justify-content: space-between;
   height: 2em;
 
@@ -86,4 +69,34 @@ export const Logout = styled.p`
   @media (max-width: 768px) {
     font-size: 1em;
   }
+`;
+
+export const FilterContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    align-items: flex-end;
+  }
+`;
+
+export const KeywordInput = styled.input`
+  border: var(--input-border);
+  border-radius: var(--input-border-radius);
+  padding: var(--input-padding);
+  margin-right: 1rem;
+`;
+
+export const FilterInput = styled.input`
+  border: var(--input-border);
+  border-radius: var(--input-border-radius);
+  padding: var(--input-padding);
+  margin-right: 1rem;
 `;

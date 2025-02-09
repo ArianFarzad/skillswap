@@ -1,31 +1,40 @@
 import React, { useState } from 'react';
 import { saveAs } from 'file-saver';
-import { format } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import ReactPopover from 'react-popover';
 import {
-  AppointmentContainer,
-  AppointmentForm,
-  AppointmentInput,
-  AppointmentSubmit,
-  CalendarSection,
-  StyledInput,
+  ActionButton,
+  CalendarWrapper,
+  CloseButton,
+  Container,
   EventDot,
-  Headline,
-  Label,
-  PopoverBody,
-  Column,
-  Row,
-  ButtonRow,
-  FileSelect,
+  EventItem,
+  EventsPopup,
+  EventTime,
+  EventTitle,
+  FloatingLabel,
+  FormCard,
+  FormHeader,
+  GradientDivider,
+  InputGroup,
+  SectionTitle,
+  StyledInput,
+  UploadZone,
 } from '../style/components/BookAppointment.style';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import axiosInstance from '../utils/axiosInstance';
-import loggerInstance from '../utils/loggerInstance.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { toast } from 'react-hot-toast';
-import { showErrorMessage } from '../utils/toastUtils.ts';
+import {
+  FiCalendar,
+  FiClock,
+  FiUploadCloud,
+  FiWatch,
+  FiX,
+} from 'react-icons/fi';
+import log from '../utils/loggerInstance.ts';
+import { showToastError } from '../utils/toastUtils.ts';
 
 interface Event {
   summary: string;
@@ -36,37 +45,67 @@ interface Event {
 
 const BookAppointment: React.FC = () => {
   const { t } = useTypedTranslation();
-
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    startDateTime: '',
+    endDateTime: '',
+  });
   const [uploadedEvents, setUploadedEvents] = useState<Event[]>([]);
-  const [calendarDate, setCalendarDate] = useState<Value>(new Date());
-  const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Value>(new Date());
+  const [selectedDateEvents, setSelectedDateEvents] = useState<Event[]>([]);
+  const [showEventsPopup, setShowEventsPopup] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const validateDate = (): boolean => {
-    if (new Date(endDate) < new Date(startDate)) {
-      showErrorMessage('end_date_before_start_date', t);
-      return false;
-    }
-    return true;
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
   };
 
-  const handleBookAppointment = () => {
-    if (!validateDate()) {
+  const handleDragEnter = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileUpload({
+        target: { files },
+      } as React.ChangeEvent<HTMLInputElement>).catch((error) =>
+        showToastError(error, t)
+      );
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (new Date(formData.endDateTime) <= new Date(formData.startDateTime)) {
+      log.debug('Validation triggered: End date is before start date');
+      showToastError('end_date_before_start_date', t);
       return;
     }
-
     const icsContent = `
 BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VEVENT
-SUMMARY:${title}
-DESCRIPTION:${description}
-DTSTART:${format(new Date(startDate), "yyyyMMdd'T'HHmmss'Z'")}
-DTEND:${format(new Date(endDate), "yyyyMMdd'T'HHmmss'Z'")}
+SUMMARY:${formData.title}
+DESCRIPTION:${formData.description}
+DTSTART:${format(new Date(formData.startDateTime), "yyyyMMdd'T'HHmmss'Z'")}
+DTEND:${format(new Date(formData.endDateTime), "yyyyMMdd'T'HHmmss'Z'")}
 END:VEVENT
 END:VCALENDAR
     `.trim();
@@ -77,174 +116,173 @@ END:VCALENDAR
     saveAs(blob, 'appointment.ics');
   };
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', e.target.files[0]);
 
       try {
         const response = await axiosInstance.post<Event[]>(
           '/api/calendar/import',
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }
+          formData
         );
-        setUploadedEvents((prevEvents) => [...prevEvents, ...response.data]);
-        toast('File uploaded successfully.', { icon: '📅' });
+        setUploadedEvents([...uploadedEvents, ...response.data]);
+        toast.success(t('upload_ics'));
       } catch (error) {
-        loggerInstance.error('Error uploading file:', error);
-        showErrorMessage('error_uploading_file', t);
+        toast.error(t('end_date_before_start_date'));
+        log.error('Error uploading ICS file:', error);
       }
     }
   };
 
-  const handlePopoverOpen = (event: Event) => {
-    setSelectedEvent(event);
-    setPopoverOpen(true);
+  const handleDateClick = (date: Date) => {
+    const eventsForDay = uploadedEvents.filter((event) =>
+      isSameDay(new Date(event.start), date)
+    );
+    setSelectedDateEvents(eventsForDay);
+    setShowEventsPopup(true);
   };
 
-  const handlePopoverClose = () => {
-    setPopoverOpen(false);
-    setSelectedEvent(null);
+  const tileContent = ({ date }: { date: Date }) => {
+    const dayEvents = uploadedEvents.filter((event) =>
+      isSameDay(new Date(event.start), date)
+    );
+
+    return (
+      <div className="calendar-day" onClick={() => handleDateClick(date)}>
+        {dayEvents.map((_, index) => (
+          <EventDot key={index} count={dayEvents.length} />
+        ))}
+      </div>
+    );
   };
 
   return (
-    <>
-      <Headline
-        className="appointment-headline"
-        data-testid="bookAppointment-headline"
-      >
-        {t('book_appointment')}
-      </Headline>
-      <AppointmentContainer>
-        <CalendarSection>
-          <Calendar
-            onChange={(value: Value) => setCalendarDate(value)}
-            value={calendarDate}
-            className={'react-calendar'}
-            tileContent={({ date }) => {
-              const eventsOnDate = uploadedEvents.filter(
-                (event) =>
-                  new Date(event.start).toDateString() === date.toDateString()
-              );
+    <Container>
+      <CalendarWrapper>
+        <SectionTitle data-testid={'book-appointment-headline'}>
+          <FiCalendar />
+          {t('calendar')}
+        </SectionTitle>
+        <Calendar
+          value={selectedDate}
+          onChange={setSelectedDate}
+          tileContent={tileContent}
+          className="custom-calendar"
+        />
 
-              if (eventsOnDate.length > 0) {
-                return (
-                  <div>
-                    {eventsOnDate.map((event, index) => (
-                      <EventDot
-                        key={index}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePopoverOpen(event);
-                        }}
-                      >
-                        ●
-                      </EventDot>
-                    ))}
-                  </div>
-                );
-              }
-              return null;
-            }}
-          />
-        </CalendarSection>
-
-        {selectedEvent && (
-          <ReactPopover
-            isOpen={popoverOpen}
-            body={
-              <PopoverBody>
-                <h4>{selectedEvent.summary}</h4>
-                <p>{selectedEvent.description}</p>
-                <p>Start: {new Date(selectedEvent.start).toLocaleString()}</p>
-                <p>End': {new Date(selectedEvent.end).toLocaleString()}</p>
-                <button onClick={handlePopoverClose}>{t('close')}</button>
-              </PopoverBody>
-            }
-            onOuterAction={handlePopoverClose}
-          >
-            <div />
-          </ReactPopover>
+        {showEventsPopup && (
+          <EventsPopup>
+            <CloseButton onClick={() => setShowEventsPopup(false)}>
+              <FiX />
+            </CloseButton>
+            <h3>{format(selectedDate as Date, 'dd.MM.yyyy')}</h3>
+            {selectedDateEvents.length > 0 ? (
+              selectedDateEvents.map((event, index) => (
+                <EventItem key={index}>
+                  <EventTitle>
+                    <FiWatch />
+                    {event.summary}
+                  </EventTitle>
+                  <EventTime>
+                    {format(new Date(event.start), 'HH:mm')} -{' '}
+                    {format(new Date(event.end), 'HH:mm')}
+                  </EventTime>
+                  <p>{event.description}</p>
+                </EventItem>
+              ))
+            ) : (
+              <p>{t('no_events')}</p>
+            )}
+          </EventsPopup>
         )}
+      </CalendarWrapper>
 
-        <AppointmentForm
-          id="appointment-form"
-          data-testid="appointment-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleBookAppointment();
-          }}
+      <FormCard
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(e);
+        }}
+      >
+        <FormHeader>
+          <h2>{t('new_appointment')}</h2>
+          <div className="accent-line" />
+        </FormHeader>
+
+        <InputGroup>
+          <FloatingLabel>
+            <label htmlFor={'title'}>{t('event_title')}</label>
+            <StyledInput
+              id="title"
+              type="text"
+              value={formData.title}
+              onChange={handleInputChange}
+              required
+            />
+          </FloatingLabel>
+        </InputGroup>
+
+        <InputGroup>
+          <FloatingLabel>
+            <label htmlFor={'description'}>{t('description')}</label>
+            <StyledInput
+              id="description"
+              type="text"
+              value={formData.description}
+              onChange={handleInputChange}
+              required
+            />
+          </FloatingLabel>
+        </InputGroup>
+
+        <GradientDivider />
+
+        <InputGroup $icon>
+          <FiClock />
+          <FloatingLabel>
+            <label htmlFor={'startDateTime'}>{t('start_time')}</label>
+            <StyledInput
+              id="startDateTime"
+              type="datetime-local"
+              value={formData.startDateTime}
+              onChange={handleInputChange}
+              required
+            />
+          </FloatingLabel>
+        </InputGroup>
+
+        <InputGroup $icon>
+          <FiClock />
+          <FloatingLabel>
+            <label htmlFor={'endDateTime'}>{t('end_time')}</label>
+            <StyledInput
+              id="endDateTime"
+              type="datetime-local"
+              value={formData.endDateTime}
+              onChange={handleInputChange}
+              required
+            />
+          </FloatingLabel>
+        </InputGroup>
+
+        <UploadZone
+          $isDragging={isDragging}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
         >
-          <Row>
-            <Column>
-              <AppointmentInput>
-                <Label htmlFor="title-input">{t('title')}</Label>
-                <StyledInput
-                  id="title-input"
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </AppointmentInput>
-              <AppointmentInput>
-                <Label htmlFor="description-input">{t('description')}</Label>
-                <StyledInput
-                  id="description-input"
-                  type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                />
-              </AppointmentInput>
-            </Column>
-            <Column>
-              <AppointmentInput>
-                <Label htmlFor="start-date-input">{t('start_date')}</Label>
-                <StyledInput
-                  id="start-date-input"
-                  type="datetime-local"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  required
-                />
-              </AppointmentInput>
-              <AppointmentInput>
-                <Label htmlFor="end-date-input">{t('end_date')}</Label>
-                <StyledInput
-                  id="end-date-input"
-                  type="datetime-local"
-                  value={endDate}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEndDate(e.target.value)
-                  }
-                  required
-                />
-              </AppointmentInput>
-            </Column>
-          </Row>
-          <ButtonRow>
-            <div className="upload-section">
-              <FileSelect type="file" onChange={handleFileUpload} />
-            </div>
-            <AppointmentSubmit
-              data-testid="book-appointment-button"
-              id="appointment-submit"
-              type="submit"
-            >
-              {t('book_and_export')}
-            </AppointmentSubmit>
-          </ButtonRow>
-        </AppointmentForm>
-      </AppointmentContainer>
-    </>
+          <FiUploadCloud className="upload-icon" />
+          <input type="file" onChange={handleFileUpload} />
+          <p>{t('drag_and_drop')}</p>
+          <span className="file-types">.ics, .ical</span>
+        </UploadZone>
+
+        <ActionButton data-testid={'book-appointment-button'} type="submit">
+          {t('create_event')}
+        </ActionButton>
+      </FormCard>
+    </Container>
   );
 };
 

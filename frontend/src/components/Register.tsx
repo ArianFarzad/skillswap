@@ -8,6 +8,10 @@ import {
   Paragraph,
   RegisterArea,
   RegisterMessage,
+  Row,
+  Column,
+  SpaceBetween,
+  RowLeft,
 } from '../style/components/Register.style';
 import axiosInstance from '../utils/axiosInstance';
 import toast from 'react-hot-toast';
@@ -20,7 +24,12 @@ const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
+
+  const handlePasswordVisibility = () => {
+    setPasswordVisible((prevState) => !prevState);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,44 +49,60 @@ const Register = () => {
   return (
     <>
       <RegisterArea>
-        <Headline data-testid={'register-headline'}>{t('register')}</Headline>
-        <Paragraph>{t('Please_fill_in_your_details_to_register')}</Paragraph>
-        <form onSubmit={handleSubmit}>
-          <Label htmlFor={'input-name'}>{t('Please_enter_a_username')}</Label>
-          <Input
-            type="text"
-            id={'input-name'}
-            placeholder={t('name')}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <Label htmlFor={'input-email'}>{t('Please_enter_your_email')}</Label>
-          <Input
-            type="email"
-            id={'input-email'}
-            placeholder={t('email')}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <Label htmlFor={'input-password'}>
-            {t('Please_enter_a_password')}
-          </Label>
-          <Input
-            type="password"
-            id={'input-password'}
-            placeholder={t('password')}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <Headline data-testid={'register-headline'}>{t('sign_up')}</Headline>
+        <RowLeft>
+          <Paragraph>{t('Already_have_an_account?')}</Paragraph>
           <RegisterMessage onClick={() => navigate('/login')}>
-            {t('Already_have_an_account?')}
+            {t('sign_in')}
           </RegisterMessage>
-          <Button data-testid={'register-button'} type="submit">
-            {t('register')}
-          </Button>
+        </RowLeft>
+        <form onSubmit={handleSubmit}>
+          <Column>
+            <Label htmlFor={'input-name'}>{t('username')}</Label>
+            <Input
+              type="text"
+              id={'input-name'}
+              placeholder={t('your_name')}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </Column>
+          <Column>
+            <Label htmlFor={'input-email'}>{t('email_address')}</Label>
+            <Input
+              type="email"
+              id={'input-email'}
+              placeholder={'you@example.com'}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Column>
+          <Column>
+            <Label htmlFor={'input-password'}>{t('password')}</Label>
+            <Input
+              type={passwordVisible ? 'text' : 'password'}
+              id={'input-password'}
+              placeholder={t('enter_password')}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Column>
+          <SpaceBetween>
+            <Row>
+              <input
+                type={'checkbox'}
+                onChange={handlePasswordVisibility}
+                id={'show_password'}
+              />
+              <Label htmlFor={'show_password'}>{t('show_password')}</Label>
+            </Row>
+            <Button data-testid={'register-button'} type="submit">
+              {t('register')}
+            </Button>
+          </SpaceBetween>
         </form>
       </RegisterArea>
     </>

@@ -39,8 +39,8 @@ type FlattenedKeys = NestedKeys<typeof enTranslations>;
  */
 type NestedKeys<T> = T extends object
   ? {
-    [K in keyof T]: `${K & string}${T[K] extends object ? `.${NestedKeys<T[K]>}` : ''}`;
-  }[keyof T]
+      [K in keyof T]: `${K & string}${T[K] extends object ? `.${NestedKeys<T[K]>}` : ''}`;
+    }[keyof T]
   : never;
 
 const extractKeys = (obj: object, prefix = ''): string[] => {

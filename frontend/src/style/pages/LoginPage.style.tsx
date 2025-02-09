@@ -8,4 +8,10 @@ export const MainContainer = styled.div`
   flex-direction: row;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background-color: var(--background-color);
+
+  @media (max-width: 767px) {
+    & > :first-child {
+      display: none;
+    }
+  }
 `;

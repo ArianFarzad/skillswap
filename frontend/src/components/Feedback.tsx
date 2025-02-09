@@ -1,14 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  FeedbackCard,
+  FeedbackContainer,
+  FeedbackForm,
   FeedbackHeader,
-  FeedbacksList,
-  FeedbackSubmitButton,
+  FeedbackList,
+  FeedbackCard,
+  FeedbackUser,
+  FeedbackRating,
+  FeedbackComment,
   FeedbackTextarea,
-  FlexRow,
-  Headline,
-  Star,
   StarRating,
+  Star,
+  SubmitButton,
+  AverageRating,
+  AverageRatingText,
 } from '../style/components/Feedback.style';
 import loggerInstance from '../utils/loggerInstance.ts';
 import { IFeedback } from '../models/models.ts';
@@ -74,57 +79,59 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   };
 
   return (
-    <>
-      <Headline>{t('rate_session')}</Headline>
-      <FeedbackTextarea
-        placeholder={t('enter_feedback')}
-        rows={5}
-        cols={50}
-        maxLength={200}
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      />
-      <FlexRow>
+    <FeedbackContainer>
+      <FeedbackHeader>{t('rate_session')}</FeedbackHeader>
+      <FeedbackForm>
+        <FeedbackTextarea
+          placeholder={t('enter_feedback')}
+          rows={5}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
         <StarRating>
           {[...Array(5)].map((_, index) => (
-            <Star key={index} onClick={() => handleRating(index + 1)}>
+            <Star
+              key={index}
+              active={index < rating}
+              onClick={() => handleRating(index + 1)}
+            >
               {index < rating ? '★' : '☆'}
             </Star>
           ))}
         </StarRating>
-        <FeedbackSubmitButton onClick={handleSendFeedback}>
+        <SubmitButton onClick={handleSendFeedback}>
           {t('submit_feedback')}
-        </FeedbackSubmitButton>
-      </FlexRow>
-      <Headline>{t('feedbacks_for_session')}</Headline>
-      <FeedbacksList>
+        </SubmitButton>
+      </FeedbackForm>
+
+      <FeedbackHeader>{t('feedbacks_for_session')}</FeedbackHeader>
+      <FeedbackList>
         {feedbacks.map((feedback, index) => (
           <FeedbackCard key={index}>
-            <FeedbackHeader>
-              <p>
-                <strong>{feedback.userId.name}</strong>
-              </p>
-              <p>
-                {'★'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating)}
-              </p>
-            </FeedbackHeader>
-            <p>{feedback.feedback}</p>
+            <FeedbackUser>
+              <strong>{feedback.userId.name}</strong>
+            </FeedbackUser>
+            <FeedbackRating>
+              {'★'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating)}
+            </FeedbackRating>
+            <FeedbackComment>{feedback.feedback}</FeedbackComment>
           </FeedbackCard>
         ))}
-      </FeedbacksList>
+      </FeedbackList>
+
       {averageRating !== null && (
-        <FlexRow>
-          <Headline>{t('average_rating')}</Headline>
-          <p>
+        <AverageRating>
+          <AverageRatingText>{t('average_rating')}</AverageRatingText>
+          <StarRating>
             {[...Array(5)].map((_, index) => (
-              <Star key={index}>
+              <Star key={index} active={index < Math.ceil(averageRating)}>
                 {index < Math.ceil(averageRating) ? '★' : '☆'}
               </Star>
             ))}
-          </p>
-        </FlexRow>
+          </StarRating>
+        </AverageRating>
       )}
-    </>
+    </FeedbackContainer>
   );
 };
 

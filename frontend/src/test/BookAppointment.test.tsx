@@ -1,29 +1,34 @@
-import './testUtils/mocks.ts'; // Die Mocks werden hier importiert
-import { render, screen, fireEvent } from '@testing-library/react';
+import './testUtils/mocks.ts';
+import i18n from './testUtils/i18nTestConfig';
 import { MemoryRouter } from 'react-router-dom';
+
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import BookAppointment from '../components/BookAppointment';
 import { saveAs } from 'file-saver';
-import { showErrorMessage } from '../utils/toastUtils';
+import { showToastError } from '../utils/toastUtils';
+import { I18nextProvider } from 'react-i18next';
 
 describe('BookAppointment Component', () => {
   beforeEach(() => {
     render(
-      <MemoryRouter>
-        <BookAppointment />
-      </MemoryRouter>
+      <I18nextProvider i18n={i18n}>
+        <MemoryRouter>
+          <BookAppointment />
+        </MemoryRouter>
+      </I18nextProvider>
     );
   });
 
   test('renders book appointment headline', () => {
-    const headline = screen.getByTestId('bookAppointment-headline');
+    const headline = screen.getByTestId('book-appointment-headline');
     expect(headline).toBeInTheDocument();
-    expect(headline.textContent).toBe('book_appointment');
+    expect(headline.textContent).toBe('calendar');
   });
 
   test('renders book appointment form fields', () => {
-    const startDate = screen.getByLabelText('start_date');
-    const endDate = screen.getByLabelText('end_date');
-    const titleInput = screen.getByLabelText('title');
+    const startDate = screen.getByLabelText('start_time');
+    const endDate = screen.getByLabelText('end_time');
+    const titleInput = screen.getByLabelText('event_title');
     const descriptionInput = screen.getByLabelText('description');
     const bookAppointmentButton = screen.getByTestId('book-appointment-button');
 
@@ -35,10 +40,10 @@ describe('BookAppointment Component', () => {
   });
 
   test('submit book appointment form successfully', async () => {
-    const titleInput = screen.getByLabelText('title');
+    const titleInput = screen.getByLabelText('event_title');
     const descriptionInput = screen.getByLabelText('description');
-    const startDateInput = screen.getByLabelText('start_date');
-    const endDateInput = screen.getByLabelText('end_date');
+    const startDateInput = screen.getByLabelText('start_time');
+    const endDateInput = screen.getByLabelText('end_time');
     const bookAppointmentButton = screen.getByTestId('book-appointment-button');
 
     fireEvent.change(titleInput, { target: { value: 'Meeting' } });
@@ -48,31 +53,34 @@ describe('BookAppointment Component', () => {
 
     fireEvent.click(bookAppointmentButton);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(saveAs).toHaveBeenCalled();
-    expect(saveAs).toHaveBeenCalledWith(expect.any(Blob), 'appointment.ics');
+    await waitFor(() => {
+      expect(saveAs).toHaveBeenCalled();
+      expect(saveAs).toHaveBeenCalledWith(expect.any(Blob), 'appointment.ics');
+    });
   });
 
   test('handle book appointment form error', async () => {
-    const titleInput = screen.getByLabelText('title');
+    const titleInput = screen.getByLabelText('event_title');
     const descriptionInput = screen.getByLabelText('description');
-    const startDateInput = screen.getByLabelText('start_date');
-    const endDateInput = screen.getByLabelText('end_date');
+    const startDateInput = screen.getByLabelText('start_time');
+    const endDateInput = screen.getByLabelText('end_time');
     const bookAppointmentButton = screen.getByTestId('book-appointment-button');
 
     fireEvent.change(titleInput, { target: { value: 'Meeting' } });
-    fireEvent.change(descriptionInput, { target: { value: 'Team sync-up' } });
+    fireEvent.change(descriptionInput, {
+      target: { value: 'Follow-up Meeting' },
+    });
     fireEvent.change(startDateInput, { target: { value: '2025-01-26T11:00' } });
     fireEvent.change(endDateInput, { target: { value: '2025-01-26T10:00' } });
 
     fireEvent.click(bookAppointmentButton);
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(showErrorMessage).toHaveBeenCalledWith(
-      'end_date_before_start_date',
-      expect.any(Function)
-    );
+    await waitFor(() => {
+      expect(showToastError).toHaveBeenCalledTimes(1);
+      expect(showToastError).toHaveBeenCalledWith(
+        'end_date_before_start_date',
+        expect.any(Function)
+      );
+    });
   });
 });
