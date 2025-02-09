@@ -4,141 +4,150 @@ import '../index.css';
 export const AllProfilesContainer = styled.div`
   background-color: var(--background-color);
   display: block;
-  margin: 0 auto;
-  padding: 20px;
-  box-shadow: 0 0 10px var(--box-shadow-color);
-  height: calc(100vh - 250px);
-  overflow: hidden;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 45%;
+  height: 25em;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: absolute;
+  right: 2em;
+  top: 11em;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 768px) {
+    top: 60%;
+    width: 30%;
+    height: 15em;
+  }
 `;
 
-export const AllProfilesHeadline = styled.h2`
-  color: var(--primary-color);
-  font-size: 1.5rem;
+export const Headline = styled.h1`
+  font-size: 2rem;
+  color: var(--text-color);
   margin: 0;
-  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
-export const FilterContainer = styled.div`
+export const ProfileList = styled.ul`
+  list-style: none;
+  padding: 0;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  height: 22em;
+
+  @media (max-width: 768px) {
+    height: 12em;
+  }
+`;
+
+export const ProfileListItem = styled.li`
+  background-color: var(--background-color-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const ProfileListItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 6rem;
   margin-bottom: 1rem;
 
-  @media (max-width: 767px) {
+  h3 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    h3 {
+      font-size: 1rem;
+    }
     flex-direction: column;
-    align-items: center;
-    margin-top: 8em;
-    gap: 1rem;
+    gap: 0.5rem;
+    align-items: flex-start;
   }
 `;
 
-export const ProfilesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+export const ProfileListItemContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 1rem;
-  margin: 2rem 1rem;
-  overflow-y: auto;
-  scrollbar-width: none;
-  max-height: calc(100vh - 300px);
-  padding-bottom: 1rem;
-  @media (max-width: 767px) {
-    grid-template-columns: 1fr;
+  flex-direction: column;
+`;
+
+export const ProfileListItemDetails = styled.div`
+  flex: 1;
+
+  div {
+    margin-bottom: 0.5rem;
+
+    strong {
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    span {
+      color: var(--link-color);
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: var(--link-hover);
+      }
+    }
   }
 `;
 
-export const ProfileCard = styled.div`
-  background-color: var(--background-color);
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 0 10px var(--box-shadow-color);
-  padding: 1rem;
-  text-align: center;
-  position: relative;
-  min-height: 8em;
+export const ProfileListItemActions = styled.div`
+  button {
+    background-color: var(--primary-color);
+    color: var(--text-color-on-button);
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
-  @media (max-width: 767px) {
-    padding: 0.5rem;
-  }
-`;
+    &:hover {
+      background-color: var(--primary-color-hover);
+    }
 
-export const ProfileCardTitle = styled.h3`
-  margin: 0;
-  color: var(--text-color);
-  border-bottom: 1px solid var(--text-color);
-  padding-bottom: 0.3em;
-
-  @media (max-width: 767px) {
-    font-size: 1.2rem;
+    svg {
+      color: var(--text-color-on-button);
+    }
   }
 `;
 
 export const UserPoints = styled.p`
   color: var(--text-color);
-  position: absolute;
-  bottom: 0.5em;
-  left: 1.2em;
   margin: 0;
   font-weight: bold;
   font-size: 1.2rem;
-`;
-
-export const ProfileCardButton = styled.button`
-  background-color: var(--primary-color);
-  color: var(--text-color-on-button);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color var(--button-transition);
-  position: absolute;
-  bottom: 0.5em;
-  right: 1.2em;
-
-  &:hover {
-    background-color: var(--primary-color-hover);
-  }
-
-  @media (max-width: 767px) {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-  }
-`;
-
-export const Box = styled.div<{ text: string }>`
-  flex: 1;
-  background-color: ${(props) =>
-    props.text === 'skill' ? 'var(--skill-color)' : 'var(--interest-color)'};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-
-  &:hover {
-    border: 2px solid black;
-  }
-`;
-
-export const BoxContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 0.3em;
-  margin-top: 0.5em;
-  min-height: 3em;
-`;
-
-export const KeywordInput = styled.input`
-  border: var(--input-border);
-  border-radius: var(--input-border-radius);
-  padding: var(--input-padding);
-  box-shadow: var(--input-box-shadow);
-  margin-right: 1rem;
-`;
-
-export const FilterInput = styled.input`
-  border: var(--input-border);
-  border-radius: var(--input-border-radius);
-  padding: var(--input-padding);
-  box-shadow: var(--input-box-shadow);
-  margin-right: 1rem;
 `;

@@ -1,136 +1,213 @@
-import '../index.css';
 import styled from 'styled-components';
+import '../index.css';
 
 export const MainContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
   background-color: var(--background-color);
-  margin: 0;
-  height: 75vh;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 40%;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  left: 0.5em;
+  scale: 0.85;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  }
 
   @media (max-width: 768px) {
-    margin-top: 2em;
-    height: auto;
+    max-width: 35%;
   }
 `;
 
-export const Headline = styled.h2`
-  border-radius: 7px;
-  color: var(--primary-color);
-  width: 100%;
-  padding: 1em 0;
-  text-align: center;
-  margin: 0;
+export const ProfileHeader = styled.h1`
+  color: var(--text-color);
+  font-size: 2.5rem;
+  text-align: left;
+  margin-bottom: 2rem;
+  font-weight: 700;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
-export const FormArea = styled.div`
+export const ProfileContent = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 3rem;
-  width: 100%;
+  flex-direction: column;
+  gap: 2rem;
+`;
+
+export const Section = styled.div`
+  background-color: var(--background-color-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+`;
+
+export const SectionTitle = styled.h2`
+  color: var(--text-color);
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+`;
+
+export const SkillList = styled.ul`
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+`;
+
+export const SkillItem = styled.li`
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.3rem;
+    gap: 0.1rem;
+  }
+`;
+
+export const InterestList = styled.ul`
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+`;
+
+export const InterestItem = styled.li`
+  background-color: var(--secondary-color);
+  color: var(--text-color-on-button);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.3rem;
+    gap: 0.1rem;
+  }
+`;
+
+export const InputGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 1rem;
+    font-size: 0.1rem;
+
+    * {
+      font-size: 1rem;
+    }
   }
 `;
 
-export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-`;
-
-export const Headline2 = styled.h3`
-  text-align: left;
-  margin: 0;
-  color: var(--text-color);
-  border-bottom: var(--text-color) 1px solid;
-`;
-
-export const InputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  margin-top: auto;
-`;
-
-export const Input = styled.input`
+export const TextInput = styled.input`
+  flex: 1;
   padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
   font-size: 1rem;
-  border: none;
-  border-bottom: 2px solid #ccc;
   transition: border-color 0.3s ease;
-  border-radius: 5px 0 0 5px;
 
   &:focus {
-    border: none;
+    border-color: var(--primary-color);
     outline: none;
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: stretch;
   }
 `;
 
-export const Button = styled.button`
+export const AddButton = styled.button`
   background-color: var(--primary-color);
   border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  border-radius: 0 5px 5px 0;
-  height: 100%;
-
-  .react-add-icon {
-    color: var(--text-color-on-button);
-  }
 
   &:hover {
     background-color: var(--primary-color-hover);
+  }
+
+  svg {
+    color: var(--text-color-on-button);
   }
 `;
 
 export const RemoveButton = styled.button`
-  border-radius: 0 5px 5px 0;
-  background-color: var(--primary-color);
+  background-color: transparent;
   border: none;
   cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
 
-  .react-remove-icon {
+  svg {
     color: var(--text-color-on-button);
+    transition: color 0.3s ease;
   }
+
+  &:hover svg {
+    color: var(--error-color);
+  }
+
+  @media (max-width: 768px) {
+    scale: 0.7;
+  }
+`;
+
+export const EditButton = styled.button`
+  background-color: var(--primary-color);
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 50%;
+  font-size: 0.3em;
 
   &:hover {
     background-color: var(--primary-color-hover);
   }
-`;
 
-export const ItemContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  color: var(--text-color);
-  justify-content: space-between;
-  background-color: var(--background-color-secondary);
-  border-radius: 5px;
-`;
+  svg {
+    color: var(--text-color-on-button);
+  }
 
-export const List = styled.ul`
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  height: 15em;
-  overflow-y: scroll;
-  scrollbar-width: none;
-`;
-
-export const Item = styled.p`
-  padding-left: 0.8em;
-  text-decoration: none;
+  @media (max-width: 768px) {
+    &:first-child {
+      scale: 0.7;
+    }
+  }
 `;

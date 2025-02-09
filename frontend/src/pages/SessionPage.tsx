@@ -8,18 +8,16 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { calculatePoints } from '../utils/helpers';
 import { toast } from 'react-hot-toast';
 import {
-  ButtonText,
   CalendarContainer,
   ChatContainer,
   EndSession,
   EndSessionButton,
   FeedbackContainer,
-  FeedbackToggle,
   OptionP,
   ReversedRow,
   SessionContent,
   StyledP,
-  ToggleButton,
+  FeedbackButton,
 } from '../style/pages/SessionPage.style';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import axiosInstance from '../utils/axiosInstance.ts';
@@ -35,7 +33,11 @@ const SessionPage: React.FC = () => {
   const [isEndSessionActivated, setIsEndSessionActivated] = useState(false);
   const [exchangeMessagesCount, setExchangeMessagesCount] = useState(0);
 
-  const disableButton = exchangeMessagesCount < 10;
+  const isEndSessionValid = exchangeMessagesCount < 10;
+
+  const handleFeedbackVisibility = () => {
+    setIsFeedbackVisible((prevState) => !prevState);
+  };
 
   const handleMessagesCountChange = (count: number) => {
     setExchangeMessagesCount(count);
@@ -79,29 +81,18 @@ const SessionPage: React.FC = () => {
             <BookAppointment />
           </CalendarContainer>
           <ChatContainer>
-            <Chat
-              sessionId={sessionId}
-              senderId={senderId}
-              onMessagesCountChange={handleMessagesCountChange}
-            />
+            {isFeedbackVisible ? (
+              <FeedbackContainer>
+                <Feedback sessionId={sessionId} senderId={senderId} />
+              </FeedbackContainer>
+            ) : (
+              <Chat
+                sessionId={sessionId}
+                senderId={senderId}
+                onMessagesCountChange={handleMessagesCountChange}
+              />
+            )}
           </ChatContainer>
-          <FeedbackToggle>
-            <ToggleButton
-              data-testid="toggle-feedback-btn"
-              onClick={() => setIsFeedbackVisible(!isFeedbackVisible)}
-            >
-              {isFeedbackVisible ? (
-                <ButtonText>{t('book_appointment')}</ButtonText>
-              ) : (
-                <ButtonText>{t('give_feedback')}</ButtonText>
-              )}
-            </ToggleButton>
-          </FeedbackToggle>
-          {isFeedbackVisible && (
-            <FeedbackContainer>
-              <Feedback sessionId={sessionId} senderId={senderId} />
-            </FeedbackContainer>
-          )}
         </SessionContent>
         <EndSession>
           <ReversedRow>
@@ -119,12 +110,18 @@ const SessionPage: React.FC = () => {
               </>
             )}
             <EndSessionButton
-              disabled={disableButton}
-              disabledStyle={disableButton}
+              disabled={isEndSessionValid}
+              disabledStyle={isEndSessionValid}
               onClick={handleActivateEndSession}
             >
               {t('end_session')}
             </EndSessionButton>
+            <FeedbackButton
+              displayStyle={!isEndSessionValid}
+              onClick={handleFeedbackVisibility}
+            >
+              {t('give_feedback')}
+            </FeedbackButton>
           </ReversedRow>
         </EndSession>
       </>

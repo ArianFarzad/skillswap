@@ -10,12 +10,12 @@
     "test": "jest",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
     "format": "prettier --write .",
-    "start:all": "concurrently \"npm start\" \"cd ../frontend && npm run dev\"",
+    "start:all": "concurrently \"npm run dev\" \"cd ../frontend && npm run dev\"",
     "install:all": "npm install && cd ../frontend && npm install",
-    "test:all": "npm test && cd ../frontend && npm test",
+    "test:all": "npm test && cd ../frontend && npm run test:ci",
     "lint:all": "npm run lint && cd ../frontend && npm run lint",
     "format:all": "npm run format && cd ../frontend && npm run format",
-    "pre-commit": "npm run lint:all && npm run format:all"
+    "pre-commit": "npm run lint:all && npm run format:all && npm run test:all"
   },
   "license": "MIT",
   "dependencies": {

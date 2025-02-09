@@ -1,12 +1,15 @@
 import React from 'react';
 import {
-  Headline,
-  Line,
+  ProfileContainer,
   Row,
+  Column,
   StyledP,
+  Line,
+  ProfileIconWrapper,
+  PointsBadge,
 } from '../style/components/MyProfile.style';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-
+import Profile from '@mui/icons-material/AccountCircle';
 import { IProfile } from '../models/models.ts';
 
 interface MyProfileProps {
@@ -17,20 +20,22 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
   const { t } = useTypedTranslation();
 
   return (
-    <div>
-      <Headline>{t('welcome')}</Headline>
-      <Line></Line>
+    <ProfileContainer>
       <Row>
-        <StyledP>{t('username')}</StyledP>
-        <StyledP>{profile?.name || t('loading')}</StyledP>
+        <ProfileIconWrapper>
+          <Profile className="profile-icon" />
+        </ProfileIconWrapper>
+        <Column>
+          <StyledP className="profile-name">
+            {profile?.name || t('loading')}
+          </StyledP>
+          <Line />
+          <StyledP>
+            {t('points')}: <PointsBadge>{profile?.points ?? 0}</PointsBadge>
+          </StyledP>
+        </Column>
       </Row>
-      <Line></Line>
-      <Row>
-        <StyledP>{t('points')}</StyledP>
-        <StyledP>{profile?.points ?? 0}</StyledP>
-      </Row>
-      <Line></Line>
-    </div>
+    </ProfileContainer>
   );
 };
 

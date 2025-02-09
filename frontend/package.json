@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
+    "test:ci": "vitest run",
     "test:coverage": "vitest --coverage && npx nyc report --reporter=coverage-svg --reporter=lcov --reporter=html",
     "format": "prettier --write ."
   },
@@ -31,6 +32,7 @@
     "react-helmet-async": "^2.0.5",
     "react-hot-toast": "^2.5.1",
     "react-i18next": "^15.2.0",
+    "react-icons": "^5.4.0",
     "react-popover": "^0.5.10",
     "react-router-dom": "^7.0.2",
     "react-tippy": "^1.4.0",

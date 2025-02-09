@@ -36,9 +36,12 @@ vi.mock('file-saver', () => ({
   saveAs: vi.fn(),
 }));
 
-vi.mock('../../utils/toastUtils', () => ({
-  showErrorMessage: vi.fn(),
-}));
+vi.mock('../../utils/toastUtils', () => {
+  return {
+    showToastError: vi.fn(),
+    showErrorMessage: vi.fn(),
+  };
+});
 
 const localStorageMock = {
   getItem: vi.fn(),

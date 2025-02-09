@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ChatContent,
-  Headline,
-  MessageInput,
-  MessagesList,
-  MsgTextField,
-  MyMessage,
-  SendMsgBtn,
-  TheirMessage,
+  ChatContainer,
+  ChatHeader,
+  MessagesContainer,
+  MessageInputContainer,
+  MessageInputField,
+  SendButton,
+  MyMessageBubble,
+  TheirMessageBubble,
+  ScrollToBottomButton,
 } from '../style/components/Chat.style';
 import axiosInstance from '../utils/axiosInstance';
 import socket, {
@@ -40,21 +41,22 @@ const Chat: React.FC<ChatParams> = ({
   const [otherPerson, setOtherPerson] = useState<IUser | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [exchangedMessagesCount, setExchangedMessagesCount] = useState(0);
-  const messagesListRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Fetch messages and set up socket connection
   useEffect(() => {
     if (!sessionId) return;
-    // Fetch Messages
+
+    // Fetch messages and other person's details
     axiosInstance
       .get(`/api/sessions/${sessionId}`)
       .then((res) => {
         setMessages(res.data.messages);
-
         const otherPerson =
           res.data.tutor._id === senderId ? res.data.student : res.data.tutor;
         setOtherPerson(otherPerson);
@@ -63,101 +65,97 @@ const Chat: React.FC<ChatParams> = ({
         loggerInstance.error('Error fetching messages:', error)
       );
 
+    // Connect to socket
     connectSocket(sessionId);
 
+    // Handle new messages from socket
     const handleNewMessage = (message: IMessage) => {
       setMessages((prevMessages) => [...prevMessages, message]);
       setExchangedMessagesCount((prevCount) => prevCount + 1);
     };
-
-    // Listen for new messages
     onNewMessage(handleNewMessage);
 
+    // Cleanup socket on unmount
     return () => {
       socket.off('newMessage', handleNewMessage);
-      disconnectSocket(); // Disconnect from Socket.IO when component unmounts
+      disconnectSocket();
     };
-  }, [senderId, sessionId]);
+  }, [sessionId, senderId]);
 
+  // Notify parent component about message count changes
   useEffect(() => {
     onMessagesCountChange(exchangedMessagesCount);
   }, [exchangedMessagesCount, onMessagesCountChange]);
 
+  // Handle sending a new message
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      // Notify other clients in real time via Socket.IO
       sendMessage(sessionId!, senderId, newMessage);
       setNewMessage('');
     }
   };
 
-  const handleScroll = () => {
-    if (messagesListRef.current) {
-      const { scrollHeight, clientHeight, scrollTop } = messagesListRef.current;
-      setShowScrollToBottom(scrollHeight - clientHeight - scrollTop > 100);
-    }
+  // Handle scroll events to show/hide scroll-to-bottom button
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
+    setShowScrollToBottom(scrollHeight - clientHeight - scrollTop > 100);
   };
 
   return (
-    <ChatContent>
-      <Headline>
-        {t('chat_with')} {otherPerson?.name}
-      </Headline>
-      <MessagesList
-        scrollBottomShowed={showScrollToBottom}
-        ref={messagesListRef}
-        onScroll={handleScroll}
-      >
-        {messages.map((msg, index) => {
-          const isMyMessage = msg.sender._id === senderId;
-          return isMyMessage ? (
-            <MyMessage key={index}>
-              <p>
-                <strong>{msg.sender.name}:</strong> {msg.content}
-              </p>
+    <ChatContainer>
+      {/* Chat Header */}
+      <ChatHeader>
+        <h2>{otherPerson?.name}</h2>
+      </ChatHeader>
+
+      {/* Messages List */}
+      <MessagesContainer onScroll={handleScroll}>
+        {messages.map((msg, index) =>
+          msg.sender._id === senderId ? (
+            <MyMessageBubble key={index}>
+              <p>{msg.content}</p>
               <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-            </MyMessage>
+            </MyMessageBubble>
           ) : (
-            <TheirMessage key={index}>
-              <p>
-                <strong>{msg.sender.name}:</strong> {msg.content}
-              </p>
+            <TheirMessageBubble key={index}>
+              <p>{msg.content}</p>
               <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-            </TheirMessage>
-          );
-        })}
-        <div ref={messagesEndRef}></div>
-      </MessagesList>
+            </TheirMessageBubble>
+          )
+        )}
+        <div ref={messagesEndRef} />
+      </MessagesContainer>
+
+      {/* Scroll-to-bottom Button */}
       {showScrollToBottom && (
-        <button
-          className="scroll-to-bottom-btn"
+        <ScrollToBottomButton
           onClick={() =>
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
           }
         >
           <KeyboardDoubleArrowDownIcon />
-        </button>
+        </ScrollToBottomButton>
       )}
-      <MessageInput>
-        <MsgTextField
+
+      {/* Message Input Area */}
+      <MessageInputContainer>
+        <MessageInputField
           type="text"
           placeholder={t('type_message')}
           value={newMessage}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setNewMessage(e.target.value)
-          }
-          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
               handleSendMessage();
             }
           }}
         />
-        <SendMsgBtn onClick={handleSendMessage}>
+        <SendButton onClick={handleSendMessage}>
           <SendIcon />
-        </SendMsgBtn>
-      </MessageInput>
-    </ChatContent>
+        </SendButton>
+      </MessageInputContainer>
+    </ChatContainer>
   );
 };
 

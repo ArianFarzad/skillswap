@@ -1,57 +1,52 @@
 import styled from 'styled-components';
 import Flag from 'react-world-flags';
 
-export const RightContainer = styled.div`
+export const MainContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  padding: 0.4em 0.8em 0.4em 0;
+  background-color: var(--background-color-secondary);
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 `;
 
 export const LeftContainer = styled.div`
-  align-items: center;
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 `;
 
-export const BackspaceButton = styled.button`
-  cursor: pointer;
-  margin-left: 1em;
-  background-color: var(--primary-color);
-  padding: 0.3em 0.5em;
-  border-radius: var(--button-border-redius);
+export const RightContainer = styled.div`
   display: flex;
   align-items: center;
-
-  &:hover {
-    background-color: var(--primary-color-hover);
-  }
+  gap: 1rem;
 `;
 
 export const Label = styled.label`
   cursor: pointer;
-  margin-left: 1em;
   background-color: var(--primary-color);
-  padding: 0.3em 0.5em;
-  border-radius: var(--button-border-redius);
+  padding: 0.5rem;
+  border-radius: 8px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 
   &:hover {
     background-color: var(--primary-color-hover);
+  }
+
+  svg {
+    color: var(--text-color-on-button);
+    font-size: 1.5rem;
   }
 `;
 
 export const StyledInput = styled.input`
   display: none;
-`;
-
-export const MainContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  background-color: var(--bar-color);
 `;
 
 export const StyledFlag = styled(Flag).withConfig({
@@ -62,9 +57,40 @@ export const StyledFlag = styled(Flag).withConfig({
   font-size: 1em;
   height: 2em;
   width: 2em;
-  margin: 0 0.5em;
   cursor: pointer;
-  border-radius: var(--button-border-redius);
+  border-radius: 8px;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
   transform: ${(props) =>
-    props.lang === props.currentLang ? 'scale(1.2)' : 'none'};
+    props.lang === props.currentLang ? 'scale(1.2)' : 'scale(1)'};
+  box-shadow: ${(props) =>
+    props.lang === props.currentLang ? '0 0 8px rgba(0, 0, 0, 0.3)' : 'none'};
+
+  &:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  }
+`;
+
+export const BackspaceButton = styled.button`
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
+  border: none;
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: var(--primary-color-hover);
+  }
+
+  svg {
+    font-size: 1.5rem;
+  }
 `;

@@ -8,15 +8,36 @@ export const LoginArea = styled.div`
 `;
 
 export const Headline = styled.h1`
-  text-align: center;
+  text-align: left;
   margin-bottom: 1.5rem;
   color: #666;
 `;
 
 export const Paragraph = styled.p`
   text-align: center;
-  margin-bottom: 1.5rem;
-  color: #666;
+  margin: 0;
+  color: var(--info-text-color);
+`;
+
+export const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.3em;
+  margin-bottom: 1em;
+`;
+
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+`;
+
+export const SpaceBetween = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0;
+  align-content: center;
 `;
 
 export const Label = styled.label`
@@ -35,20 +56,22 @@ export const Input = styled.input`
   margin-bottom: 1rem;
   border: var(--input-border);
   border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
   transition: border-color 0.3s ease;
+  background-color: var(--input-background);
   &:focus {
-    border: var(--input-border-focus);
+    border-color: var(--input-border-color-focus);
+    box-shadow: var(--input-shadow-focus);
     outline: none;
+    transition: all 0.3s ease;
   }
 `;
 
-export const LoginMessage = styled.p`
-  margin-top: 1rem;
-  color: blue;
+export const StyledLink = styled.p`
+  margin: 0;
+  color: var(--link-color);
   text-align: right;
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
 
   &:hover {
     color: var(--link-hover);
@@ -56,17 +79,32 @@ export const LoginMessage = styled.p`
 `;
 
 export const Button = styled.button`
-  width: 100%;
+  width: 30%;
   padding: 0.75rem;
   font-size: 1rem;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
   border: none;
-  border-radius: var(--button-border-redius);
+  border-radius: var(--input-border-radius);
   cursor: pointer;
   transition: var(--button-transition);
 
   &:hover {
     background-color: var(--primary-color-hover);
+  }
+`;
+
+export const AlignCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+
+  * {
+    cursor: pointer;
+  }
+
+  &:nth-child(1) {
+    color: var(--text-color);
   }
 `;

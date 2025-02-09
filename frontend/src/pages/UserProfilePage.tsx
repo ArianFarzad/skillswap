@@ -3,8 +3,6 @@ import SettingsBar from '../components/SettingsBar.tsx';
 import Profile from '../components/Profile';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
-import MyProfile from '../components/MyProfile.tsx';
-import { Row } from '../style/pages/UserProfilePage.style';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToastError } from '../utils/toastUtils.ts';
@@ -42,11 +40,8 @@ const UserProfilePage: React.FC = () => {
           <title>SkillSwap - {t('user_profile')}</title>
         </Helmet>
         <SettingsBar />
-        <NavBar />
-        <Row>
-          <MyProfile profile={profile} />
-          <Profile profile={profile} setProfile={setProfile} />
-        </Row>
+        <NavBar profile={profile} />
+        <Profile profile={profile} setProfile={setProfile} />
         <Footer />
       </>
     </HelmetProvider>
