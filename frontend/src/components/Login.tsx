@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from '../utils/axiosInstance';
+import log from '../utils/loggerInstance.ts';
+import { showToastError } from '../utils/toastUtils.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
 import {
   AlignCenter,
   Button,
@@ -14,10 +18,6 @@ import {
   SpaceBetween,
   StyledLink,
 } from '../style/components/Login.style';
-import axiosInstance from '../utils/axiosInstance';
-import loggerInstance from '../utils/loggerInstance.ts';
-import { showToastError } from '../utils/toastUtils.ts';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
 
 const Login: React.FC = () => {
   const { t } = useTypedTranslation();
@@ -32,16 +32,13 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post('/api/auth/login', {
+      const response = await axios.post('/api/auth/login', {
         email,
         password,
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('myUserId', response.data.userId);
-      loggerInstance.info(
-        'Login successful, saved userId:',
-        response.data.userId
-      );
+      log.info('Login successful, saved userId:', response.data.userId);
       navigate(redirect);
     } catch (error) {
       showToastError(error, t);

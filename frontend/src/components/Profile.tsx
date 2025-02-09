@@ -1,22 +1,6 @@
 import React, { useState } from 'react';
-import {
-  MainContainer,
-  ProfileHeader,
-  ProfileContent,
-  Section,
-  SectionTitle,
-  SkillList,
-  SkillItem,
-  InterestList,
-  InterestItem,
-  InputGroup,
-  TextInput,
-  AddButton,
-  RemoveButton,
-  EditButton,
-} from '../style/components/Profile.style';
-import axiosInstance from '../utils/axiosInstance';
-import loggerInstance from '../utils/loggerInstance.ts';
+import axios from '../utils/axiosInstance';
+import log from '../utils/loggerInstance.ts';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
@@ -24,6 +8,22 @@ import toast from 'react-hot-toast';
 import { showToastError } from '../utils/toastUtils.ts';
 import { IProfile } from '../models/models.ts';
 import EditIcon from '@mui/icons-material/Edit';
+import {
+  AddButton,
+  EditButton,
+  InputGroup,
+  InterestItem,
+  InterestList,
+  MainContainer,
+  ProfileContent,
+  ProfileHeader,
+  RemoveButton,
+  Section,
+  SectionTitle,
+  SkillItem,
+  SkillList,
+  TextInput,
+} from '../style/components/Profile.style';
 
 interface ProfileProps {
   profile: IProfile | null;
@@ -52,10 +52,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       return;
     }
     try {
-      const response = await axiosInstance.post('/api/profiles/skills', {
+      const response = await axios.post('/api/profiles/skills', {
         skill: newSkill,
       });
-      loggerInstance.info('Skill added:', response.data);
+      log.info('Skill added:', response.data);
       toast.success(t('skill_added'), { icon: '💡' });
       setProfile(response.data);
       setNewSkill('');
@@ -66,10 +66,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   const handleRemoveSkill = async (skill: string) => {
     try {
-      const response = await axiosInstance.delete('/api/profiles/skills', {
+      const response = await axios.delete('/api/profiles/skills', {
         data: { skill },
       });
-      loggerInstance.info('Skill removed:', response.data);
+      log.info('Skill removed:', response.data);
       toast(t('skill_removed'), { icon: '🗑️' });
       setProfile(response.data);
     } catch (error) {
@@ -83,10 +83,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       return;
     }
     try {
-      const response = await axiosInstance.post('/api/profiles/interests', {
+      const response = await axios.post('/api/profiles/interests', {
         interest: newInterest,
       });
-      loggerInstance.info('Interest added:', response.data);
+      log.info('Interest added:', response.data);
       toast.success(t('interest_added'), { icon: '📚' });
       setProfile(response.data);
       setNewInterest('');
@@ -97,10 +97,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   const handleRemoveInterest = async (interest: string) => {
     try {
-      const response = await axiosInstance.delete('/api/profiles/interests', {
+      const response = await axios.delete('/api/profiles/interests', {
         data: { interest },
       });
-      loggerInstance.info('Interest removed:', response.data);
+      log.info('Interest removed:', response.data);
       toast(t('interest_removed'), { icon: '🗑️' });
       setProfile(response.data);
     } catch (error) {

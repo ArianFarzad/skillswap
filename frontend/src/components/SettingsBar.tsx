@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-  LeftContainer,
-  Label,
-  MainContainer,
-  StyledFlag,
-  StyledInput,
-  RightContainer,
-  BackspaceButton,
-} from '../style/components/SettingsBar.style';
-import loggerInstance from '../utils/loggerInstance.ts';
+import log from '../utils/loggerInstance.ts';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { FiArrowLeft } from 'react-icons/fi';
+import {
+  BackspaceButton,
+  Label,
+  LeftContainer,
+  MainContainer,
+  RightContainer,
+  StyledFlag,
+  StyledInput,
+} from '../style/components/SettingsBar.style';
 
 const SettingsBar: React.FC = () => {
   const { i18n } = useTranslation();
@@ -33,7 +33,7 @@ const SettingsBar: React.FC = () => {
   }, [darkMode]);
 
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng).catch((err) => loggerInstance.log(err));
+    i18n.changeLanguage(lng).catch((err) => log.log(err));
     setLang(lng);
   };
 

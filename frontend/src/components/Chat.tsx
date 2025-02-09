@@ -1,27 +1,27 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  ChatContainer,
-  ChatHeader,
-  MessagesContainer,
-  MessageInputContainer,
-  MessageInputField,
-  SendButton,
-  MyMessageBubble,
-  TheirMessageBubble,
-  ScrollToBottomButton,
-} from '../style/components/Chat.style';
-import axiosInstance from '../utils/axiosInstance';
+import axios from '../utils/axiosInstance';
+import log from '../utils/loggerInstance.ts';
+import SendIcon from '@mui/icons-material/Send';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import { IMessage, IUser } from '../models/models.ts';
 import socket, {
   connectSocket,
   disconnectSocket,
   onNewMessage,
   sendMessage,
 } from '../utils/socket';
-import SendIcon from '@mui/icons-material/Send';
-import loggerInstance from '../utils/loggerInstance.ts';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
-import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
-import { IMessage, IUser } from '../models/models.ts';
+import {
+  ChatContainer,
+  ChatHeader,
+  MessageInputContainer,
+  MessageInputField,
+  MessagesContainer,
+  MyMessageBubble,
+  ScrollToBottomButton,
+  SendButton,
+  TheirMessageBubble,
+} from '../style/components/Chat.style';
 
 interface ChatParams {
   sessionId: string | undefined;
@@ -53,7 +53,7 @@ const Chat: React.FC<ChatParams> = ({
     if (!sessionId) return;
 
     // Fetch messages and other person's details
-    axiosInstance
+    axios
       .get(`/api/sessions/${sessionId}`)
       .then((res) => {
         setMessages(res.data.messages);
@@ -61,9 +61,7 @@ const Chat: React.FC<ChatParams> = ({
           res.data.tutor._id === senderId ? res.data.student : res.data.tutor;
         setOtherPerson(otherPerson);
       })
-      .catch((error) =>
-        loggerInstance.error('Error fetching messages:', error)
-      );
+      .catch((error) => log.error('Error fetching messages:', error));
 
     // Connect to socket
     connectSocket(sessionId);

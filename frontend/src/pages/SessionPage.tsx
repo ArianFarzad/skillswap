@@ -12,16 +12,16 @@ import {
   ChatContainer,
   EndSession,
   EndSessionButton,
+  FeedbackButton,
   FeedbackContainer,
   OptionP,
   ReversedRow,
   SessionContent,
   StyledP,
-  FeedbackButton,
 } from '../style/pages/SessionPage.style';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import axiosInstance from '../utils/axiosInstance.ts';
-import loggerInstance from '../utils/loggerInstance.ts';
+import axios from '../utils/axiosInstance.ts';
+import log from '../utils/loggerInstance.ts';
 
 const SessionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ const SessionPage: React.FC = () => {
   const handleEndSession = async () => {
     const points = calculatePoints(exchangeMessagesCount);
     try {
-      await axiosInstance.put('/api/gamification/points', {
+      await axios.put('/api/gamification/points', {
         userId: senderId,
         points,
       });
@@ -63,9 +63,9 @@ const SessionPage: React.FC = () => {
         duration: 5000,
       });
 
-      loggerInstance.info('Points saved:', points);
+      log.info('Points saved:', points);
     } catch (error) {
-      loggerInstance.error('Error saving points:', error);
+      log.error('Error saving points:', error);
     }
   };
 

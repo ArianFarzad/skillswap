@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import Search from './Search';
+import MyProfile from './MyProfile.tsx';
+import { IProfile } from '../models/models.ts';
 import {
   FilterContainer,
   FilterInput,
@@ -6,10 +10,6 @@ import {
   ListArea,
   NavArea,
 } from '../style/components/NavBar.style';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
-import Search from './Search';
-import MyProfile from './MyProfile.tsx';
-import { IProfile } from '../models/models.ts';
 
 interface NavBarProps {
   profile: IProfile | null;

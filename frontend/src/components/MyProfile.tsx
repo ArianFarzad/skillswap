@@ -1,16 +1,16 @@
 import React from 'react';
-import {
-  ProfileContainer,
-  Row,
-  Column,
-  StyledP,
-  Line,
-  ProfileIconWrapper,
-  PointsBadge,
-} from '../style/components/MyProfile.style';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import Profile from '@mui/icons-material/AccountCircle';
 import { IProfile } from '../models/models.ts';
+import {
+  Column,
+  Line,
+  PointsBadge,
+  ProfileContainer,
+  ProfileIconWrapper,
+  Row,
+  StyledP,
+} from '../style/components/MyProfile.style';
 
 interface MyProfileProps {
   profile: IProfile | null;

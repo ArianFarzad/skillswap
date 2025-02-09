@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from '../utils/axiosInstance';
+import toast from 'react-hot-toast';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { showToastError } from '../utils/toastUtils.ts';
 import {
   Button,
+  Column,
   Headline,
   Input,
   Label,
@@ -9,14 +14,9 @@ import {
   RegisterArea,
   RegisterMessage,
   Row,
-  Column,
-  SpaceBetween,
   RowLeft,
+  SpaceBetween,
 } from '../style/components/Register.style';
-import axiosInstance from '../utils/axiosInstance';
-import toast from 'react-hot-toast';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { showToastError } from '../utils/toastUtils.ts';
 
 const Register = () => {
   const { t } = useTypedTranslation();
@@ -34,7 +34,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axiosInstance.post('/api/auth/register', {
+      await axios.post('/api/auth/register', {
         name,
         email,
         password,

@@ -3,6 +3,19 @@ import { saveAs } from 'file-saver';
 import { format, isSameDay } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { Value } from 'react-calendar/dist/cjs/shared/types';
+import axios from '../utils/axiosInstance';
+import log from '../utils/loggerInstance.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { toast } from 'react-hot-toast';
+import { showToastError } from '../utils/toastUtils.ts';
+import {
+  FiCalendar,
+  FiClock,
+  FiUploadCloud,
+  FiWatch,
+  FiX,
+} from 'react-icons/fi';
 import {
   ActionButton,
   CalendarWrapper,
@@ -22,19 +35,6 @@ import {
   StyledInput,
   UploadZone,
 } from '../style/components/BookAppointment.style';
-import { Value } from 'react-calendar/dist/cjs/shared/types';
-import axiosInstance from '../utils/axiosInstance';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { toast } from 'react-hot-toast';
-import {
-  FiCalendar,
-  FiClock,
-  FiUploadCloud,
-  FiWatch,
-  FiX,
-} from 'react-icons/fi';
-import log from '../utils/loggerInstance.ts';
-import { showToastError } from '../utils/toastUtils.ts';
 
 interface Event {
   summary: string;
@@ -122,7 +122,7 @@ END:VCALENDAR
       formData.append('file', e.target.files[0]);
 
       try {
-        const response = await axiosInstance.post<Event[]>(
+        const response = await axios.post<Event[]>(
           '/api/calendar/import',
           formData
         );

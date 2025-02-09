@@ -1,22 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  AllProfilesContainer,
-  ProfileList,
-  ProfileListItem,
-  ProfileListItemHeader,
-  ProfileListItemContent,
-  ProfileListItemDetails,
-  ProfileListItemActions,
-  UserPoints,
-  Headline,
-} from '../style/components/Search.style';
-import axiosInstance from '../utils/axiosInstance';
-import loggerInstance from '../utils/loggerInstance.ts';
+import axios from '../utils/axiosInstance';
+import log from '../utils/loggerInstance.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import ChatIcon from '@mui/icons-material/Chat';
 import { Popover, Typography } from '@mui/material';
 import { showToastError } from '../utils/toastUtils.ts';
+import {
+  AllProfilesContainer,
+  Headline,
+  ProfileList,
+  ProfileListItem,
+  ProfileListItemActions,
+  ProfileListItemContent,
+  ProfileListItemDetails,
+  ProfileListItemHeader,
+  UserPoints,
+} from '../style/components/Search.style';
 
 interface Profile {
   id: string;
@@ -43,7 +43,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
 
   const fetchProfiles = useCallback(async () => {
     try {
-      const response = await axiosInstance.get(
+      const response = await axios.get(
         `/api/profiles/search?keyword=${encodeURIComponent(keyword)}&filter=${encodeURIComponent(filter)}`
       );
 
@@ -69,7 +69,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
 
   useEffect(() => {
     fetchProfiles().catch((error) => {
-      loggerInstance.error('Error fetching profiles:', error);
+      log.error('Error fetching profiles:', error);
       showToastError(error);
     });
   }, [fetchProfiles]);
@@ -77,14 +77,14 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
   const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
     try {
-      const response = await axiosInstance.get(
+      const response = await axios.get(
         `/api/sessions/check?user1=${myUserId}&user2=${otherUserId}`
       );
 
       let sessionId = response.data.sessionId;
 
       if (!sessionId) {
-        const createResponse = await axiosInstance.post('/api/sessions', {
+        const createResponse = await axios.post('/api/sessions', {
           tutor: myUserId,
           student: otherUserId,
           date: new Date(),
@@ -94,7 +94,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
 
       navigate(`/chat/${sessionId}`);
     } catch (error) {
-      loggerInstance.error('Error handling chat request:', error);
+      log.error('Error handling chat request:', error);
       showToastError(error);
     }
   };

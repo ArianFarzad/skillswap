@@ -1,25 +1,25 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { IFeedback } from '../models/models.ts';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { toast } from 'react-hot-toast';
+import log from '../utils/loggerInstance.ts';
+import axios from '../utils/axiosInstance';
 import {
+  AverageRating,
+  AverageRatingText,
+  FeedbackCard,
+  FeedbackComment,
   FeedbackContainer,
   FeedbackForm,
   FeedbackHeader,
   FeedbackList,
-  FeedbackCard,
-  FeedbackUser,
   FeedbackRating,
-  FeedbackComment,
   FeedbackTextarea,
-  StarRating,
+  FeedbackUser,
   Star,
+  StarRating,
   SubmitButton,
-  AverageRating,
-  AverageRatingText,
 } from '../style/components/Feedback.style';
-import loggerInstance from '../utils/loggerInstance.ts';
-import { IFeedback } from '../models/models.ts';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { toast } from 'react-hot-toast';
-import axiosInstance from '../utils/axiosInstance';
 
 interface FeedbackData {
   sessionId: string | undefined;
@@ -34,21 +34,17 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   const { t } = useTypedTranslation();
 
   const fetchFeedbacks = useCallback(() => {
-    axiosInstance
+    axios
       .get(`/api/feedback/session/${sessionId}`)
       .then((res) => setFeedbacks(res.data))
-      .catch((error) =>
-        loggerInstance.error('Error fetching feedbacks:', error)
-      );
+      .catch((error) => log.error('Error fetching feedbacks:', error));
   }, [sessionId]);
 
   const fetchAverageRating = useCallback(() => {
-    axiosInstance
+    axios
       .get(`/api/feedback/user/${senderId}/average-rating`)
       .then((res) => setAverageRating(res.data.averageRating))
-      .catch((error) =>
-        loggerInstance.error('Error fetching average rating:', error)
-      );
+      .catch((error) => log.error('Error fetching average rating:', error));
   }, [senderId]);
 
   useEffect(() => {
@@ -57,7 +53,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
   }, [fetchFeedbacks, fetchAverageRating]);
 
   const handleSendFeedback = () => {
-    axiosInstance
+    axios
       .post('/api/feedback', {
         sessionId,
         userId: senderId,
@@ -71,7 +67,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         fetchFeedbacks();
         fetchAverageRating();
       })
-      .catch((error) => loggerInstance.error('Error sending feedback:', error));
+      .catch((error) => log.error('Error sending feedback:', error));
   };
 
   const handleRating = (value: number) => {
