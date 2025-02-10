@@ -55,7 +55,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.post('/api/profiles/skills', {
         skill: newSkill,
       });
-      log.info('Skill added:', response.data);
       toast.success(t('skill_added'), { icon: '💡' });
       setProfile(response.data);
       setNewSkill('');
@@ -69,7 +68,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.delete('/api/profiles/skills', {
         data: { skill },
       });
-      log.info('Skill removed:', response.data);
       toast(t('skill_removed'), { icon: '🗑️' });
       setProfile(response.data);
     } catch (error) {
@@ -100,7 +98,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.delete('/api/profiles/interests', {
         data: { interest },
       });
-      log.info('Interest removed:', response.data);
       toast(t('interest_removed'), { icon: '🗑️' });
       setProfile(response.data);
     } catch (error) {
@@ -140,7 +137,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleAddSkill();
+                    if (e.key === 'Enter')
+                      handleAddSkill().catch((error) => {
+                        showToastError(error, t);
+                      });
                   }}
                 />
                 <AddButton onClick={handleAddSkill}>
@@ -180,7 +180,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleAddInterest();
+                    if (e.key === 'Enter')
+                      handleAddInterest().catch((error) => {
+                        showToastError(error, t);
+                      });
                   }}
                 />
                 <AddButton onClick={handleAddInterest}>

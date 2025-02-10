@@ -20,7 +20,7 @@ const UserProfilePage: React.FC = () => {
       try {
         const response = await axios.get('/api/profiles');
         setProfile(response.data);
-        log.info('Profile fetched successfully:', response.data);
+        log.info('Profile fetched successfully.');
       } catch (error) {
         showToastError(error, t);
       } finally {

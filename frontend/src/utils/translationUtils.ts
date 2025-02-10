@@ -12,12 +12,6 @@ export const useTypedTranslation = () => {
   };
 };
 
-export const defaultTranslation: TranslationFunction = (key: string) => {
-  return key === 'error.unexpected_error'
-    ? 'An unexpected error occurred.'
-    : key;
-};
-
 type FlattenedKeys = NestedKeys<typeof enTranslations>;
 
 /**

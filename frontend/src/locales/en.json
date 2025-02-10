@@ -6,7 +6,9 @@
     "invalid_credentials": "Invalid credentials.",
     "session_expired": "Your session has expired. Please log in again",
     "empty_skill": "Skill cannot be empty",
-    "empty_interest": "Interest cannot be empty"
+    "empty_interest": "Interest cannot be empty",
+    "invalid_userId": "Error. User ID is missing.",
+    "unexpected_error": "An unexpected error occurred"
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",
@@ -26,7 +28,6 @@
   "english": "English",
   "german": "German",
   "login_error": "Error logging in",
-  "unexpected_error": "An unexpected error occurred",
   "email": "Email",
   "password": "Password",
   "please_fill_details": "Please fill in your details to register",

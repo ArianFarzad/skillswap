@@ -53,6 +53,23 @@ export const ProfileList = styled.ul`
   }
 `;
 
+export const NoProfilesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary-color);
+  font-size: 1.2rem;
+  opacity: 0.8;
+  gap: 0.5rem;
+
+  svg {
+    font-size: 2.5rem;
+    color: var(--text-color-muted);
+  }
+`;
+
 export const ProfileListItem = styled.li`
   background-color: var(--background-color-secondary);
   border-radius: 12px;
@@ -85,6 +102,7 @@ export const ProfileListItemHeader = styled.div`
     h3 {
       font-size: 1rem;
     }
+
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;

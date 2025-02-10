@@ -21,7 +21,7 @@ const SettingsBar: React.FC = () => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode ? JSON.parse(savedMode) : false;
   });
-  const [lang, setLang] = useState<string>('en');
+  const [lang, setLang] = useState<string>(() => i18n.language || 'en');
 
   useEffect(() => {
     if (darkMode) {

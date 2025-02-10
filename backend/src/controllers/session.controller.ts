@@ -162,6 +162,12 @@ export const getSessionDetails = async (req: Request, res: Response) => {
 
 export const checkSession = async (req: Request, res: Response) => {
   const { user1, user2 } = req.query;
+
+  if (!user1 || !user2) {
+    logger.error('Invalid session check request: Missing user IDs.');
+    return res.status(400).json({ error: 'error.invalid_userId' });
+  }
+
   try {
     const session = await Session.findOne({
       $or: [
@@ -179,6 +185,6 @@ export const checkSession = async (req: Request, res: Response) => {
     }
   } catch (error) {
     logger.error('Error checking session:', error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'error.unexpected_error' });
   }
 };
