@@ -172,10 +172,7 @@ export const searchProfiles = async (req: Request, res: Response) => {
 
     const profiles = await Profile.find(query);
 
-    if (profiles.length === 0) {
-      return res.status(404).json({ message: 'No profiles found' });
-    }
-    logger.info(`Profiles found. Count: ${profiles.length}`);
+    logger.info(`Profile search. ${profiles.length} profiles found.`);
 
     res.json(profiles);
   } catch (error) {

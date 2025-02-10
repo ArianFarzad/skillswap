@@ -6,9 +6,11 @@ import { useTypedTranslation } from '../utils/translationUtils.ts';
 import ChatIcon from '@mui/icons-material/Chat';
 import { Popover, Typography } from '@mui/material';
 import { showToastError } from '../utils/toastUtils.ts';
+import PersonOffIcon from '@mui/icons-material/PersonOff';
 import {
   AllProfilesContainer,
   Headline,
+  NoProfilesContainer,
   ProfileList,
   ProfileListItem,
   ProfileListItemActions,
@@ -126,7 +128,10 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
         <Headline>{t('other_users')}</Headline>
         <ProfileList>
           {profiles.length === 0 ? (
-            <div>{t('no_profiles_found')}</div>
+            <NoProfilesContainer>
+              <PersonOffIcon />
+              <div>{t('no_profiles_found')}</div>
+            </NoProfilesContainer>
           ) : (
             profiles.map((profile) => (
               <ProfileListItem key={profile.id}>
