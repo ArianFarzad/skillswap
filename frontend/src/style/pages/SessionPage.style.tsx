@@ -5,11 +5,11 @@ export const SessionContent = styled.div`
   display: flex;
   flex-direction: row;
   height: 88vh;
-    
-    @media (max-width: 768px) {
-        flex-direction: column-reverse;
-        height: 100%;
-    }
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+    height: 100%;
+  }
 `;
 
 export const CalendarContainer = styled.div`

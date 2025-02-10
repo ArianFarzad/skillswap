@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import { showToastError } from '../utils/toastUtils.ts';
@@ -25,9 +25,7 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const redirect = searchParams.get('redirect') || '/profile';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +37,10 @@ const Login: React.FC = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('myUserId', response.data.userId);
       log.info('Login successful, saved userId:', response.data.userId);
-      navigate(redirect);
+
+      const redirectPath =
+        new URLSearchParams(location.search).get('redirect') || '/profile';
+      navigate(redirectPath);
     } catch (error) {
       showToastError(error, t);
     }

@@ -39,21 +39,17 @@ axiosInstance.interceptors.response.use(
         localStorage.setItem('myUserId', refreshResponse.data.userId);
 
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        const retriedResponse = await axiosInstance(originalRequest);
-
-        // Automatically redirect if a token was refreshed successfully
-        const redirectPath =
-          new URLSearchParams(window.location.search).get('redirect') ||
-          '/profile';
-
-        if (redirectPath) {
-          window.location.href = redirectPath;
-        }
-
-        return retriedResponse;
+        return await axiosInstance(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem('token');
-        window.location.href = '/login'; // Force reload to login page
+        localStorage.removeItem('myUserId');
+
+        const currentPath = encodeURIComponent(
+          window.location.pathname + window.location.search
+        );
+
+        window.location.replace(`/login?redirect=${currentPath}`);
+
         return Promise.reject(refreshError);
       }
     }

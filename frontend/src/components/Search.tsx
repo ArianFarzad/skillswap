@@ -70,9 +70,9 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
   useEffect(() => {
     fetchProfiles().catch((error) => {
       log.error('Error fetching profiles:', error);
-      showToastError(error);
+      showToastError(error, t);
     });
-  }, [fetchProfiles]);
+  }, [fetchProfiles, t]);
 
   const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
@@ -95,7 +95,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
       navigate(`/chat/${sessionId}`);
     } catch (error) {
       log.error('Error handling chat request:', error);
-      showToastError(error);
+      showToastError(error, t);
     }
   };
 

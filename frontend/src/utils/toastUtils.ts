@@ -1,6 +1,5 @@
 import toast from 'react-hot-toast';
 import {
-  defaultTranslation,
   isValidTranslationKey,
   TranslationFunction,
 } from './translationUtils.ts';
@@ -13,10 +12,7 @@ import {
  * @param error - The error object, typically from an API response.
  * @param t - The typed translation function.
  */
-export const showToastError = (
-  error: unknown,
-  t: TranslationFunction = defaultTranslation
-) => {
+export const showToastError = (error: unknown, t: TranslationFunction) => {
   if (error && typeof error === 'object' && 'response' in error) {
     const axiosError = error as { response?: { data?: { error?: string } } };
     const errorKey =
@@ -26,20 +22,9 @@ export const showToastError = (
       const errorMessage = t(errorKey);
       toast.error(errorMessage);
     } else {
-      toast.error(t('unexpected_error'));
+      toast.error(t('error.unexpected_error'));
     }
   } else {
-    toast.error(t('unexpected_error'));
-  }
-};
-
-export const showErrorMessage = (
-  message: string,
-  t: TranslationFunction = defaultTranslation
-) => {
-  if (isValidTranslationKey(message)) {
-    toast.error(t(message));
-  } else {
-    toast.error(message);
+    toast.error(t('error.unexpected_error'));
   }
 };

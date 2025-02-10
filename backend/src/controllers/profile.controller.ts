@@ -226,7 +226,6 @@ export const addSkill = async (req: Request, res: Response) => {
       { $push: { skills: skill } },
       { new: true }
     );
-    logger.info(`Skill added successfully: ${profile}`);
     res.json(profile);
   } catch (error) {
     logger.error(`Error adding skill: ${error}`);

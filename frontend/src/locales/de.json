@@ -5,7 +5,9 @@
     "invalid_credentials": "Ungültige Anmeldeinformationen",
     "session_expired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an",
     "empty_skill": "Fähigkeit darf nicht leer sein",
-    "empty_interest": "Interesse darf nicht leer sein"
+    "empty_interest": "Interesse darf nicht leer sein",
+    "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten",
+    "invalid_userId": "Ungültige Benutzer-ID."
   },
   "loading": "Laden...",
   "welcome": "Willkommen bei SkillSwap",
@@ -25,7 +27,6 @@
   "english": "Englisch",
   "german": "Deutsch",
   "login_error": "Fehler beim Einloggen",
-  "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten",
   "email": "E-Mail",
   "password": "Passwort",
   "please_fill_details": "Bitte füllen Sie Ihre Daten aus, um sich zu registrieren",
