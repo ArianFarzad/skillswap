@@ -20,6 +20,7 @@ export interface IProfile {
   skills: string[];
   interests: string[];
   points: number;
+  userId: string;
 }
 
 export interface IUser {

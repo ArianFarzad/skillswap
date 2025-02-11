@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Welcome from '../components/Welcome';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './testUtils/i18nTestConfig';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('Welcome Component', () => {
   beforeEach(() => {

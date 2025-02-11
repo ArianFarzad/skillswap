@@ -1,11 +1,12 @@
 import './testUtils/mocks';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Register from '../components/Register';
 import axiosInstance from '../utils/axiosInstance';
-import toast from 'react-hot-toast';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './testUtils/i18nTestConfig';
+import { showToast } from '../utils/toastUtils';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('Register Component', () => {
   beforeEach(() => {
@@ -21,7 +22,6 @@ describe('Register Component', () => {
   test('renders register headline', () => {
     const headline = screen.getByTestId('register-headline');
     expect(headline).toBeInTheDocument();
-    // expect(headline.textContent).toBe('sign_up');
   });
 
   test('renders register form fields', () => {
@@ -55,7 +55,13 @@ describe('Register Component', () => {
       password: 'password',
     });
 
-    expect(toast.success).toHaveBeenCalledWith('register_success');
+    await waitFor(() => {
+      expect(showToast).toHaveBeenCalledWith(
+        'success',
+        'register_success',
+        expect.any(Function)
+      );
+    });
   });
 
   test.skip('handle register form error', async () => {});

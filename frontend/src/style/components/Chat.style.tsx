@@ -154,7 +154,7 @@ export const TheirMessageBubble = styled.div`
   span {
     display: block;
     font-size: 0.8rem;
-    color: var(--text-secondary-color);
+    color: var(--text-color-secondary);
     margin-top: 0.5rem;
     text-align: right;
   }

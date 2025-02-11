@@ -4,5 +4,5 @@ export const redirectToLogin = (
   navigate: NavigateFunction,
   currentPath: string
 ) => {
-  navigate(`/login?redirect=${encodeURIComponent(currentPath)}`);
+  void navigate(`/login?redirect=${encodeURIComponent(currentPath)}`);
 };

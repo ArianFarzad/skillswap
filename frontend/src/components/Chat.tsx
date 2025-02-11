@@ -140,6 +140,7 @@ const Chat: React.FC<ChatParams> = ({
         <MessageInputField
           type="text"
           placeholder={t('type_message')}
+          maxLength={2000}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => {

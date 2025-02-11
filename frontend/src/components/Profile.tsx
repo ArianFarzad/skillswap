@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import toast from 'react-hot-toast';
-import { showToastError } from '../utils/toastUtils.ts';
+import { showToast } from '../utils/toastUtils.ts';
 import { IProfile } from '../models/models.ts';
 import EditIcon from '@mui/icons-material/Edit';
+import UserStatistics from './UserStatistics';
 import {
   AddButton,
+  Column,
   EditButton,
   InputGroup,
   InterestItem,
@@ -24,6 +25,10 @@ import {
   SkillList,
   TextInput,
 } from '../style/components/Profile.style';
+import {
+  hasDuplicates,
+  isValidSkillOrInterest,
+} from '../../../shared/validation.ts';
 
 interface ProfileProps {
   profile: IProfile | null;
@@ -32,11 +37,41 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
   const { t } = useTypedTranslation();
+  const loggedInUserId = localStorage.getItem('myUserId');
 
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
   const [editModeSkill, setEditModeSkill] = useState(false);
   const [editModeInterest, setEditModeInterest] = useState(false);
+  const [statistics, setStatistics] = useState({
+    sessionCount: 0,
+    tutorSessionCount: 0,
+    studentSessionCount: 0,
+    messageCount: 0,
+    sentMessagesCount: 0,
+    receivedMessagesCount: 0,
+    averageRating: 0,
+    feedbackCount: 0,
+  });
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const response = await axios.get(
+          `/api/profiles/statistics/${profile?.userId}`
+        );
+        setStatistics(response.data);
+      } catch (error) {
+        showToast('error', error, t);
+      }
+    };
+
+    if (profile) {
+      fetchStatistics().catch((error) => {
+        log.error(`Error fetching statistics: ${error}`);
+      });
+    }
+  }, [profile, t]);
 
   const handleEditSkill = () => {
     setEditModeSkill(!editModeSkill);
@@ -48,18 +83,26 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   const handleAddSkill = async () => {
     if (!newSkill.trim()) {
-      toast.error(t('error.empty_skill'));
+      showToast('error', t('error.empty_skill'), t);
+      return;
+    } else if (!isValidSkillOrInterest(newSkill)) {
+      showToast('error', 'error.invalid_skill', t);
+      return;
+    } else if (hasDuplicates(profile?.skills, newSkill)) {
+      showToast('error', 'error.duplicate_skill', t);
       return;
     }
+
     try {
       const response = await axios.post('/api/profiles/skills', {
         skill: newSkill,
       });
-      toast.success(t('skill_added'), { icon: '💡' });
+      log.info('Skill added:', response.data);
+      showToast('success', 'skill_added', t);
       setProfile(response.data);
       setNewSkill('');
     } catch (error) {
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
@@ -68,28 +111,34 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.delete('/api/profiles/skills', {
         data: { skill },
       });
-      toast(t('skill_removed'), { icon: '🗑️' });
+      showToast('success', 'skill_removed', t);
       setProfile(response.data);
     } catch (error) {
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
   const handleAddInterest = async () => {
     if (!newInterest.trim()) {
-      toast.error(t('error.empty_interest'));
+      showToast('error', 'error.empty_interest', t);
+      return;
+    } else if (!isValidSkillOrInterest(newInterest)) {
+      showToast('error', 'error.invalid_interest', t);
+      return;
+    } else if (hasDuplicates(profile?.interests, newInterest)) {
+      showToast('error', 'error.duplicate_interest', t);
       return;
     }
+
     try {
       const response = await axios.post('/api/profiles/interests', {
         interest: newInterest,
       });
-      log.info('Interest added:', response.data);
-      toast.success(t('interest_added'), { icon: '📚' });
+      showToast('success', 'interest_added', t);
       setProfile(response.data);
       setNewInterest('');
     } catch (error) {
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
@@ -98,99 +147,112 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.delete('/api/profiles/interests', {
         data: { interest },
       });
-      toast(t('interest_removed'), { icon: '🗑️' });
+      showToast('success', 'interest_removed', t);
       setProfile(response.data);
     } catch (error) {
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
   return (
     <MainContainer>
-      <ProfileHeader>{t('your_profile')}</ProfileHeader>
+      <ProfileHeader>
+        {profile?.userId === loggedInUserId
+          ? t('your_profile')
+          : `${profile?.name}\`s ${t('profile')}`}
+      </ProfileHeader>
       {profile && (
         <ProfileContent>
-          <Section>
-            <SectionTitle>
-              {t('skills')}{' '}
-              <EditButton onClick={handleEditSkill}>
-                <EditIcon />
-              </EditButton>
-            </SectionTitle>
-            <SkillList>
-              {profile.skills.map((skill) => (
-                <SkillItem key={skill}>
-                  {skill}
-                  {editModeSkill && (
-                    <RemoveButton onClick={() => handleRemoveSkill(skill)}>
-                      <RemoveIcon />
-                    </RemoveButton>
-                  )}
-                </SkillItem>
-              ))}
-            </SkillList>
-            {editModeSkill && (
-              <InputGroup>
-                <TextInput
-                  type="text"
-                  placeholder={t('new_skill')}
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter')
-                      handleAddSkill().catch((error) => {
-                        showToastError(error, t);
-                      });
-                  }}
-                />
-                <AddButton onClick={handleAddSkill}>
-                  <AddIcon />
-                </AddButton>
-              </InputGroup>
-            )}
-          </Section>
+          <Column>
+            <Section>
+              <SectionTitle>
+                {t('skills')}{' '}
+                {profile.userId === loggedInUserId && (
+                  <EditButton onClick={handleEditSkill}>
+                    <EditIcon />
+                  </EditButton>
+                )}
+              </SectionTitle>
+              <SkillList>
+                {profile.skills.map((skill) => (
+                  <SkillItem key={skill}>
+                    {skill}
+                    {editModeSkill && profile.userId === loggedInUserId && (
+                      <RemoveButton onClick={() => handleRemoveSkill(skill)}>
+                        <RemoveIcon />
+                      </RemoveButton>
+                    )}
+                  </SkillItem>
+                ))}
+              </SkillList>
+              {editModeSkill && profile.userId === loggedInUserId && (
+                <InputGroup>
+                  <TextInput
+                    type="text"
+                    placeholder={t('new_skill')}
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter')
+                        handleAddSkill().catch((error) =>
+                          log.error(`Error adding skill: ${error}`)
+                        );
+                    }}
+                  />
+                  <AddButton onClick={handleAddSkill}>
+                    <AddIcon />
+                  </AddButton>
+                </InputGroup>
+              )}
+            </Section>
 
-          <Section>
-            <SectionTitle>
-              {t('interests')}
-              <EditButton onClick={handleEditInterest}>
-                <EditIcon />
-              </EditButton>
-            </SectionTitle>
-            <InterestList>
-              {profile.interests.map((interest) => (
-                <InterestItem key={interest}>
-                  {interest}
-                  {editModeInterest && (
-                    <RemoveButton
-                      onClick={() => handleRemoveInterest(interest)}
-                    >
-                      <RemoveIcon />
-                    </RemoveButton>
-                  )}
-                </InterestItem>
-              ))}
-            </InterestList>
+            <Section>
+              <SectionTitle>
+                {t('interests')}
+                {profile.userId === loggedInUserId && (
+                  <EditButton onClick={handleEditInterest}>
+                    <EditIcon />
+                  </EditButton>
+                )}
+              </SectionTitle>
+              <InterestList>
+                {profile.interests.map((interest) => (
+                  <InterestItem key={interest}>
+                    {interest}
+                    {editModeInterest && profile.userId === loggedInUserId && (
+                      <RemoveButton
+                        onClick={() => handleRemoveInterest(interest)}
+                      >
+                        <RemoveIcon />
+                      </RemoveButton>
+                    )}
+                  </InterestItem>
+                ))}
+              </InterestList>
 
-            {editModeInterest && (
-              <InputGroup>
-                <TextInput
-                  type="text"
-                  placeholder={t('new_interest')}
-                  value={newInterest}
-                  onChange={(e) => setNewInterest(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter')
-                      handleAddInterest().catch((error) => {
-                        showToastError(error, t);
-                      });
-                  }}
-                />
-                <AddButton onClick={handleAddInterest}>
-                  <AddIcon />
-                </AddButton>
-              </InputGroup>
-            )}
+              {editModeInterest && profile.userId === loggedInUserId && (
+                <InputGroup>
+                  <TextInput
+                    type="text"
+                    placeholder={t('new_interest')}
+                    value={newInterest}
+                    onChange={(e) => setNewInterest(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter')
+                        handleAddInterest().catch((error) => {
+                          log.error(`Error adding interest: ${error}`);
+                        });
+                    }}
+                  />
+                  <AddButton onClick={handleAddInterest}>
+                    <AddIcon />
+                  </AddButton>
+                </InputGroup>
+              )}
+            </Section>
+          </Column>
+          <Section>
+            <UserStatistics {...statistics} />
           </Section>
         </ProfileContent>
       )}

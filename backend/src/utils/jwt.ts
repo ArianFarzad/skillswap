@@ -19,14 +19,16 @@ export const verifyToken = (
   }
   try {
     req.user = jwt.verify(token, env.JWT_SECRET!) as CustomJwtPayload;
-    logger.info('Token verified successfully');
+    logger.info(
+      `Token verified successfully for user: ${JSON.stringify(req.user.userId, null, 2)}`
+    );
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
       logger.error('Token has expired');
-      return res.status(401).json({ error: 'Token has expired' });
+      return res.status(401).json({ error: 'error.session_expired' });
     }
     logger.error('Token verification failed:', error);
-    res.status(401).json({ error: 'Token is not valid' });
+    res.status(401).json({ error: 'error.invalid_token' });
   }
 };

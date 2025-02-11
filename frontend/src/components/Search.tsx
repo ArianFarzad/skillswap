@@ -4,8 +4,8 @@ import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import ChatIcon from '@mui/icons-material/Chat';
-import { Popover, Typography } from '@mui/material';
-import { showToastError } from '../utils/toastUtils.ts';
+import { showToast } from '../utils/toastUtils.ts';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import {
   AllProfilesContainer,
@@ -14,20 +14,13 @@ import {
   ProfileList,
   ProfileListItem,
   ProfileListItemActions,
-  ProfileListItemContent,
-  ProfileListItemDetails,
   ProfileListItemHeader,
-  UserPoints,
 } from '../style/components/Search.style';
 
 interface Profile {
-  id: string;
+  _id: string;
   userId: string;
   name: string;
-  email?: string;
-  skills: string[];
-  interests: string[];
-  points?: number;
 }
 
 interface SearchArgs {
@@ -35,17 +28,25 @@ interface SearchArgs {
   filter: string;
 }
 
+interface UserStatistics {
+  sessionCount: number;
+  tutorSessionCount: number;
+  studentSessionCount: number;
+  averageRating: number;
+  feedbackCount: number;
+  messageCount: number;
+  sentMessagesCount: number;
+  receivedMessagesCount: number;
+}
+
 const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
   const { t } = useTypedTranslation();
-
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [popoverContent, setPopoverContent] = useState<string[]>([]);
   const navigate = useNavigate();
 
   const fetchProfiles = useCallback(async () => {
     try {
-      const response = await axios.get(
+      const response = await axios.get<Profile[]>(
         `/api/profiles/search?keyword=${encodeURIComponent(keyword)}&filter=${encodeURIComponent(filter)}`
       );
 
@@ -53,28 +54,38 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
         ? response.data
         : [response.data];
 
-      const mappedProfiles = data.map((profile) => ({
-        id: profile._id,
-        userId: profile.userId,
-        name: profile.name,
-        email: profile.email || 'N/A',
-        skills: profile.skills || [],
-        interests: profile.interests || [],
-        points: profile.points || 0,
-      }));
+      const profilesWithStats = await Promise.all(
+        data.map(async (profile) => {
+          const statsResponse = await axios.get<UserStatistics>(
+            `/api/profiles/statistics/${profile.userId}`
+          );
+          return {
+            _id: profile._id,
+            userId: profile.userId,
+            name: profile.name,
+            sessionCount: statsResponse.data.sessionCount,
+            tutorSessionCount: statsResponse.data.tutorSessionCount,
+            studentSessionCount: statsResponse.data.studentSessionCount,
+            averageRating: statsResponse.data.averageRating,
+            feedbackCount: statsResponse.data.feedbackCount,
+            messageCount: statsResponse.data.messageCount,
+          };
+        })
+      );
 
-      setProfiles(mappedProfiles);
+      setProfiles(profilesWithStats);
     } catch (error) {
-      showToastError(error, t);
+      log.error('Error fetching profiles:', error);
     }
-  }, [keyword, filter, t]);
+  }, [keyword, filter]);
 
   useEffect(() => {
-    fetchProfiles().catch((error) => {
-      log.error('Error fetching profiles:', error);
-      showToastError(error, t);
-    });
-  }, [fetchProfiles, t]);
+    if (keyword || filter) {
+      fetchProfiles().catch((error) => {
+        showToast('error', error, t);
+      });
+    }
+  }, [fetchProfiles, keyword, filter, t]);
 
   const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
@@ -94,38 +105,23 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
         sessionId = createResponse.data._id;
       }
 
-      navigate(`/chat/${sessionId}`);
+      void navigate(`/chat/${sessionId}`);
     } catch (error) {
       log.error('Error handling chat request:', error);
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
-  const handleBoxClick = (
-    type: 'skills' | 'interests',
-    profile: Profile,
-    event: React.MouseEvent<HTMLElement>
-  ) => {
-    const content = type === 'skills' ? profile.skills : profile.interests;
-    if (content.length === 0) {
-      setPopoverContent([t('no_content_available')]);
-    } else {
-      setPopoverContent(content);
-    }
-    setAnchorEl(event.currentTarget);
+  const handleProfilePage = (profileId: string) => {
+    void navigate(`/profile/${profileId}`);
   };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  if (!keyword && !filter) return null;
 
   return (
     <>
       <AllProfilesContainer>
-        <Headline>{t('other_users')}</Headline>
+        <Headline>{t('search_results')}</Headline>
         <ProfileList>
           {profiles.length === 0 ? (
             <NoProfilesContainer>
@@ -134,60 +130,26 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
             </NoProfilesContainer>
           ) : (
             profiles.map((profile) => (
-              <ProfileListItem key={profile.id}>
+              <ProfileListItem key={profile._id}>
                 <ProfileListItemHeader>
                   <h3>{profile.name}</h3>
-                  <UserPoints>{profile.points} P</UserPoints>
-                </ProfileListItemHeader>
-                <ProfileListItemContent>
-                  <ProfileListItemDetails>
-                    <div>
-                      <strong>{t('skills')}: </strong>
-                      <span
-                        onClick={(e) => handleBoxClick('skills', profile, e)}
-                      >
-                        {profile.skills.length > 0
-                          ? profile.skills.join(', ')
-                          : t('no_content_available')}
-                      </span>
-                    </div>
-                    <div>
-                      <strong>{t('interests')}: </strong>
-                      <span
-                        onClick={(e) => handleBoxClick('interests', profile, e)}
-                      >
-                        {profile.interests.length > 0
-                          ? profile.interests.join(', ')
-                          : t('no_content_available')}
-                      </span>
-                    </div>
-                  </ProfileListItemDetails>
                   <ProfileListItemActions>
                     <button onClick={() => handleChatRequest(profile.userId)}>
                       <ChatIcon />
-                      {t('chat')}
+                    </button>
+                    <button
+                      className="profile-page"
+                      onClick={() => handleProfilePage(profile._id)}
+                    >
+                      <AccountCircleIcon />
                     </button>
                   </ProfileListItemActions>
-                </ProfileListItemContent>
+                </ProfileListItemHeader>
               </ProfileListItem>
             ))
           )}
         </ProfileList>
       </AllProfilesContainer>
-
-      {/* Popover für Skills/Interessen */}
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handlePopoverClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-      >
-        <Typography sx={{ p: 2 }}>{popoverContent.join(', ')}</Typography>
-      </Popover>
     </>
   );
 };

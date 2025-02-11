@@ -6,7 +6,7 @@ import Chat from '../components/Chat';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { calculatePoints } from '../utils/helpers';
-import { toast } from 'react-hot-toast';
+import { showToast } from '../utils/toastUtils.ts';
 import {
   CalendarContainer,
   ChatContainer,
@@ -55,13 +55,11 @@ const SessionPage: React.FC = () => {
         points,
       });
       setIsEndSessionActivated(false);
-      navigate('/profile');
+      void navigate('/profile');
       const template = t('congrats_and_points');
       const finalMessage = template.replace('[points]', points.toString());
 
-      toast.success(finalMessage, {
-        duration: 5000,
-      });
+      showToast('success', finalMessage, t);
 
       log.info('Points saved:', points);
     } catch (error) {

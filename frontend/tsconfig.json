@@ -2,6 +2,7 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["vite/client", "vitest", "@testing-library/jest-dom"],
     // Consolidated build info file
     "target": "ES2022",
     // Aligns with the latest features

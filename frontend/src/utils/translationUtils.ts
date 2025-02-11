@@ -23,13 +23,13 @@ type FlattenedKeys = NestedKeys<typeof enTranslations>;
  * {
  *   error: {
  *     email_exists: "Email already exists",
- *     unexpected_error: "Unexpected error",
+ *     server_error: "Unexpected error",
  *   },
  *   welcome: "Welcome",
  * }
  *
  * The type resolves to:
- * "error.email_exists" | "error.unexpected_error" | "welcome"
+ * "error.email_exists" | "error.server_error" | "welcome"
  */
 type NestedKeys<T> = T extends object
   ? {

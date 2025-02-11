@@ -74,7 +74,7 @@ export const StyledFlag = styled(Flag).withConfig({
   }
 `;
 
-export const BackspaceButton = styled.button`
+export const StyledButton = styled.button`
   background-color: var(--primary-color);
   color: var(--text-color-on-button);
   border: none;

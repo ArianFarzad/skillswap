@@ -17,10 +17,6 @@ export const CalendarContainer = styled.div`
   padding: 1em;
   overflow-y: scroll;
   scrollbar-width: none;
-
-  &.hide {
-    display: none;
-  }
 `;
 
 export const ChatContainer = styled.div`
@@ -47,9 +43,11 @@ export const EndSession = styled.div`
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 `;
 
-export const EndSessionButton = styled.button<{ disabledStyle: boolean }>`
+export const EndSessionButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'disabledStyle',
+})<{ disabledStyle: boolean }>`
   background-color: ${(props) =>
-    props.disabledStyle ? 'var(--disabled-color)' : 'var(--primary-color)'};
+    props.disabledStyle ? 'gray' : 'var(--primary-color)'};
   color: var(--text-color-on-button);
   border: none;
   cursor: ${(props) => (props.disabledStyle ? 'not-allowed' : 'pointer')};
@@ -66,7 +64,9 @@ export const EndSessionButton = styled.button<{ disabledStyle: boolean }>`
   }
 `;
 
-export const FeedbackButton = styled.button<{ displayStyle: boolean }>`
+export const FeedbackButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'displayStyle',
+})<{ displayStyle: boolean }>`
   display: ${(props) => (props.displayStyle ? 'block' : 'none')};
   background-color: var(--primary-color);
   color: var(--text-color-on-button);

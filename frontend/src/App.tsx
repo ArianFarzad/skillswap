@@ -4,6 +4,7 @@ import WelcomePage from './pages/WelcomePage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
 import SessionPage from './pages/SessionPage';
+import OtherUserProfilePage from './pages/OtherUserProfilePage.tsx';
 import './style/index.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -21,6 +22,10 @@ function App() {
             <Route path="/profile" element={<UserProfilePage />} />
             <Route path="/chat/:sessionId" element={<SessionPage />} />
             <Route path="/" element={<WelcomePage />} />
+            <Route
+              path="/profile/:profileId"
+              element={<OtherUserProfilePage />}
+            />
           </Routes>
         </div>
       </Router>

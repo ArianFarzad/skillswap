@@ -5,15 +5,16 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { showToastError } from '../utils/toastUtils.ts';
+import { showToast } from '../utils/toastUtils.ts';
 import log from '../utils/loggerInstance.ts';
 import axios from '../utils/axiosInstance.ts';
 import { IProfile } from '../models/models.ts';
+import Spinner from '../components/Spinner.tsx';
 
 const UserProfilePage: React.FC = () => {
   const { t } = useTypedTranslation();
   const [profile, setProfile] = useState<IProfile | null>(null);
-  // const [loading, setLoading] = useState(true); TODO - implement loading spinner, yb
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -22,9 +23,10 @@ const UserProfilePage: React.FC = () => {
         setProfile(response.data);
         log.info('Profile fetched successfully.');
       } catch (error) {
-        showToastError(error, t);
+        showToast('error', error, t);
+        log.error('Error fetching profile:', error);
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     };
 
@@ -40,9 +42,15 @@ const UserProfilePage: React.FC = () => {
           <title>SkillSwap - {t('user_profile')}</title>
         </Helmet>
         <SettingsBar />
-        <NavBar profile={profile} />
-        <Profile profile={profile} setProfile={setProfile} />
-        <Footer />
+        {loading ? (
+          <Spinner />
+        ) : (
+          <>
+            <NavBar profile={profile} />
+            <Profile profile={profile} setProfile={setProfile} />
+            <Footer />
+          </>
+        )}
       </>
     </HelmetProvider>
   );

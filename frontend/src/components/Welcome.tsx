@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
 import {
   Headline,
   MainContainer,
   WelcomeText,
 } from '../style/components/Welcome.style';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
 
 const Welcome: React.FC = () => {
   const { t } = useTypedTranslation();

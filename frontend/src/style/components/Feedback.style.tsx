@@ -6,7 +6,7 @@ export const FeedbackContainer = styled.div`
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   max-width: 800px;
-  margin: 0rem auto;
+  margin: 0 auto;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -51,7 +51,11 @@ export const FeedbackTextarea = styled.textarea`
   }
 
   &::placeholder {
-    color: var(--text-color-secondary);
+    color: var(--placeholder-color);
+  }
+
+  &:focus::placeholder {
+    color: transparent;
   }
 `;
 
