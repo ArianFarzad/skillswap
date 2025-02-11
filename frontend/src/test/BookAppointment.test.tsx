@@ -1,12 +1,12 @@
 import './testUtils/mocks.ts';
 import i18n from './testUtils/i18nTestConfig';
 import { MemoryRouter } from 'react-router-dom';
-
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import BookAppointment from '../components/BookAppointment';
 import { saveAs } from 'file-saver';
-import { showToastError } from '../utils/toastUtils';
 import { I18nextProvider } from 'react-i18next';
+import { showToast } from '../utils/toastUtils';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('BookAppointment Component', () => {
   beforeEach(() => {
@@ -76,8 +76,9 @@ describe('BookAppointment Component', () => {
     fireEvent.click(bookAppointmentButton);
 
     await waitFor(() => {
-      expect(showToastError).toHaveBeenCalledTimes(1);
-      expect(showToastError).toHaveBeenCalledWith(
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith(
+        'error',
         'end_date_before_start_date',
         expect.any(Function)
       );

@@ -1,6 +1,5 @@
 import '../index.css';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 
 export const NavArea = styled.nav`
   background-color: var(--background-color-nav);
@@ -34,56 +33,13 @@ export const ListArea = styled.ul`
   }
 `;
 
-export const StyledLink = styled(Link)`
-  display: flex;
-  text-decoration: none;
-  font-size: 1.3em;
-  align-content: center;
-  color: var(--text-color);
-
-  &:hover {
-    background-color: var(--primary-color);
-    color: var(--text-color-on-button);
-    border-radius: 0.5em;
-    padding: 0.5em;
-    transition: background-color 0.5s ease;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1em;
-  }
-`;
-
-export const Logout = styled.p`
-  margin: auto 0;
-  font-size: 1.3em;
-  color: var(--text-color);
-  display: flex;
-  align-content: center;
-
-  &:hover {
-    color: darkred;
-    cursor: pointer;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1em;
-  }
-`;
-
 export const FilterContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
 
-  @media (max-width: 767px) {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-
   @media (max-width: 768px) {
-    align-items: flex-end;
+    justify-content: center;
   }
 `;
 

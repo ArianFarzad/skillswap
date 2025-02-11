@@ -7,8 +7,7 @@ import { Value } from 'react-calendar/dist/cjs/shared/types';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { toast } from 'react-hot-toast';
-import { showToastError } from '../utils/toastUtils.ts';
+import { showToast } from '../utils/toastUtils.ts';
 import {
   FiCalendar,
   FiClock,
@@ -81,7 +80,7 @@ const BookAppointment: React.FC = () => {
       handleFileUpload({
         target: { files },
       } as React.ChangeEvent<HTMLInputElement>).catch((error) =>
-        showToastError(error, t)
+        showToast('error', error, t)
       );
     }
   };
@@ -95,7 +94,7 @@ const BookAppointment: React.FC = () => {
 
     if (new Date(formData.endDateTime) <= new Date(formData.startDateTime)) {
       log.debug('Validation triggered: End date is before start date');
-      showToastError('end_date_before_start_date', t);
+      showToast('error', 'end_date_before_start_date', t);
       return;
     }
     const icsContent = `
@@ -127,9 +126,9 @@ END:VCALENDAR
           formData
         );
         setUploadedEvents([...uploadedEvents, ...response.data]);
-        toast.success(t('upload_ics'));
+        showToast('success', 'upload_ics', t);
       } catch (error) {
-        toast.error(t('end_date_before_start_date'));
+        showToast('error', error, t);
         log.error('Error uploading ICS file:', error);
       }
     }

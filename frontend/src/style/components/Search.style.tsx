@@ -3,54 +3,37 @@ import '../index.css';
 
 export const AllProfilesContainer = styled.div`
   background-color: var(--background-color);
-  display: block;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  width: 45%;
-  height: 25em;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  max-height: 60vh;
   position: absolute;
-  right: 2em;
-  top: 11em;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  }
+  right: 3.5rem;
+  top: 9rem;
+  z-index: 100;
 
   @media (max-width: 768px) {
-    top: 60%;
-    width: 30%;
-    height: 15em;
+    top: 20em;
+    right: 20%;
   }
 `;
 
-export const Headline = styled.h1`
-  font-size: 2rem;
+export const Headline = styled.h2`
+  font-size: 1.25rem;
   color: var(--text-color);
-  margin: 0;
-
-  @media (max-width: 768px) {
-    font-size: 1.5rem;
-  }
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-color);
 `;
 
 export const ProfileList = styled.ul`
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  overflow-y: scroll;
+  margin: 0;
+  overflow-y: auto;
+  max-height: 50vh;
   scrollbar-width: none;
-  height: 22em;
-
-  @media (max-width: 768px) {
-    height: 12em;
-  }
 `;
 
 export const NoProfilesContainer = styled.div`
@@ -59,7 +42,7 @@ export const NoProfilesContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--text-secondary-color);
+  color: var(--text-color-secondary);
   font-size: 1.2rem;
   opacity: 0.8;
   gap: 0.5rem;
@@ -72,16 +55,17 @@ export const NoProfilesContainer = styled.div`
 
 export const ProfileListItem = styled.li`
   background-color: var(--background-color-secondary);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: transform 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transform: translateX(4px);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
@@ -89,83 +73,46 @@ export const ProfileListItemHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
 
   h3 {
     margin: 0;
+    font-size: 1rem;
     color: var(--text-color);
-    font-size: 1.75rem;
     font-weight: 600;
-  }
-
-  @media (max-width: 768px) {
-    h3 {
-      font-size: 1rem;
-    }
-
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-  }
-`;
-
-export const ProfileListItemContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  flex-direction: column;
-`;
-
-export const ProfileListItemDetails = styled.div`
-  flex: 1;
-
-  div {
-    margin-bottom: 0.5rem;
-
-    strong {
-      color: var(--text-color);
-      font-weight: 500;
-    }
-
-    span {
-      color: var(--link-color);
-      cursor: pointer;
-      transition: color 0.3s ease;
-
-      &:hover {
-        color: var(--link-hover);
-      }
-    }
   }
 `;
 
 export const ProfileListItemActions = styled.div`
+  display: flex;
+  gap: 0.5rem;
+
   button {
-    background-color: var(--primary-color);
-    color: var(--text-color-on-button);
-    border: none;
-    border-radius: 12px;
-    padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    font-size: 0.85rem;
 
     &:hover {
-      background-color: var(--primary-color-hover);
+      opacity: 0.9;
+    }
+
+    &.profile-page {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+
+    &:not(.stats) {
+      background-color: var(--primary-color);
+      color: var(--text-color-on-button);
     }
 
     svg {
-      color: var(--text-color-on-button);
+      font-size: 1rem;
     }
   }
-`;
-
-export const UserPoints = styled.p`
-  color: var(--text-color);
-  margin: 0;
-  font-weight: bold;
-  font-size: 1.2rem;
 `;

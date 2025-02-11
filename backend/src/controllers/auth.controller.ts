@@ -78,6 +78,17 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+export const logout = async (_req: Request, res: Response) => {
+  try {
+    logger.info('Logging out user...');
+    res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'strict' });
+    res.status(200).json({ message: 'User logged out successfully' });
+  } catch (error) {
+    logger.error(`Error logging out user: ${error}`);
+    res.status(500).json({ error: 'error.server_error' });
+  }
+};
+
 export const refreshToken = async (req: Request, res: Response) => {
   try {
     logger.info('Refreshing token...');

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
-import { showToastError } from '../utils/toastUtils.ts';
+import { showToast } from '../utils/toastUtils.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import {
   AlignCenter,
@@ -40,9 +40,9 @@ const Login: React.FC = () => {
 
       const redirectPath =
         new URLSearchParams(location.search).get('redirect') || '/profile';
-      navigate(redirectPath);
+      void navigate(redirectPath);
     } catch (error) {
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
@@ -70,6 +70,7 @@ const Login: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete={'email'}
             />
           </Column>
           <Column>
@@ -84,6 +85,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete={'current-password'}
             />
           </Column>
           <SpaceBetween>

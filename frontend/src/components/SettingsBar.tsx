@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import log from '../utils/loggerInstance.ts';
-import { Brightness4, Brightness7 } from '@mui/icons-material';
+import { Brightness4, Brightness7, LogoutSharp } from '@mui/icons-material';
 import { FiArrowLeft } from 'react-icons/fi';
 import {
-  BackspaceButton,
   Label,
   LeftContainer,
   MainContainer,
   RightContainer,
+  StyledButton,
   StyledFlag,
   StyledInput,
 } from '../style/components/SettingsBar.style';
+import axios from '../utils/axiosInstance.ts';
 
 const SettingsBar: React.FC = () => {
   const { i18n } = useTranslation();
@@ -38,15 +39,31 @@ const SettingsBar: React.FC = () => {
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    void navigate(-1);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout');
+
+      localStorage.removeItem('token');
+      localStorage.removeItem('myUserId');
+
+      void navigate('/login');
+    } catch (e) {
+      log.error(`Logout failed with error: ${e}`);
+    }
   };
 
   return (
     <MainContainer>
       <LeftContainer>
-        <BackspaceButton onClick={handleGoBack}>
+        <StyledButton onClick={handleGoBack}>
           <FiArrowLeft />
-        </BackspaceButton>
+        </StyledButton>
+        <StyledButton onClick={handleLogout}>
+          <LogoutSharp />
+        </StyledButton>
         <Label>
           <StyledInput
             type="checkbox"

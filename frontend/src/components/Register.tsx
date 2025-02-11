@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosInstance';
-import toast from 'react-hot-toast';
+import { showToast } from '../utils/toastUtils.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { showToastError } from '../utils/toastUtils.ts';
 import {
   Button,
   Column,
@@ -39,10 +38,10 @@ const Register = () => {
         email,
         password,
       });
-      toast.success(t('register_success'));
-      navigate('/login');
+      showToast('success', 'register_success', t);
+      void navigate('/login');
     } catch (error) {
-      showToastError(error, t);
+      showToast('error', error, t);
     }
   };
 
@@ -66,6 +65,7 @@ const Register = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              autoComplete={'username'}
             />
           </Column>
           <Column>
@@ -88,6 +88,7 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete={'new-password'}
             />
           </Column>
           <SpaceBetween>

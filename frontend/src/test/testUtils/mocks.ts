@@ -40,6 +40,7 @@ vi.mock('../../utils/toastUtils', () => {
   return {
     showToastError: vi.fn(),
     showErrorMessage: vi.fn(),
+    showToast: vi.fn(),
   };
 });
 

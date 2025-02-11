@@ -5,6 +5,7 @@ import Login from '../components/Login';
 import axiosInstance from '../utils/axiosInstance';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './testUtils/i18nTestConfig';
+import { beforeEach, describe, expect, Mock, test } from 'vitest';
 
 describe('Login Component', () => {
   beforeEach(() => {
@@ -41,7 +42,9 @@ describe('Login Component', () => {
       },
     };
 
-    (axiosInstance.post as jest.Mock).mockResolvedValue(mockResponse);
+    const mockPost = axiosInstance.post as Mock;
+
+    mockPost.mockResolvedValue(mockResponse);
 
     const emailInput = screen.getByLabelText('email_address');
     const passwordInput = screen.getByLabelText('password');

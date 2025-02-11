@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { IFeedback } from '../models/models.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import { toast } from 'react-hot-toast';
+import { showToast } from '../utils/toastUtils.ts';
 import log from '../utils/loggerInstance.ts';
 import axios from '../utils/axiosInstance';
 import {
@@ -61,7 +61,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         feedback: comment || ' ',
       })
       .then(() => {
-        toast.success(t('feedback_submitted'), { icon: '🚀' });
+        showToast('success', 'feedback_sent', t);
         setRating(0);
         setComment('');
         fetchFeedbacks();

@@ -6,8 +6,13 @@
     "session_expired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an",
     "empty_skill": "Fähigkeit darf nicht leer sein",
     "empty_interest": "Interesse darf nicht leer sein",
-    "unexpected_error": "Ein unerwarteter Fehler ist aufgetreten",
-    "invalid_userId": "Ungültige Benutzer-ID."
+    "invalid_userId": "Ungültige Benutzer-ID.",
+    "invalid_skill": "Ungültige Fähigkeit. Max. 64 Zeichen sind erlaubt, bitte die Format prüfen.",
+    "duplicate_skill": "Fehler. Fähigkeit existiert bereits.",
+    "invalid_interest": "Ungültiges Interesse. Max. 64 Zeichen sind erlaubt, bitte die Format prüfen.",
+    "duplicate_interest": "Fehler. Interesse existiert bereits.",
+    "invalid_token": "Token-Überprüfung fehlgeschlagen, bitte melden Sie sich erneut an.",
+    "profile_not_found": "Profil nicht gefunden."
   },
   "loading": "Laden...",
   "welcome": "Willkommen bei SkillSwap",
@@ -77,7 +82,6 @@
   "Please_enter_a_username": "Bitte geben Sie einen Benutzernamen ein",
   "Please_enter_a_password": "Bitte geben Sie ein Passwort ein",
   "Already_have_an_account?": "Bereits ein Konto?",
-  "user_name": "Benutzername",
   "close": "Schließen",
   "register_intro_message": "Bei SkillSwap verbinden wir Sie mit anderen Nutzern, um Ihre Fähigkeiten zu teilen und von den Fähigkeiten anderer zu profitieren.",
   "welcome_user": "Willkommen",
@@ -117,5 +121,16 @@
   "drag_and_drop": "Ziehen und Ablegen",
   "create_event": "Veranstaltung erstellen",
   "no_events": "Keine Veranstaltungen",
-  "calendar": "Kalender"
+  "calendar": "Kalender",
+  "search_results": "Suchergebnisse",
+  "total_sessions": "Gesamtsitzungen",
+  "tutor_sessions": "Tutor-Sitzungen",
+  "student_sessions": "Studentensitzungen",
+  "total_messages": "Gesamtnachrichten",
+  "sent_messages": "Gesendete Nachrichten",
+  "received_messages": "Erhaltene Nachrichten",
+  "user_statistics": "Benutzerstatistiken",
+  "sessions": "Sitzungen",
+  "messages": "Nachrichten",
+  "feedback_count": "Anzahl der Feedbacks"
 }

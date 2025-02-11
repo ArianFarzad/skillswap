@@ -8,7 +8,12 @@
     "empty_skill": "Skill cannot be empty",
     "empty_interest": "Interest cannot be empty",
     "invalid_userId": "Error. User ID is missing.",
-    "unexpected_error": "An unexpected error occurred"
+    "invalid_skill": "Invalid skill. Max 64 chars are allowed, please check format.",
+    "duplicate_skill": "Error. Skill already exists.",
+    "invalid_interest": "Invalid interest. Max 64 chars are allowed, please check format.",
+    "duplicate_interest": "Error. Interest already exists.",
+    "invalid_token": "Token verification failed, please log in again.",
+    "profile_not_found": "Profile not found."
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",
@@ -78,7 +83,6 @@
   "Please_enter_a_username": "Please enter a username",
   "Please_enter_a_password": "Please enter a password",
   "Already_have_an_account?": "Already have an account?",
-  "user_name": "Username",
   "close": "Close",
   "register_intro_message": "At SkillSwap, we connect you with other users to share your skills while benefiting from the skills of others.",
   "welcome_user": "Welcome",
@@ -118,5 +122,16 @@
   "drag_and_drop": "Drag and Drop",
   "create_event": "Create Event",
   "no_events": "No event",
-  "calendar": "Calendar"
+  "calendar": "Calendar",
+  "search_results": "Search Results",
+  "total_sessions": "Total Sessions",
+  "tutor_sessions": "Tutor Sessions",
+  "student_sessions": "Student Sessions",
+  "total_messages": "Total Messages",
+  "sent_messages": "Sent Messages",
+  "received_messages": "Received Messages",
+  "user_statistics": "User Statistics",
+  "sessions": "Sessions",
+  "messages": "Messages",
+  "feedback_count": "Feedback Count"
 }

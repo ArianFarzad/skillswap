@@ -3,24 +3,15 @@ import '../index.css';
 
 export const MainContainer = styled.div`
   background-color: var(--background-color);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  max-width: 40%;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
   position: relative;
-  left: 0.5em;
-  scale: 0.85;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  }
+  margin-top: 3em;
 
   @media (max-width: 768px) {
-    max-width: 35%;
+    margin-top: 15em;
   }
 `;
 
@@ -30,16 +21,16 @@ export const ProfileHeader = styled.h1`
   text-align: left;
   margin-bottom: 2rem;
   font-weight: 700;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
 `;
 
 export const ProfileContent = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 export const Section = styled.div`
@@ -57,12 +48,6 @@ export const SectionTitle = styled.h2`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
 `;
 
 export const SkillList = styled.ul`
@@ -85,12 +70,6 @@ export const SkillItem = styled.li`
   font-size: 0.9rem;
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 768px) {
-    font-size: 0.7rem;
-    padding: 0.1rem 0.3rem;
-    gap: 0.1rem;
-  }
 `;
 
 export const InterestList = styled.ul`
@@ -113,26 +92,11 @@ export const InterestItem = styled.li`
   font-size: 0.9rem;
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 768px) {
-    font-size: 0.7rem;
-    padding: 0.1rem 0.3rem;
-    gap: 0.1rem;
-  }
 `;
 
 export const InputGroup = styled.div`
   display: flex;
   gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    font-size: 0.1rem;
-
-    * {
-      font-size: 1rem;
-    }
-  }
 `;
 
 export const TextInput = styled.input`
@@ -182,10 +146,6 @@ export const RemoveButton = styled.button`
   &:hover svg {
     color: var(--error-color);
   }
-
-  @media (max-width: 768px) {
-    scale: 0.7;
-  }
 `;
 
 export const EditButton = styled.button`
@@ -204,10 +164,11 @@ export const EditButton = styled.button`
   svg {
     color: var(--text-color-on-button);
   }
+`;
 
-  @media (max-width: 768px) {
-    &:first-child {
-      scale: 0.7;
-    }
-  }
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
 `;

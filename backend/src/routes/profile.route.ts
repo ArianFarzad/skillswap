@@ -13,6 +13,7 @@ import {
   searchProfilesByInterests,
   searchProfilesBySkills,
   updateProfile,
+  getUserStatistics,
 } from '../controllers/profile.controller';
 import { verifyToken } from '../utils/jwt';
 
@@ -28,6 +29,7 @@ router.post('/interests', verifyToken, addInterest);
 router.delete('/interests', verifyToken, removeInterest);
 router.get('/all', verifyToken, getAllProfiles);
 router.get('/search', verifyToken, searchProfiles);
+router.get('/statistics/:userId', verifyToken, getUserStatistics);
 router.get('/:profileId', verifyToken, getProfileById);
 router.get('/search/skills', verifyToken, searchProfilesBySkills);
 router.get('/search/interests', verifyToken, searchProfilesByInterests);

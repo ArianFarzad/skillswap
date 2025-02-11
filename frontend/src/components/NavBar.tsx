@@ -10,6 +10,7 @@ import {
   ListArea,
   NavArea,
 } from '../style/components/NavBar.style';
+import { handleInputFieldChange } from '../utils/helpers.ts';
 
 interface NavBarProps {
   profile: IProfile | null;
@@ -30,20 +31,22 @@ const NavBar: React.FC<NavBarProps> = ({ profile }) => {
         <KeywordInput
           type="text"
           placeholder={t('keyword')}
+          maxLength={50}
           data-testid="keyword-input"
           value={keyword}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setKeyword(e.target.value)
+            handleInputFieldChange(e, setKeyword, 50)
           }
         />
         <FilterInput
           type="number"
           min="0"
           placeholder={t('filter_by_points')}
+          maxLength={15}
           data-testid="filter-input"
           value={filter}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setFilter(e.target.value)
+            handleInputFieldChange(e, setFilter, 15)
           }
         />
       </FilterContainer>

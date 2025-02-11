@@ -177,7 +177,7 @@ export const checkSession = async (req: Request, res: Response) => {
     });
 
     if (session) {
-      logger.info('Session found:', session._id);
+      logger.info(`Session found: ${session._id}`);
       res.json({ sessionId: session._id });
     } else {
       logger.info('No session found');
@@ -185,6 +185,6 @@ export const checkSession = async (req: Request, res: Response) => {
     }
   } catch (error) {
     logger.error('Error checking session:', error);
-    res.status(500).json({ error: 'error.unexpected_error' });
+    res.status(500).json({ error: 'error.server_error' });
   }
 };
