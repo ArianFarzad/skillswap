@@ -38,7 +38,7 @@ export const StatCard = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;;
+  text-align: center;
 `;
 
 export const StatValue = styled.div`

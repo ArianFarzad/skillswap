@@ -137,7 +137,7 @@
   "name_changed": "Username changed successfully",
   "name_empty": "Username cannot be empty",
   "update_failed": "Update failed",
-  "name_exists": "Username already exists, please choose another one"
+  "name_exists": "Username already exists, please choose another one",
   "profile_picture_updated": "Profile picture updated",
   "upload_profile_picture": "Upload Profile Picture",
   "delete_profile_picture": "Delete Profile Picture",
