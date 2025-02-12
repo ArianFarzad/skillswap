@@ -17,7 +17,7 @@ import {
 import { verifyToken } from '../utils/jwt';
 
 const router = Router();
-
+// /api/profiles
 router.post('/', verifyToken, createProfile);
 router.get('/', verifyToken, getMyProfile);
 router.put('/', verifyToken, updateProfile);
@@ -30,6 +30,6 @@ router.get('/search', verifyToken, searchProfiles);
 router.get('/statistics/:userId', verifyToken, getUserStatistics);
 router.get('/:profileId', verifyToken, getProfileById);
 router.put('/me/picture', verifyToken, uploadProfilePicture);
-router.delete('me/picture', verifyToken, deleteProfilePicture);
+router.delete('/me/picture', verifyToken, deleteProfilePicture);
 
 export default router;

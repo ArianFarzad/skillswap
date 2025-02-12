@@ -19,14 +19,14 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ profile }) => {
   const { t } = useTypedTranslation();
   const [keyword, setKeyword] = useState('');
-  const [filter, setFilter] = useState('');
+  const [points, setPoints] = useState('');
 
   return (
     <NavArea>
       <ListArea>
         <MyProfile profile={profile} />
       </ListArea>
-      <Search keyword={keyword} filter={filter} />
+      <Search keyword={keyword} points={points} />
       <FilterContainer>
         <KeywordInput
           type="text"
@@ -44,9 +44,9 @@ const NavBar: React.FC<NavBarProps> = ({ profile }) => {
           placeholder={t('filter_by_points')}
           maxLength={15}
           data-testid="filter-input"
-          value={filter}
+          value={points}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleInputFieldChange(e, setFilter, 15)
+            handleInputFieldChange(e, setPoints, 15)
           }
         />
       </FilterContainer>

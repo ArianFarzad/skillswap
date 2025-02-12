@@ -10,6 +10,7 @@ import {
 } from '../../../shared/validation';
 import cloudinary from '../config/cloudinary';
 import multer from 'multer';
+import { isNotBlank } from '../utils/stringUtils';
 
 declare module 'express' {
   export interface Request {
@@ -34,7 +35,7 @@ export const createProfile = async (req: Request, res: Response) => {
     res.status(201).json(profile);
   } catch (error) {
     logger.error(`Error creating profile: ${error}`);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'error.server_error' });
   }
 };
 
@@ -45,12 +46,12 @@ export const getMyProfile = async (req: Request, res: Response) => {
       userId: req.user?.userId,
     });
     if (!profile) {
-      logger.warn('Profile not found for user:', req.user?.userId);
+      logger.warn(`Profile not found for user: ${req.user?.userId}`);
       return res.status(404).json({ error: 'error.profile_not_found' });
     }
     res.json(profile);
   } catch (error) {
-    logger.error('Error fetching profile:', error);
+    logger.error(`Error fetching profile: ${error}`);
     res.status(500).json({ error: 'error.server_error' });
   }
 };
@@ -81,7 +82,7 @@ export const updateProfile = async (req: Request, res: Response) => {
     }
     res.json(profile);
   } catch (error) {
-    logger.error('Error updating profile:', error);
+    logger.error(`Error updating profile: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -106,43 +107,24 @@ export const deleteProfile = async (req: Request, res: Response) => {
 };
 
 export const searchProfiles = async (req: Request, res: Response) => {
-  logger.info('searchProfiles function called');
-  const { keyword, skills, interests, name, email, filter } = req.query;
+  const { keyword, points } = req.query;
   const userId = req.user?.userId;
 
   try {
     const query: FilterQuery<IProfile> = {};
 
-    if (keyword) {
+    if (isNotBlank(keyword as string)) {
       const keywordRegex = new RegExp(keyword as string, 'i');
       query.$or = [
         { name: { $regex: keywordRegex } },
-        { skills: { $regex: keywordRegex } },
-        { interests: { $regex: keywordRegex } },
+        { skills: { $elemMatch: { $regex: keywordRegex } } },
+        { interests: { $elemMatch: { $regex: keywordRegex } } },
         { email: { $regex: keywordRegex } },
       ];
     }
 
-    if (skills) {
-      const skillsArray = Array.isArray(skills) ? skills : [skills as string];
-      query.skills = { $in: skillsArray };
-    }
-
-    if (interests) {
-      const interestsArray = Array.isArray(interests) ? interests : [interests];
-      query.interests = { $in: interestsArray };
-    }
-
-    if (name) {
-      query.name = { $regex: name as string, $options: 'i' };
-    }
-
-    if (email) {
-      query.email = { $regex: email as string, $options: 'i' };
-    }
-
-    if (filter) {
-      query.points = { $gte: filter };
+    if (points) {
+      query.points = { $gte: points };
     }
 
     if (userId) {
@@ -154,8 +136,8 @@ export const searchProfiles = async (req: Request, res: Response) => {
     logger.info(`Profile search. ${profiles.length} profiles found.`);
     res.json(profiles);
   } catch (error) {
-    logger.error('Error searching profiles:', error);
-    res.status(500).json({ error: 'Server error' });
+    logger.error(`Error searching profiles: ${error}`);
+    res.status(500).json({ error: 'error.server_error' });
   }
 };
 
@@ -163,21 +145,18 @@ export const getProfileById = async (req: Request, res: Response) => {
   const { profileId } = req.params;
 
   try {
-    // Check if `profileId` is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(profileId)) {
-      logger.error('Invalid profileId format:', profileId);
+      logger.error(`Invalid profileId format: ${profileId}`);
       return res.status(400).json({ message: 'Invalid profileId format' });
     }
 
-    // Convert profileId to ObjectId
     const objectId = new mongoose.Types.ObjectId(profileId);
     logger.info('Converted profileId to ObjectId:', objectId);
 
-    // Find profile by profileId
     const profile = await Profile.findById(objectId);
 
     if (!profile) {
-      logger.info('No profile found for profileId:', objectId);
+      logger.info(`No profile found for profileId: ${objectId}`);
       return res.status(404).json({ message: 'Profile not found' });
     }
 
@@ -293,11 +272,6 @@ export const removeInterest = async (req: Request, res: Response) => {
 
 export const getUserStatistics = async (req: Request, res: Response) => {
   try {
-    if (!req.user) {
-      logger.warn('Unauthorized access attempt');
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
     const userId = req.params.userId;
 
     const sessionCount = await Session.countDocuments({
@@ -367,7 +341,7 @@ export const getUserStatistics = async (req: Request, res: Response) => {
       receivedMessagesCount: receivedMessagesCount[0]?.receivedMessages || 0,
     });
   } catch (error) {
-    logger.error('Error fetching user statistics:', error);
+    logger.error(`Error fetching user statistics: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
@@ -401,13 +375,13 @@ export const uploadProfilePicture = [
       );
 
       if (!profile) {
-        logger.warn('Profile not found for user:', userId);
+        logger.warn(`Profile not found for user: ${userId}`);
         return res.status(404).json({ error: 'error.profile_not_found' });
       }
 
       res.status(200).json({ profilePicture: profile.profilePicture });
     } catch (error) {
-      logger.error('Error uploading profile picture:', error);
+      logger.error(`Error uploading profile picture: ${error}`);
       res.status(500).json({ error: 'error.server_error' });
     }
   },
@@ -428,9 +402,7 @@ export const deleteProfilePicture = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'error.profile_not_found' });
     }
 
-    res
-      .status(200)
-      .json({ message: 'Profile picture deleted', profilePicture: '' });
+    res.status(200).json({ message: 'Profile picture deleted' });
   } catch (error) {
     logger.error(`Error deleting profile picture: ${error}`);
     res.status(500).json({ error: 'error.server_error' });

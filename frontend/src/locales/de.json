@@ -58,7 +58,7 @@
   "enter_password_register": "Bitte geben Sie ein Passwort ein",
   "fill_details_register": "Bitte füllen Sie Ihre Daten aus, um sich zu registrieren",
   "book_appointment": "Termin buchen",
-  "filter_by_points": "Filtern nach Punkten",
+  "filter_by_points": "Filtern n. Punkten",
   "keyword": "Schlüsselwort",
   "points": "Punkte",
   "title": "Titel",
@@ -135,5 +135,6 @@
   "feedback_count": "Anzahl der Feedbacks",
   "profile_picture_updated": "Profilbild aktualisiert",
   "upload_profile_picture": "Profilbild hochladen",
-  "delete_profile_picture": "Profilbild löschen"
+  "delete_profile_picture": "Profilbild löschen",
+  "profile_picture_deleted": "Profilbild gelöscht"
 }
