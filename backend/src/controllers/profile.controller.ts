@@ -9,6 +9,7 @@ import {
   isValidSkillOrInterest,
 } from '../../../shared/validation';
 import cloudinary from '../config/cloudinary';
+import multer from 'multer';
 
 declare module 'express' {
   export interface Request {
@@ -124,14 +125,12 @@ export const searchProfiles = async (req: Request, res: Response) => {
 
     if (skills) {
       const skillsArray = Array.isArray(skills) ? skills : [skills as string];
-      query.skills = { $all: skillsArray };
+      query.skills = { $in: skillsArray };
     }
 
     if (interests) {
-      const interestsArray = Array.isArray(interests)
-        ? interests
-        : [interests as string];
-      query.interests = { $all: interestsArray };
+      const interestsArray = Array.isArray(interests) ? interests : [interests];
+      query.interests = { $in: interestsArray };
     }
 
     if (name) {
@@ -373,35 +372,67 @@ export const getUserStatistics = async (req: Request, res: Response) => {
   }
 };
 
-export const uploadProfilePicture = async (req: Request, res: Response) => {
-  try {
-    const { profilePic } = req.body;
-    const userId = req.user?.userId;
+const upload = multer({ dest: 'uploads/' });
 
-    if (!profilePic) {
-      logger.warn('No profile picture uploaded');
-      return res.status(400).json({ error: 'error.profile_picture_required' });
+export const uploadProfilePicture = [
+  upload.single('profilePicture'), // Middleware to handle file uploads
+  async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.userId;
+
+      if (!req.file) {
+        logger.warn('No profile picture uploaded');
+        return res
+          .status(400)
+          .json({ error: 'error.profile_picture_required' });
+      }
+
+      // Upload the image to Cloudinary
+      const uploadResponse = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'profile_pictures',
+        transformation: [{ width: 200, height: 200, crop: 'fill' }],
+      });
+
+      // Update the profile with the new image URL
+      const profile = await Profile.findOneAndUpdate(
+        { userId },
+        { profilePicture: uploadResponse.secure_url },
+        { new: true }
+      );
+
+      if (!profile) {
+        logger.warn('Profile not found for user:', userId);
+        return res.status(404).json({ error: 'error.profile_not_found' });
+      }
+
+      res.status(200).json({ profilePicture: profile.profilePicture });
+    } catch (error) {
+      logger.error('Error uploading profile picture:', error);
+      res.status(500).json({ error: 'error.server_error' });
     }
+  },
+];
 
-    const uploadResponse = await cloudinary.uploader.upload(profilePic, {
-      folder: 'profile_pictures',
-      transformation: [{ width: 200, height: 200, crop: 'fill' }],
-    });
+export const deleteProfilePicture = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.userId;
 
     const profile = await Profile.findOneAndUpdate(
       { userId },
-      { profilePicture: uploadResponse.secure_url },
+      { profilePicture: '' },
       { new: true }
     );
 
     if (!profile) {
-      logger.warn('Profile not found for user:', userId);
+      logger.warn(`Profile not found for user: ${userId}`);
       return res.status(404).json({ error: 'error.profile_not_found' });
     }
 
-    res.status(200).json({ profilePicture: profile.profilePicture });
+    res
+      .status(200)
+      .json({ message: 'Profile picture deleted', profilePicture: '' });
   } catch (error) {
-    logger.error('Error uploading profile picture:', error);
+    logger.error(`Error deleting profile picture: ${error}`);
     res.status(500).json({ error: 'error.server_error' });
   }
 };

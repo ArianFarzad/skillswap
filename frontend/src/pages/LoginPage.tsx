@@ -15,7 +15,7 @@ const LoginPage: React.FC = () => {
         <Helmet>
           <title>SkillSwap - {t('login')}</title>
         </Helmet>
-        <SettingsBar />
+        <SettingsBar profile={null} />
         <MainContainer>
           <Intro />
           <Login />

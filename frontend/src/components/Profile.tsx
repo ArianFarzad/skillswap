@@ -4,6 +4,8 @@ import log from '../utils/loggerInstance.ts';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import UploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import { IProfile } from '../models/models.ts';
@@ -13,15 +15,18 @@ import {
   AddButton,
   Column,
   EditButton,
+  FloatingMenu,
+  FloatingMenuItem,
   InputGroup,
   InterestItem,
   InterestList,
   MainContainer,
   ProfileContent,
-  ProfileEditButton,
+  ProfileEditLabel,
   ProfileHeader,
   ProfileImage,
   ProfileImageContainer,
+  ProfileImageSection,
   RemoveButton,
   Section,
   SectionTitle,
@@ -43,12 +48,12 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
   const { t } = useTypedTranslation();
   const loggedInUserId = localStorage.getItem('myUserId');
   const isOwnProfile = profile?.userId === loggedInUserId;
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
   const [editModeSkill, setEditModeSkill] = useState(false);
   const [editModeInterest, setEditModeInterest] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [statistics, setStatistics] = useState({
     sessionCount: 0,
     tutorSessionCount: 0,
@@ -124,6 +129,10 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
+
   const handleAddInterest = async () => {
     if (!newInterest.trim()) {
       showToast('error', 'error.empty_interest', t);
@@ -160,20 +169,23 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedFile(e.target.files[0]);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+
+    try {
+      await uploadProfilePicture(file);
+      setShowMenu(false);
+    } catch (error) {
+      log.error(`Error uploading profile picture: ${error}`);
     }
   };
 
-  const uploadProfilePicture = async () => {
-    if (!selectedFile) {
-      showToast('error', 'error.no_image_selected', t);
-      return;
-    }
-
+  const uploadProfilePicture = async (file: File) => {
     const formData = new FormData();
-    formData.append('profilePicture', selectedFile);
+    formData.append('profilePicture', file);
 
     try {
       const response = await axios.put('/api/profiles/me/picture', formData, {
@@ -193,6 +205,18 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
+  const handleDeleteProfilePicture = async () => {
+    try {
+      await axios.delete('/api/profiles/me/picture');
+      setProfile((prev) => prev && { ...prev, profilePicture: '' });
+      showToast('success', 'profile_picture_deleted', t);
+      setShowMenu(false);
+    } catch (error) {
+      showToast('error', error, t);
+      log.error('Error deleting profile picture:', error);
+    }
+  };
+
   return (
     <MainContainer>
       <ProfileHeader>
@@ -200,30 +224,44 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
           ? t('your_profile')
           : `${profile?.name}\`s ${t('profile')}`}
       </ProfileHeader>
-      <ProfileImageContainer>
-        {/*// TODO use a default profile picture and refine this completely!, yb*/}
-        <ProfileImage
-          src={profile?.profilePicture || 'https://via.placeholder.com/150'}
-          alt={'Profile'}
-        />
-        {isOwnProfile && (
-          <label>
-            <ProfileEditButton>
-              <CameraAltIcon />
-            </ProfileEditButton>
-            <input
-              type={'file'}
-              accept={'image/*'}
-              onChange={handleFileChange}
-              hidden
-            />
-          </label>
-        )}
-      </ProfileImageContainer>
 
-      <button onClick={uploadProfilePicture} style={{ marginTop: '10px' }}>
-        {t('upload_profile_picture')}
-      </button>
+      {/* Profile Picture */}
+      <ProfileImageSection>
+        <ProfileImageContainer>
+          <ProfileImage
+            src={profile?.profilePicture || '/avatar.png'}
+            alt={'Profile'}
+          />
+          {isOwnProfile && (
+            <>
+              <ProfileEditLabel onClick={toggleMenu}>
+                <CameraAltIcon />
+              </ProfileEditLabel>
+
+              {/*Floating Menu*/}
+              {showMenu && (
+                <FloatingMenu>
+                  <FloatingMenuItem>
+                    <label htmlFor="profilePicture">
+                      <UploadIcon />
+                      {t('upload_profile_picture')}
+                      <input
+                        id={'profilePicture'}
+                        type={'file'}
+                        accept={'image/*'}
+                        onChange={handleImageUpload}
+                      />
+                    </label>
+                  </FloatingMenuItem>
+                  <FloatingMenuItem onClick={handleDeleteProfilePicture}>
+                    <DeleteIcon /> {t('delete_profile_picture')}
+                  </FloatingMenuItem>
+                </FloatingMenu>
+              )}
+            </>
+          )}
+        </ProfileImageContainer>
+      </ProfileImageSection>
 
       {profile && (
         <ProfileContent>
@@ -231,7 +269,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
             <Section>
               <SectionTitle>
                 {t('skills')}{' '}
-                {profile.userId === loggedInUserId && (
+                {isOwnProfile && (
                   <EditButton onClick={handleEditSkill}>
                     <EditIcon />
                   </EditButton>
@@ -241,7 +279,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                 {profile.skills.map((skill) => (
                   <SkillItem key={skill}>
                     {skill}
-                    {editModeSkill && profile.userId === loggedInUserId && (
+                    {editModeSkill && isOwnProfile && (
                       <RemoveButton onClick={() => handleRemoveSkill(skill)}>
                         <RemoveIcon />
                       </RemoveButton>
@@ -249,7 +287,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   </SkillItem>
                 ))}
               </SkillList>
-              {editModeSkill && profile.userId === loggedInUserId && (
+              {editModeSkill && isOwnProfile && (
                 <InputGroup>
                   <TextInput
                     type="text"
@@ -273,7 +311,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
             <Section>
               <SectionTitle>
                 {t('interests')}
-                {profile.userId === loggedInUserId && (
+                {isOwnProfile && (
                   <EditButton onClick={handleEditInterest}>
                     <EditIcon />
                   </EditButton>
@@ -283,7 +321,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                 {profile.interests.map((interest) => (
                   <InterestItem key={interest}>
                     {interest}
-                    {editModeInterest && profile.userId === loggedInUserId && (
+                    {editModeInterest && isOwnProfile && (
                       <RemoveButton
                         onClick={() => handleRemoveInterest(interest)}
                       >
@@ -294,7 +332,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                 ))}
               </InterestList>
 
-              {editModeInterest && profile.userId === loggedInUserId && (
+              {editModeInterest && isOwnProfile && (
                 <InputGroup>
                   <TextInput
                     type="text"

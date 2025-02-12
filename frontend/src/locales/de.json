@@ -133,5 +133,7 @@
   "sessions": "Sitzungen",
   "messages": "Nachrichten",
   "feedback_count": "Anzahl der Feedbacks",
-  "upload_profile_picture": "Profilbild hochladen"
+  "profile_picture_updated": "Profilbild aktualisiert",
+  "upload_profile_picture": "Profilbild hochladen",
+  "delete_profile_picture": "Profilbild löschen"
 }

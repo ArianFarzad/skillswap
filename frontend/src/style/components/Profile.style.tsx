@@ -23,10 +23,26 @@ export const ProfileHeader = styled.h1`
   font-weight: 700;
 `;
 
+export const ProfileContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+export const ProfileImageSection = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
 export const ProfileImageContainer = styled.div`
   position: relative;
   display: flex;
-  justify-content: center;
   margin-bottom: 1rem;
 `;
 
@@ -38,23 +54,12 @@ export const ProfileImage = styled.img`
   border: 3px solid var(--border-color);
 `;
 
-export const ProfileContent = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
-export const ProfileEditButton = styled.button`
+export const ProfileEditLabel = styled.label`
   position: absolute;
   bottom: 0;
   right: 0;
   background-color: var(--primary-color);
   color: var(--text-color-on-button);
-  border: none;
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -63,9 +68,71 @@ export const ProfileEditButton = styled.button`
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 
   &:hover {
     background-color: var(--primary-color-hover);
+  }
+
+  input {
+    display: none;
+  }
+
+  svg {
+    font-size: 1.2rem;
+  }
+`;
+
+export const FloatingMenu = styled.div`
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: var(--background-color-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.3s ease-in-out forwards;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const FloatingMenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-radius: 6px;
+
+  &:hover {
+    background: var(--primary-color-hover);
+  }
+
+  label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  input {
+    display: none;
   }
 `;
 

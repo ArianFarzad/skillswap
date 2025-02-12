@@ -15,7 +15,7 @@ const RegisterPage: React.FC = () => {
         <Helmet>
           <title>SkillSwap - {t('register')}</title>
         </Helmet>
-        <SettingsBar />
+        <SettingsBar profile={null} />
         <MainContainer>
           <Intro />
           <Register />

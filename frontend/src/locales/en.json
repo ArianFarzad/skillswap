@@ -134,5 +134,7 @@
   "sessions": "Sessions",
   "messages": "Messages",
   "feedback_count": "Feedback Count",
-  "upload_profile_picture": "Upload Profile Picture"
+  "profile_picture_updated": "Profile picture updated",
+  "upload_profile_picture": "Upload Profile Picture",
+  "delete_profile_picture": "Delete Profile Picture"
 }

@@ -13,7 +13,7 @@ const WelcomePage: React.FC = () => {
         <Helmet>
           <title>{t('welcome')}</title>
         </Helmet>
-        <SettingsBar />
+        <SettingsBar profile={null} />
         <Welcome />
       </>
     </HelmetProvider>

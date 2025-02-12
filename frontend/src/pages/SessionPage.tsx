@@ -73,7 +73,8 @@ const SessionPage: React.FC = () => {
         <Helmet>
           <title>SkillSwap - {t('session')}</title>
         </Helmet>
-        <SettingsBar />
+        {/*// TODO fix null on this SettingsBar or modify the logic, yb*/}
+        <SettingsBar profile={null} />
         <SessionContent>
           <CalendarContainer className={isFeedbackVisible ? 'hide' : ''}>
             <BookAppointment />

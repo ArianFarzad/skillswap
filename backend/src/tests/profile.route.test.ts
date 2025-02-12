@@ -82,8 +82,10 @@ describe('Profile Routes', () => {
     const { token } = await createTestUserWithProfile({}, {});
 
     const res = await request(app)
-      .get('/api/profiles/search/skills?skills=JavaScript')
+      .get('/api/profiles/search?skills=JavaScript')
       .set('Authorization', `Bearer ${token}`);
+
+    console.log('Search Response:', res.body); // Log the response for debugging
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveLength(1);
