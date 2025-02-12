@@ -10,6 +10,7 @@ import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import { IProfile } from '../models/models.ts';
 import EditIcon from '@mui/icons-material/Edit';
+import Save from '@mui/icons-material/Save';
 import UserStatistics from './UserStatistics';
 import {
   AddButton,
@@ -23,7 +24,6 @@ import {
   MainContainer,
   ProfileContent,
   ProfileEditLabel,
-  ProfileHeader,
   ProfileImage,
   ProfileImageContainer,
   ProfileImageSection,
@@ -219,12 +219,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   return (
     <MainContainer>
-      <ProfileHeader>
-        {profile?.userId === loggedInUserId
-          ? t('your_profile')
-          : `${profile?.name}\`s ${t('profile')}`}
-      </ProfileHeader>
-
       {/* Profile Picture */}
       <ProfileImageSection>
         <ProfileImageContainer>
@@ -271,7 +265,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                 {t('skills')}{' '}
                 {isOwnProfile && (
                   <EditButton onClick={handleEditSkill}>
-                    <EditIcon />
+                    {editModeSkill ? <Save /> : <EditIcon />}
                   </EditButton>
                 )}
               </SectionTitle>
@@ -313,7 +307,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                 {t('interests')}
                 {isOwnProfile && (
                   <EditButton onClick={handleEditInterest}>
-                    <EditIcon />
+                    {editModeInterest ? <Save /> : <EditIcon />}
                   </EditButton>
                 )}
               </SectionTitle>

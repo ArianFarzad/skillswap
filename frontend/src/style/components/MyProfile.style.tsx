@@ -23,16 +23,18 @@ export const ProfileContainer = styled.div`
   }
 `;
 
-export const Row = styled.div`
+export const Row = styled.div<{ $pointsContainer: boolean }>`
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  justify-content: ${(props) =>
+    props.$pointsContainer ? 'space-between' : 'center'};
+  padding: 0;
 `;
 
 export const Column = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   flex: 1;
 `;
 
@@ -78,6 +80,35 @@ export const PointsBadge = styled.span`
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.9rem;
+`;
+
+export const EditButton = styled.button`
+  background-color: var(--primary-color);
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 50%;
+  scale: 0.8;
+
+  &:hover {
+    background-color: var(--primary-color-hover);
+  }
+
+  svg {
+    color: var(--text-color-on-button);
+  }
+`;
+
+export const StyledInput = styled.input<{ $onedit: boolean }>`
+  background-color: var(--background-color);
+  border: ${(props) => (props.$onedit ? '1px solid black' : 'none')};
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 1rem;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: ${(props) => (props.$onedit ? '0.5rem' : '0')};
 `;
 
 export const ProfileImage = styled.img`

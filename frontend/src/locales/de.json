@@ -133,6 +133,10 @@
   "sessions": "Sitzungen",
   "messages": "Nachrichten",
   "feedback_count": "Anzahl der Feedbacks",
+  "name_changed": "Benutzername erfolgreich geändert",
+  "name_empty": "Benutzername darf nicht leer sein",
+  "updated_failed": "Aktualisierung fehlgeschlagen",
+  "name_exists": "Benutzername existiert bereits, bitte wählen Sie einen anderen Benutzernamen"
   "profile_picture_updated": "Profilbild aktualisiert",
   "upload_profile_picture": "Profilbild hochladen",
   "delete_profile_picture": "Profilbild löschen",

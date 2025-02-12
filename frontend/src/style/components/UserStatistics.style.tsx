@@ -38,7 +38,7 @@ export const StatCard = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  text-align: center;;
 `;
 
 export const StatValue = styled.div`
@@ -50,7 +50,7 @@ export const StatValue = styled.div`
 
 export const StatLabel = styled.div`
   font-size: 1.2rem;
-  color: var(--text-color);
+  color: var(--primary-color);
   margin-bottom: 1rem;
 `;
 
@@ -64,6 +64,7 @@ export const RatingContainer = styled.div`
 
 export const RatingValue = styled(StatValue)`
   font-size: 2rem;
+  color: var(--text-color);
 `;
 
 export const FeedbackContainer = styled.div`
@@ -74,4 +75,5 @@ export const FeedbackContainer = styled.div`
 
 export const FeedbackValue = styled(StatValue)`
   font-size: 2rem;
+  color: var(--text-color);
 `;

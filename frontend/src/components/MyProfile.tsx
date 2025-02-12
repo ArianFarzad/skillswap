@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import Profile from '@mui/icons-material/AccountCircle';
 import { IProfile } from '../models/models.ts';
+import { Edit } from '@mui/icons-material';
+import { Save } from '@mui/icons-material';
+import axios from '../utils/axiosInstance.ts';
+import { showToast } from '../utils/toastUtils.ts';
+import log from '../utils/loggerInstance.ts';
 import {
   Column,
   Line,
@@ -11,6 +16,8 @@ import {
   ProfileImage,
   Row,
   StyledP,
+  EditButton,
+  StyledInput,
 } from '../style/components/MyProfile.style';
 
 interface MyProfileProps {
@@ -19,10 +26,61 @@ interface MyProfileProps {
 
 const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
   const { t } = useTypedTranslation();
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [name, setName] = useState(profile?.name || '');
+  const [previousName, setPreviousName] = useState('');
+  const loggedInUserId = localStorage.getItem('myUserId');
+
+  useEffect(() => {
+    setName(profile?.name || '');
+  }, [profile]);
+
+  const handleEdit = async () => {
+    if (isEditMode) {
+      if (name.trim() === '') {
+        setName(previousName);
+        showToast('error', 'name_empty', t);
+      } else {
+        try {
+          const response = await axios.put('api/profiles', {
+            name: name,
+            userId: loggedInUserId,
+          });
+
+          if (response.status === 200) {
+            showToast('success', 'name_changed', t);
+          } else {
+            throw new Error(`Unexpected status code: ${response.status}`);
+          }
+        } catch (error: unknown) {
+          if (error && typeof error === 'object' && 'response' in error) {
+            const axiosError = error as { response: { status: number } };
+            if (axiosError.response.status === 400) {
+              setName(previousName);
+              showToast('error', 'name_exists', t);
+            } else {
+              log.error('Failed to change name', error);
+              showToast('error', 'name_change_failed', t);
+            }
+          } else {
+            log.error('Failed to change name', error);
+            showToast('error', 'name_change_failed', t);
+          }
+        }
+      }
+    } else {
+      setPreviousName(name);
+    }
+    setIsEditMode((prev) => !prev);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
 
   return (
     <ProfileContainer>
-      <Row>
+      <Row $pointsContainer={false}>
         <ProfileIconWrapper>
           {profile?.profilePicture ? (
             <ProfileImage src={profile.profilePicture} alt="Profile" />
@@ -31,13 +89,25 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
           )}
         </ProfileIconWrapper>
         <Column>
-          <StyledP className="profile-name">
-            {profile?.name || t('loading')}
-          </StyledP>
+          <Row $pointsContainer={false}>
+            <StyledInput
+              id={'input-name'}
+              disabled={!isEditMode}
+              $onedit={isEditMode}
+              value={name}
+              onChange={handleNameChange}
+            />
+            {loggedInUserId === profile?.userId && (
+              <EditButton onClick={handleEdit}>
+                {isEditMode ? <Save /> : <Edit />}
+              </EditButton>
+            )}
+          </Row>
           <Line />
-          <StyledP>
-            {t('points')}: <PointsBadge>{profile?.points ?? 0}</PointsBadge>
-          </StyledP>
+          <Row $pointsContainer={true}>
+            <StyledP>{t('points')}</StyledP>
+            <PointsBadge>{profile?.points ?? 0}</PointsBadge>
+          </Row>
         </Column>
       </Row>
     </ProfileContainer>

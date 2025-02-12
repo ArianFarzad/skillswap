@@ -15,13 +15,6 @@ export const MainContainer = styled.div`
   }
 `;
 
-export const ProfileHeader = styled.h1`
-  color: var(--text-color);
-  font-size: 2.5rem;
-  text-align: left;
-  margin-bottom: 2rem;
-  font-weight: 700;
-`;
 
 export const ProfileContent = styled.div`
   display: flex;
@@ -141,6 +134,7 @@ export const Section = styled.div`
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  flex: 1.5;
 `;
 
 export const SectionTitle = styled.h2`

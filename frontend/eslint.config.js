@@ -11,6 +11,9 @@ export default [
   { ignores: ['node_modules', 'build', 'dist'] },
   // ✅ TypeScript ESLint rules (recommended + requiring type checking)
   {
+    ignores: ['dist/'],
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
