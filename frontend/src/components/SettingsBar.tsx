@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import log from '../utils/loggerInstance.ts';
-import { Brightness4, Brightness7, LogoutSharp } from '@mui/icons-material';
+import {
+  Brightness4,
+  Brightness7,
+  Home,
+  LogoutSharp,
+} from '@mui/icons-material';
 import { FiArrowLeft } from 'react-icons/fi';
 import {
+  StyledButton,
   Label,
   LeftContainer,
   MainContainer,
   RightContainer,
-  StyledButton,
   StyledFlag,
   StyledInput,
 } from '../style/components/SettingsBar.style';
@@ -23,6 +28,11 @@ const SettingsBar: React.FC = () => {
     return savedMode ? JSON.parse(savedMode) : false;
   });
   const [lang, setLang] = useState<string>(() => i18n.language || 'en');
+  const location = useLocation();
+  const isAuthPage =
+    location.pathname === '/login' ||
+    location.pathname === '/register' ||
+    location.pathname === '/';
 
   useEffect(() => {
     if (darkMode) {
@@ -42,6 +52,10 @@ const SettingsBar: React.FC = () => {
     void navigate(-1);
   };
 
+  const handleGoHome = () => {
+    void navigate('/profile');
+  };
+
   const handleLogout = async () => {
     try {
       await axios.post('/api/auth/logout');
@@ -58,12 +72,21 @@ const SettingsBar: React.FC = () => {
   return (
     <MainContainer>
       <LeftContainer>
-        <StyledButton onClick={handleGoBack}>
-          <FiArrowLeft />
-        </StyledButton>
-        <StyledButton onClick={handleLogout}>
-          <LogoutSharp />
-        </StyledButton>
+        {!isAuthPage && (
+          <StyledButton onClick={handleGoBack}>
+            <FiArrowLeft />
+          </StyledButton>
+        )}
+        {!isAuthPage && (
+          <StyledButton onClick={handleLogout}>
+            <LogoutSharp />
+          </StyledButton>
+        )}
+        {!isAuthPage && (
+          <StyledButton onClick={handleGoHome}>
+            <Home />
+          </StyledButton>
+        )}
         <Label>
           <StyledInput
             type="checkbox"

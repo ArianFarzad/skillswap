@@ -73,7 +73,15 @@ export const updateProfile = async (req: Request, res: Response) => {
       $push?: { skills?: string };
       $pull?: { skills?: string };
     } = {};
-    if (name) updateFields.name = name;
+    if (name) {
+      const existingProfile = await Profile.findOne({ name });
+      if (existingProfile) {
+        return res
+          .status(400)
+          .json({ error: 'Profile with this name already exists' });
+      }
+      updateFields.name = name;
+    }
     if (skills) updateFields.skills = skills;
     if (interests) updateFields.interests = interests;
     if (addSkill) updateFields.$push = { skills: addSkill };
@@ -88,7 +96,7 @@ export const updateProfile = async (req: Request, res: Response) => {
       logger.warn('Profile not found for user:', req.user?.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
-    res.json(profile);
+    res.status(200).json(profile);
   } catch (error) {
     logger.error('Error updating profile:', error);
     res.status(500).json({ error: 'Server error' });

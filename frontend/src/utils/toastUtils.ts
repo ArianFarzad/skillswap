@@ -5,34 +5,25 @@ import {
 } from './translationUtils.ts';
 
 /**
- * Displays a toast error message based on an API response error.
- * If the error key exists in the translation keys, it displays the corresponding message.
+ * Displays a toast message based on an API response.
+ * If the message key exists in the translation keys, it displays the corresponding message.
  * Otherwise, it falls back to a generic error message.
- *
- * @param error - The error object, typically from an API response.
- * @param t - The typed translation function.
+ * @param type - The type of the toast message.
+ * @param message - The error message or object.
+ * @param t - The translation function.
+ * @param options - The toast options.
  */
-export const showToastError = (error: unknown, t: TranslationFunction) => {
-  if (error && typeof error === 'object' && 'response' in error) {
-    const axiosError = error as { response?: { data?: { error?: string } } };
-    const errorKey = axiosError.response?.data?.error || 'error.server_error';
 
-    if (isValidTranslationKey(errorKey)) {
-      const errorMessage = t(errorKey);
-      toast.error(errorMessage);
-    } else {
-      toast.error(t('error.server_error'));
-    }
-  } else {
-    toast.error(t('error.server_error'));
-  }
-};
+interface ExtendedToastOptions extends ToastOptions {
+  params?: Record<string, string>;
+  points?: string;
+}
 
 export const showToast = (
-  type: 'error' | 'success' | 'info' | 'warning',
+  type: 'error' | 'success',
   message: unknown,
   t: TranslationFunction,
-  options?: ToastOptions
+  options?: ExtendedToastOptions
 ) => {
   const toastConfig: ToastOptions = {
     duration: 5000,
@@ -43,7 +34,7 @@ export const showToast = (
   let toastMessage: string;
 
   if (typeof message === 'string' && isValidTranslationKey(message)) {
-    toastMessage = t(message);
+    toastMessage = t(message, options?.params);
   } else if (typeof message === 'object' && message !== null) {
     const error = message as { response?: { data?: { error?: string } } };
     const errorKey = error.response?.data?.error || 'error.server_error';

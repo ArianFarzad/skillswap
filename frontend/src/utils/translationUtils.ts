@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next';
 import enTranslations from '../locales/en.json';
 
 // Define the translation function type with flattened keys
-export type TranslationFunction = (key: FlattenedKeys) => string;
+export type TranslationFunction = (
+  key: FlattenedKeys,
+  params?: Record<string, string | number>
+) => string;
 
 // Custom hook to provide a typed version of the `t`
 export const useTypedTranslation = () => {
