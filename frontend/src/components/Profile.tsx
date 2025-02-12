@@ -3,6 +3,7 @@ import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import { IProfile } from '../models/models.ts';
@@ -17,7 +18,10 @@ import {
   InterestList,
   MainContainer,
   ProfileContent,
+  ProfileEditButton,
   ProfileHeader,
+  ProfileImage,
+  ProfileImageContainer,
   RemoveButton,
   Section,
   SectionTitle,
@@ -38,6 +42,8 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
   const { t } = useTypedTranslation();
   const loggedInUserId = localStorage.getItem('myUserId');
+  const isOwnProfile = profile?.userId === loggedInUserId;
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
@@ -154,6 +160,39 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const uploadProfilePicture = async () => {
+    if (!selectedFile) {
+      showToast('error', 'error.no_image_selected', t);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('profilePicture', selectedFile);
+
+    try {
+      const response = await axios.put('/api/profiles/me/picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setProfile(
+        (prev) =>
+          prev && { ...prev, profilePicture: response.data.profilePicture }
+      );
+      showToast('success', 'profile_picture_updated', t);
+    } catch (error) {
+      showToast('error', error, t);
+      log.error('Error uploading profile picture:', error);
+    }
+  };
+
   return (
     <MainContainer>
       <ProfileHeader>
@@ -161,6 +200,31 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
           ? t('your_profile')
           : `${profile?.name}\`s ${t('profile')}`}
       </ProfileHeader>
+      <ProfileImageContainer>
+        {/*// TODO use a default profile picture and refine this completely!, yb*/}
+        <ProfileImage
+          src={profile?.profilePicture || 'https://via.placeholder.com/150'}
+          alt={'Profile'}
+        />
+        {isOwnProfile && (
+          <label>
+            <ProfileEditButton>
+              <CameraAltIcon />
+            </ProfileEditButton>
+            <input
+              type={'file'}
+              accept={'image/*'}
+              onChange={handleFileChange}
+              hidden
+            />
+          </label>
+        )}
+      </ProfileImageContainer>
+
+      <button onClick={uploadProfilePicture} style={{ marginTop: '10px' }}>
+        {t('upload_profile_picture')}
+      </button>
+
       {profile && (
         <ProfileContent>
           <Column>

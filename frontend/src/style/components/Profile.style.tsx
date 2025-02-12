@@ -23,6 +23,21 @@ export const ProfileHeader = styled.h1`
   font-weight: 700;
 `;
 
+export const ProfileImageContainer = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+`;
+
+export const ProfileImage = styled.img`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border-color);
+`;
+
 export const ProfileContent = styled.div`
   display: flex;
   flex-direction: row;
@@ -30,6 +45,27 @@ export const ProfileContent = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+  }
+`;
+
+export const ProfileEditButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--primary-color-hover);
   }
 `;
 

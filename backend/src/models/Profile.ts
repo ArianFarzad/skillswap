@@ -6,6 +6,7 @@ export interface IProfile extends Document {
   skills: string[];
   interests: string[];
   points: number;
+  profilePicture?: string;
 }
 
 const profileSchema = new Schema<IProfile>({
@@ -32,6 +33,7 @@ const profileSchema = new Schema<IProfile>({
     },
   },
   points: { type: Number, default: 0 },
+  profilePicture: { type: String, default: '' },
 });
 
 const Profile = model<IProfile>('Profile', profileSchema);

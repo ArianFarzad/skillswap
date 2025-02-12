@@ -8,6 +8,7 @@ import {
   hasDuplicates,
   isValidSkillOrInterest,
 } from '../../../shared/validation';
+import cloudinary from '../config/cloudinary';
 
 declare module 'express' {
   export interface Request {
@@ -50,17 +51,6 @@ export const getMyProfile = async (req: Request, res: Response) => {
   } catch (error) {
     logger.error('Error fetching profile:', error);
     res.status(500).json({ error: 'error.server_error' });
-  }
-};
-
-export const getAllProfiles = async (_req: Request, res: Response) => {
-  try {
-    logger.info('Fetching all profiles');
-    const profiles = await Profile.find();
-    res.json(profiles);
-  } catch (error) {
-    logger.error('Error fetching all profiles:', error);
-    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -302,47 +292,6 @@ export const removeInterest = async (req: Request, res: Response) => {
   }
 };
 
-export const searchProfilesBySkills = async (req: Request, res: Response) => {
-  const { skills } = req.query;
-  try {
-    logger.info(`Searching profiles with skills: ${skills}`);
-    const skillsArray = Array.isArray(skills) ? skills : [skills];
-    const stringSkillsArray = skillsArray.filter(
-      (skill) => typeof skill === 'string'
-    ) as string[];
-    const profiles = await Profile.find({
-      skills: { $in: stringSkillsArray },
-    });
-    logger.info(`Profiles found, Count: ${profiles.length}`);
-    res.json(profiles);
-  } catch (error) {
-    logger.error('Error searching profiles by skills:', error);
-    res.status(500).json({ error: 'error.server_error' });
-  }
-};
-
-export const searchProfilesByInterests = async (
-  req: Request,
-  res: Response
-) => {
-  const { interests } = req.query;
-  try {
-    logger.info(`Searching profiles with interests: ${interests}`);
-    const interestsArray = Array.isArray(interests) ? interests : [interests];
-    const stringInterestsArray = interestsArray.filter(
-      (interest) => typeof interest === 'string'
-    ) as string[];
-    const profiles = await Profile.find({
-      interests: { $in: stringInterestsArray },
-    });
-    logger.info(`Profiles found, Count: ${profiles.length}`);
-    res.json(profiles);
-  } catch (error) {
-    logger.error('Error searching profiles by interests:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
 export const getUserStatistics = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
@@ -421,5 +370,38 @@ export const getUserStatistics = async (req: Request, res: Response) => {
   } catch (error) {
     logger.error('Error fetching user statistics:', error);
     res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const uploadProfilePicture = async (req: Request, res: Response) => {
+  try {
+    const { profilePic } = req.body;
+    const userId = req.user?.userId;
+
+    if (!profilePic) {
+      logger.warn('No profile picture uploaded');
+      return res.status(400).json({ error: 'error.profile_picture_required' });
+    }
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic, {
+      folder: 'profile_pictures',
+      transformation: [{ width: 200, height: 200, crop: 'fill' }],
+    });
+
+    const profile = await Profile.findOneAndUpdate(
+      { userId },
+      { profilePicture: uploadResponse.secure_url },
+      { new: true }
+    );
+
+    if (!profile) {
+      logger.warn('Profile not found for user:', userId);
+      return res.status(404).json({ error: 'error.profile_not_found' });
+    }
+
+    res.status(200).json({ profilePicture: profile.profilePicture });
+  } catch (error) {
+    logger.error('Error uploading profile picture:', error);
+    res.status(500).json({ error: 'error.server_error' });
   }
 };

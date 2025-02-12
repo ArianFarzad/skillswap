@@ -8,6 +8,7 @@ import {
   PointsBadge,
   ProfileContainer,
   ProfileIconWrapper,
+  ProfileImage,
   Row,
   StyledP,
 } from '../style/components/MyProfile.style';
@@ -23,7 +24,11 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
     <ProfileContainer>
       <Row>
         <ProfileIconWrapper>
-          <Profile className="profile-icon" />
+          {profile?.profilePicture ? (
+            <ProfileImage src={profile.profilePicture} alt="Profile" />
+          ) : (
+            <Profile className="profile-icon" />
+          )}
         </ProfileIconWrapper>
         <Column>
           <StyledP className="profile-name">

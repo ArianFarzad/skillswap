@@ -32,11 +32,11 @@ const NavBar: React.FC<NavBarProps> = ({ profile }) => {
           type="text"
           placeholder={t('keyword')}
           maxLength={50}
-          data-testid="keyword-input"
           value={keyword}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleInputFieldChange(e, setKeyword, 50)
           }
+          data-testid="keyword-input"
         />
         <FilterInput
           type="number"

@@ -79,3 +79,11 @@ export const PointsBadge = styled.span`
   font-weight: 600;
   font-size: 0.9rem;
 `;
+
+export const ProfileImage = styled.img`
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+`;

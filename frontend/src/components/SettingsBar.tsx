@@ -8,14 +8,20 @@ import {
   Label,
   LeftContainer,
   MainContainer,
+  ProfilePictureSmall,
   RightContainer,
   StyledButton,
   StyledFlag,
   StyledInput,
 } from '../style/components/SettingsBar.style';
 import axios from '../utils/axiosInstance.ts';
+import { IProfile } from '../models/models.ts';
 
-const SettingsBar: React.FC = () => {
+interface SettingsBarProps {
+  profile: IProfile | null;
+}
+
+const SettingsBar: React.FC<SettingsBarProps> = ({ profile }) => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -74,6 +80,14 @@ const SettingsBar: React.FC = () => {
         </Label>
       </LeftContainer>
       <RightContainer>
+        {profile?.profilePicture ? (
+          <ProfilePictureSmall src={profile.profilePicture} alt="Profile" />
+        ) : (
+          <StyledButton onClick={() => navigate('/profile')}>
+            <span>👤</span>
+          </StyledButton>
+        )}
+        {/*// TODO continue from here, yb*/}
         <StyledFlag
           code="GB"
           lang={lang}

@@ -4,16 +4,14 @@ import {
   addSkill,
   createProfile,
   deleteProfile,
-  getAllProfiles,
   getMyProfile,
   getProfileById,
+  getUserStatistics,
   removeInterest,
   removeSkill,
   searchProfiles,
-  searchProfilesByInterests,
-  searchProfilesBySkills,
   updateProfile,
-  getUserStatistics,
+  uploadProfilePicture,
 } from '../controllers/profile.controller';
 import { verifyToken } from '../utils/jwt';
 
@@ -27,11 +25,9 @@ router.post('/skills', verifyToken, addSkill);
 router.delete('/skills', verifyToken, removeSkill);
 router.post('/interests', verifyToken, addInterest);
 router.delete('/interests', verifyToken, removeInterest);
-router.get('/all', verifyToken, getAllProfiles);
 router.get('/search', verifyToken, searchProfiles);
 router.get('/statistics/:userId', verifyToken, getUserStatistics);
 router.get('/:profileId', verifyToken, getProfileById);
-router.get('/search/skills', verifyToken, searchProfilesBySkills);
-router.get('/search/interests', verifyToken, searchProfilesByInterests);
+router.put('/me/picture', verifyToken, uploadProfilePicture);
 
 export default router;
