@@ -13,15 +13,13 @@ test_backend:
 
 test_frontend:
   stage: test
-  before_script:
-    - mkdir -p frontend/.nyc_output
   script:
     - cd frontend
     - npm ci
     - npm run test:coverage
   artifacts:
     paths:
-      - frontend/coverage/src/coverage.svg
+      - frontend/coverage/
     expire_in: 1 week
   coverage: '/All files\s*\|\s*([\d]+(\.\d+)?)%/'
 

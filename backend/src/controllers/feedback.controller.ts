@@ -4,7 +4,6 @@ import logger from '../utils/logger';
 
 export const createFeedback = async (req: Request, res: Response) => {
   const { sessionId, userId, rating, feedback } = req.body;
-  console.debug(`Request Body: ${req.body}`);
   try {
     const newFeedback = new Feedback({ sessionId, userId, feedback, rating });
     await newFeedback.save();

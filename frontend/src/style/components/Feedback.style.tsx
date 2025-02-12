@@ -65,7 +65,9 @@ export const StarRating = styled.div`
   justify-content: center;
 `;
 
-export const Star = styled.span<{ active: boolean }>`
+export const Star = styled.span.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active: boolean }>`
   cursor: pointer;
   font-size: 2rem;
   color: ${(props) => (props.active ? '#ffd700' : '#ccc')};

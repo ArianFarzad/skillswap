@@ -1,21 +1,20 @@
 {
   "name": "skill-swap-backend",
   "version": "1.0.0",
-  "description": "Backend für SkillSwap",
-  "main": "dist/server.js",
   "scripts": {
     "start": "ts-node src/server.ts",
     "dev": "nodemon src/server.ts",
-    "build": "tsc",
+    "build": "tsc -b",
     "test": "jest",
-    "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
+    "lint": "eslint \"src/**/*.{js,ts,tsx}\" --fix",
     "format": "prettier --write .",
+    "pre-commit": "npm run lint && npm run format && npm run test",
     "start:all": "concurrently \"npm run dev\" \"cd ../frontend && npm run dev\"",
     "install:all": "npm install && cd ../frontend && npm install",
     "test:all": "npm test && cd ../frontend && npm run test:ci",
     "lint:all": "npm run lint && cd ../frontend && npm run lint",
     "format:all": "npm run format && cd ../frontend && npm run format",
-    "pre-commit": "npm run lint:all && npm run format:all && npm run test:all"
+    "pre-commit:all": "concurrently \"npm run pre-commit\" \"cd ../frontend && npm run pre-commit\""
   },
   "license": "MIT",
   "dependencies": {

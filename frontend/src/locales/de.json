@@ -120,6 +120,7 @@
   "end_time": "Endzeit",
   "drag_and_drop": "Ziehen und Ablegen",
   "create_event": "Veranstaltung erstellen",
+
   "no_events": "Keine Veranstaltungen",
   "calendar": "Kalender",
   "search_results": "Suchergebnisse",
@@ -132,5 +133,9 @@
   "user_statistics": "Benutzerstatistiken",
   "sessions": "Sitzungen",
   "messages": "Nachrichten",
-  "feedback_count": "Anzahl der Feedbacks"
+  "feedback_count": "Anzahl der Feedbacks",
+  "name_changed": "Benutzername erfolgreich geändert",
+  "name_empty": "Benutzername darf nicht leer sein",
+  "updated_failed": "Aktualisierung fehlgeschlagen",
+  "name_exists": "Benutzername existiert bereits, bitte wählen Sie einen anderen Benutzernamen"
 }

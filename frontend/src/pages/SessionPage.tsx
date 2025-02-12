@@ -56,10 +56,10 @@ const SessionPage: React.FC = () => {
       });
       setIsEndSessionActivated(false);
       void navigate('/profile');
-      const template = t('congrats_and_points');
-      const finalMessage = template.replace('[points]', points.toString());
 
-      showToast('success', finalMessage, t);
+      showToast('success', 'congrats_and_points', t, {
+        params: { points: points.toString() },
+      });
 
       log.info('Points saved:', points);
     } catch (error) {

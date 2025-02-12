@@ -40,7 +40,7 @@ const Login: React.FC = () => {
 
       const redirectPath =
         new URLSearchParams(location.search).get('redirect') || '/profile';
-      void navigate(redirectPath);
+      void navigate(redirectPath, { replace: true });
     } catch (error) {
       showToast('error', error, t);
     }
