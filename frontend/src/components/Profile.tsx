@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import AddIcon from '@mui/icons-material/Add';
@@ -38,6 +38,7 @@ import {
   hasDuplicates,
   isValidSkillOrInterest,
 } from '../../../shared/validation.ts';
+import { isNotBlank } from '../utils/helpers.ts';
 
 interface ProfileProps {
   profile: IProfile | null;
@@ -64,6 +65,20 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     averageRating: 0,
     feedbackCount: 0,
   });
+
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchStatistics = async () => {
@@ -108,10 +123,9 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.post('/api/profiles/skills', {
         skill: newSkill,
       });
-      log.info('Skill added:', response.data);
-      showToast('success', 'skill_added', t);
       setProfile(response.data);
       setNewSkill('');
+      showToast('success', 'skill_added', t);
     } catch (error) {
       showToast('error', error, t);
     }
@@ -122,8 +136,8 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.delete('/api/profiles/skills', {
         data: { skill },
       });
-      showToast('success', 'skill_removed', t);
       setProfile(response.data);
+      showToast('success', 'skill_removed', t);
     } catch (error) {
       showToast('error', error, t);
     }
@@ -149,9 +163,9 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.post('/api/profiles/interests', {
         interest: newInterest,
       });
-      showToast('success', 'interest_added', t);
       setProfile(response.data);
       setNewInterest('');
+      showToast('success', 'interest_added', t);
     } catch (error) {
       showToast('error', error, t);
     }
@@ -162,8 +176,8 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       const response = await axios.delete('/api/profiles/interests', {
         data: { interest },
       });
-      showToast('success', 'interest_removed', t);
       setProfile(response.data);
+      showToast('success', 'interest_removed', t);
     } catch (error) {
       showToast('error', error, t);
     }
@@ -176,8 +190,8 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     const file = files[0];
 
     try {
-      await uploadProfilePicture(file);
       setShowMenu(false);
+      await uploadProfilePicture(file);
     } catch (error) {
       log.error(`Error uploading profile picture: ${error}`);
     }
@@ -217,42 +231,44 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
+  const hasCustomProfilePicture = isNotBlank(profile?.profilePicture);
+
   return (
     <MainContainer>
       {/* Profile Picture */}
       <ProfileImageSection>
-        <ProfileImageContainer>
+        <ProfileImageContainer ref={menuRef}>
           <ProfileImage
             src={profile?.profilePicture || '/avatar.png'}
             alt={'Profile'}
           />
           {isOwnProfile && (
-            <>
-              <ProfileEditLabel onClick={toggleMenu}>
-                <CameraAltIcon />
-              </ProfileEditLabel>
+            <ProfileEditLabel onClick={toggleMenu}>
+              <CameraAltIcon />
+            </ProfileEditLabel>
+          )}
 
-              {/*Floating Menu*/}
-              {showMenu && (
-                <FloatingMenu>
-                  <FloatingMenuItem>
-                    <label htmlFor="profilePicture">
-                      <UploadIcon />
-                      {t('upload_profile_picture')}
-                      <input
-                        id={'profilePicture'}
-                        type={'file'}
-                        accept={'image/*'}
-                        onChange={handleImageUpload}
-                      />
-                    </label>
-                  </FloatingMenuItem>
-                  <FloatingMenuItem onClick={handleDeleteProfilePicture}>
-                    <DeleteIcon /> {t('delete_profile_picture')}
-                  </FloatingMenuItem>
-                </FloatingMenu>
+          {/*Floating Menu*/}
+          {showMenu && (
+            <FloatingMenu>
+              <FloatingMenuItem>
+                <label htmlFor="profilePicture">
+                  <UploadIcon />
+                  {t('upload_profile_picture')}
+                  <input
+                    id={'profilePicture'}
+                    type={'file'}
+                    accept={'image/*'}
+                    onChange={handleImageUpload}
+                  />
+                </label>
+              </FloatingMenuItem>
+              {hasCustomProfilePicture && (
+                <FloatingMenuItem onClick={handleDeleteProfilePicture}>
+                  <DeleteIcon /> {t('delete_profile_picture')}
+                </FloatingMenuItem>
               )}
-            </>
+            </FloatingMenu>
           )}
         </ProfileImageContainer>
       </ProfileImageSection>
@@ -262,7 +278,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
           <Column>
             <Section>
               <SectionTitle>
-                {t('skills')}{' '}
+                {t('skills')}
                 {isOwnProfile && (
                   <EditButton onClick={handleEditSkill}>
                     {editModeSkill ? <Save /> : <EditIcon />}

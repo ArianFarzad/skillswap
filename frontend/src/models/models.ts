@@ -21,7 +21,7 @@ export interface IProfile {
   interests: string[];
   points: number;
   userId: string;
-  profilePicture: string;
+  profilePicture: string | undefined;
 }
 
 export interface IUser {

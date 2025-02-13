@@ -13,7 +13,8 @@
     "invalid_interest": "Invalid interest. Max 64 chars are allowed, please check format.",
     "duplicate_interest": "Error. Interest already exists.",
     "invalid_token": "Token verification failed, please log in again.",
-    "profile_not_found": "Profile not found."
+    "profile_not_found": "Profile not found.",
+    "name_change_failed": "Oops! Username change failed."
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",

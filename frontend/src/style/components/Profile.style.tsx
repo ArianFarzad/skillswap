@@ -76,8 +76,8 @@ export const ProfileEditLabel = styled.label`
 `;
 
 export const FloatingMenu = styled.div`
-  position: fixed;
-  bottom: 80px;
+  position: absolute;
+  bottom: 40px;
   right: 20px;
   background: var(--background-color-secondary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);

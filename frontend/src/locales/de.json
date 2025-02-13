@@ -12,7 +12,8 @@
     "invalid_interest": "Ungültiges Interesse. Max. 64 Zeichen sind erlaubt, bitte die Format prüfen.",
     "duplicate_interest": "Fehler. Interesse existiert bereits.",
     "invalid_token": "Token-Überprüfung fehlgeschlagen, bitte melden Sie sich erneut an.",
-    "profile_not_found": "Profil nicht gefunden."
+    "profile_not_found": "Profil nicht gefunden.",
+    "name_change_failed": "Hoppla! Benutzername ändern fehlgeschlagen."
   },
   "loading": "Laden...",
   "welcome": "Willkommen bei SkillSwap",
