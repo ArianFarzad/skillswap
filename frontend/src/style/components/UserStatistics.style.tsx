@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const StatisticsContainer = styled.div`
   background: var(--background-color-secondary);
   padding: 0 2rem;
-  height: 80vh;
+  height: 90vh;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) var(--background-color-secondary);

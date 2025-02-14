@@ -8,7 +8,10 @@ export const MainContainer = styled.div`
     transform 0.2s ease,
     box-shadow 0.2s ease;
   position: relative;
-  margin-top: 3em;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 export const ProfileContent = styled.div`
