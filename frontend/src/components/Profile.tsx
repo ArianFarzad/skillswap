@@ -12,6 +12,7 @@ import { IProfile } from '../models/models.ts';
 import EditIcon from '@mui/icons-material/Edit';
 import Save from '@mui/icons-material/Save';
 import UserStatistics from './UserStatistics';
+import MyProfile from "./MyProfile";
 import {
   AddButton,
   Column,
@@ -235,47 +236,48 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   return (
     <MainContainer>
-      {/* Profile Picture */}
-      <ProfileImageSection>
-        <ProfileImageContainer ref={menuRef}>
-          <ProfileImage
-            src={profile?.profilePicture || '/avatar.png'}
-            alt={'Profile'}
-          />
-          {isOwnProfile && (
-            <ProfileEditLabel onClick={toggleMenu}>
-              <CameraAltIcon />
-            </ProfileEditLabel>
-          )}
-
-          {/*Floating Menu*/}
-          {showMenu && (
-            <FloatingMenu>
-              <FloatingMenuItem>
-                <label htmlFor="profilePicture">
-                  <UploadIcon />
-                  {t('upload_profile_picture')}
-                  <input
-                    id={'profilePicture'}
-                    type={'file'}
-                    accept={'image/*'}
-                    onChange={handleImageUpload}
-                  />
-                </label>
-              </FloatingMenuItem>
-              {hasCustomProfilePicture && (
-                <FloatingMenuItem onClick={handleDeleteProfilePicture}>
-                  <DeleteIcon /> {t('delete_profile_picture')}
-                </FloatingMenuItem>
-              )}
-            </FloatingMenu>
-          )}
-        </ProfileImageContainer>
-      </ProfileImageSection>
 
       {profile && (
         <ProfileContent>
           <Column>
+            {/* Profile Picture */}
+            <ProfileImageSection>
+              <ProfileImageContainer ref={menuRef}>
+                <ProfileImage
+                  src={profile?.profilePicture || '/avatar.png'}
+                  alt={'Profile'}
+                />
+                {isOwnProfile && (
+                  <ProfileEditLabel onClick={toggleMenu}>
+                    <CameraAltIcon />
+                  </ProfileEditLabel>
+                )}
+
+                {/*Floating Menu*/}
+                {showMenu && (
+                  <FloatingMenu>
+                    <FloatingMenuItem>
+                      <label htmlFor="profilePicture">
+                        <UploadIcon />
+                        {t('upload_profile_picture')}
+                        <input
+                          id={'profilePicture'}
+                          type={'file'}
+                          accept={'image/*'}
+                          onChange={handleImageUpload}
+                        />
+                      </label>
+                    </FloatingMenuItem>
+                    {hasCustomProfilePicture && (
+                      <FloatingMenuItem onClick={handleDeleteProfilePicture}>
+                        <DeleteIcon /> {t('delete_profile_picture')}
+                      </FloatingMenuItem>
+                    )}
+                  </FloatingMenu>
+                )}
+              </ProfileImageContainer>
+              <MyProfile profile={profile} />
+            </ProfileImageSection>
             <Section>
               <SectionTitle>
                 {t('skills')}

@@ -9,10 +9,6 @@ export const MainContainer = styled.div`
     box-shadow 0.2s ease;
   position: relative;
   margin-top: 3em;
-
-  @media (max-width: 768px) {
-    margin-top: 15em;
-  }
 `;
 
 export const ProfileContent = styled.div`
@@ -245,20 +241,22 @@ export const RemoveButton = styled.button`
 `;
 
 export const EditButton = styled.button`
-  background-color: var(--primary-color);
+  background: none;
   border: none;
   padding: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-radius: 50%;
-  font-size: 0.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e90ff;
+  transition: color 0.3s ease;
 
   &:hover {
-    background-color: var(--primary-color-hover);
+    color: #00ced1;
   }
 
   svg {
-    color: var(--text-color-on-button);
+    font-size: 1.5rem;
   }
 `;
 

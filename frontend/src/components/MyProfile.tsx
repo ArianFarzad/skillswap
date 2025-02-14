@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import Profile from '@mui/icons-material/AccountCircle';
 import { IProfile } from '../models/models.ts';
 import { Edit, Save } from '@mui/icons-material';
 import axios from '../utils/axiosInstance.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import log from '../utils/loggerInstance.ts';
 import {
-  Column,
+  ProfileCard,
+  ProfileHeader,
+  ProfileName,
+  ProfilePoints,
   EditButton,
-  Line,
-  PointsBadge,
-  ProfileContainer,
-  ProfileIconWrapper,
-  ProfileImage,
-  Row,
+  ProfileContent,
   StyledInput,
-  StyledP,
+  Line
 } from '../style/components/MyProfile.style';
 
 interface MyProfileProps {
@@ -79,38 +76,33 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
   };
 
   return (
-    <ProfileContainer>
-      <Row $pointsContainer={false}>
-        <ProfileIconWrapper>
-          {profile?.profilePicture ? (
-            <ProfileImage src={profile.profilePicture} alt="Profile" />
-          ) : (
-            <Profile className="profile-icon" />
-          )}
-        </ProfileIconWrapper>
-        <Column>
-          <Row $pointsContainer={false}>
+    <ProfileCard>
+      <ProfileHeader>
+        <ProfileName>
+          {isEditMode ? (
             <StyledInput
               id={'input-name'}
-              disabled={!isEditMode}
-              $onedit={isEditMode}
               value={name}
               onChange={handleNameChange}
+              autoFocus
             />
-            {loggedInUserId === profile?.userId && (
-              <EditButton onClick={handleEdit}>
-                {isEditMode ? <Save /> : <Edit />}
-              </EditButton>
-            )}
-          </Row>
-          <Line />
-          <Row $pointsContainer={true}>
-            <StyledP>{t('points')}</StyledP>
-            <PointsBadge>{profile?.points ?? 0}</PointsBadge>
-          </Row>
-        </Column>
-      </Row>
-    </ProfileContainer>
+          ) : (
+            name
+          )}
+        </ProfileName>
+        {loggedInUserId === profile?.userId && (
+          <EditButton onClick={handleEdit}>
+            {isEditMode ? <Save /> : <Edit />}
+          </EditButton>
+        )}
+      </ProfileHeader>
+      <Line />
+      <ProfileContent>
+        <ProfilePoints>
+          {t('points')}: <span>{profile?.points ?? 0}</span>
+        </ProfilePoints>
+      </ProfileContent>
+    </ProfileCard>
   );
 };
 

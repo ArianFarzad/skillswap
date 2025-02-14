@@ -46,7 +46,7 @@ const UserProfilePage: React.FC = () => {
           <Spinner />
         ) : (
           <>
-            <NavBar profile={profile} />
+            <NavBar />
             <Profile profile={profile} setProfile={setProfile} />
             <Footer />
           </>

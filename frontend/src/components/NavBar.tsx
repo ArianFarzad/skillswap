@@ -1,31 +1,22 @@
 import React, { useState } from 'react';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import Search from './Search';
-import MyProfile from './MyProfile.tsx';
-import { IProfile } from '../models/models.ts';
 import {
   FilterContainer,
   FilterInput,
   KeywordInput,
-  ListArea,
   NavArea,
 } from '../style/components/NavBar.style';
 import { handleInputFieldChange } from '../utils/helpers.ts';
 
-interface NavBarProps {
-  profile: IProfile | null;
-}
 
-const NavBar: React.FC<NavBarProps> = ({ profile }) => {
+const NavBar: React.FC = () => {
   const { t } = useTypedTranslation();
   const [keyword, setKeyword] = useState('');
   const [points, setPoints] = useState('');
 
   return (
     <NavArea>
-      <ListArea>
-        <MyProfile profile={profile} />
-      </ListArea>
       <Search keyword={keyword} points={points} />
       <FilterContainer>
         <KeywordInput

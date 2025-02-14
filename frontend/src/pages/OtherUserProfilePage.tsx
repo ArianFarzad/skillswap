@@ -31,7 +31,7 @@ const OtherUserProfilePage: React.FC = () => {
   return (
     <div>
       <SettingsBar profile={profile} />
-      <NavBar profile={profile} />
+      <NavBar />
       {profile && <Profile profile={profile} setProfile={setProfile} />}
       <Footer />
     </div>
