@@ -42,7 +42,11 @@ interface Event {
   end: string;
 }
 
-const BookAppointment: React.FC = () => {
+interface BookAppointmentProps {
+  sessionId: string | undefined;
+}
+
+const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
   const { t } = useTypedTranslation();
   const [formData, setFormData] = useState({
     title: '',
@@ -122,7 +126,7 @@ END:VCALENDAR
 
       try {
         const response = await axios.post<Event[]>(
-          '/api/calendar/import',
+          `/api/calendar/import/${sessionId}`,
           formData
         );
         setUploadedEvents([...uploadedEvents, ...response.data]);
