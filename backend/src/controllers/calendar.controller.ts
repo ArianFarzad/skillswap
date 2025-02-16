@@ -22,10 +22,9 @@ export const importEvent = [
     const filePath = req.file.path;
 
     try {
-      // Lese die Datei
       const data = fs.readFileSync(filePath, 'utf8');
 
-      // Parsen der .ics-Datei
+      // Parse ical data
       const parsedData = ical.parseICS(data);
       const events = [];
 
@@ -65,3 +64,18 @@ export const importEvent = [
     }
   }
 ];
+
+export const getEvents = async (req: Request, res: Response) => {
+  const sessionId = req.params.sessionId;
+
+  const session = await Session.findById(sessionId);
+  if (!session) {
+    logger.error('Session not found');
+    return res.status(404).json({ error: 'Session not found' });
+  }
+
+  const events = await Event.find({ session: sessionId });
+  logger.info('Events fetched successfully.');
+
+  res.status(200).json(events);
+}

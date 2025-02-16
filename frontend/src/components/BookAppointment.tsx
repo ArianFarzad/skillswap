@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { saveAs } from 'file-saver';
 import { format, isSameDay } from 'date-fns';
 import Calendar from 'react-calendar';
@@ -59,6 +59,22 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
   const [selectedDateEvents, setSelectedDateEvents] = useState<Event[]>([]);
   const [showEventsPopup, setShowEventsPopup] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (sessionId) {
+      fetchEvents();
+    }
+  }, [sessionId]);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get<Event[]>(`/api/calendar/${sessionId}`);
+      setUploadedEvents(response.data);
+    } catch (error) {
+      showToast('error', error, t);
+      log.error('Error fetching events:', error);
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
