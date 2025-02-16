@@ -1,18 +1,18 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import {
-  StatisticsContainer,
-  SectionTitle,
-  GridContainer,
   ChartContainer,
-  StatCard,
-  StatLabel,
-  RatingContainer,
-  RatingValue,
   FeedbackContainer,
   FeedbackValue,
+  GridContainer,
+  RatingContainer,
+  RatingValue,
+  SectionTitle,
+  StatCard,
+  StatisticsContainer,
+  StatLabel,
 } from '../style/components/UserStatistics.style';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -120,7 +120,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
         {/* Average Rating */}
         <StatCard>
           <RatingContainer>
-            <StatLabel>{t('average_rating')}</StatLabel>
+            2<StatLabel>{t('average_rating')}</StatLabel>
             <RatingValue>{averageRating.toFixed(2)}</RatingValue>
             <div className="rating-stars">
               {'★'.repeat(Math.round(averageRating))}

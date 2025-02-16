@@ -6,7 +6,7 @@ vi.mock('../../utils/axiosInstance', async () => {
     ...actual,
     default: {
       post: vi.fn(),
-      get: vi.fn(),
+      get: vi.fn().mockResolvedValue({ data: [] }), // ✅ Mocked GET request
     },
   };
 });

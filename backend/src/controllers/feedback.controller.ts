@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Feedback from '../models/Feedback';
 import logger from '../utils/logger';
+import { getSessionFeedbackStats } from '../helpers/feedbackHelpers';
 
 export const createFeedback = async (req: Request, res: Response) => {
   const { sessionId, userId, rating, feedback } = req.body;
@@ -14,43 +15,28 @@ export const createFeedback = async (req: Request, res: Response) => {
   }
 };
 
-export const getFeedbackForSession = async (req: Request, res: Response) => {
+export const getFeedbacksInfoForSession = async (
+  req: Request,
+  res: Response
+) => {
   const { sessionId } = req.params;
+  // Assume req.user is populated by verifyToken middleware
+  const loggedInUserId = req.user!.userId;
   try {
-    const feedback = await Feedback.find({ sessionId }).populate(
-      'userId',
-      'name'
-    );
-    res.json(feedback);
+    const {
+      givenFeedbacks,
+      averageRatingGiven,
+      receivedFeedbacks,
+      averageRatingReceived,
+    } = await getSessionFeedbackStats(sessionId, loggedInUserId);
+    res.json({
+      givenFeedbacks,
+      averageRatingGiven,
+      receivedFeedbacks,
+      averageRatingReceived,
+    });
   } catch (error) {
-    logger.error(`Error fetching feedback: ${error}`);
+    logger.error(`Error fetching feedback for session ${sessionId}: ${error}`);
     res.status(500).json({ error: 'Server error' });
-  }
-};
-
-export const getAverageRatingForUser = async (req: Request, res: Response) => {
-  const { userId } = req.params;
-  try {
-    const feedback = await Feedback.find({ userId });
-    const averageRating =
-      feedback.reduce((acc, curr) => acc + curr.rating, 0) / feedback.length;
-    res.json({ averageRating });
-  } catch (error) {
-    logger.error(`Error fetching average rating: ${error}`);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
-
-export const getFeedback = async (req: Request, res: Response) => {
-  try {
-    const feedback = await Feedback.find({ sessionId: req.params.sessionId });
-    if (!feedback) {
-      return res.status(404).json({ message: 'Feedback not found' });
-    }
-    const averageRating =
-      feedback.reduce((acc, curr) => acc + curr.rating, 0) / feedback.length;
-    res.status(200).json({ feedback, averageRating });
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
   }
 };

@@ -1,7 +1,13 @@
 import './testUtils/mocks.ts';
 import i18n from './testUtils/i18nTestConfig';
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import BookAppointment from '../components/BookAppointment';
 import { saveAs } from 'file-saver';
 import { I18nextProvider } from 'react-i18next';
@@ -9,14 +15,16 @@ import { showToast } from '../utils/toastUtils';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('BookAppointment Component', () => {
-  beforeEach(() => {
-    render(
-      <I18nextProvider i18n={i18n}>
-        <MemoryRouter>
-          <BookAppointment />
-        </MemoryRouter>
-      </I18nextProvider>
-    );
+  beforeEach(async () => {
+    await act(async () => {
+      render(
+        <I18nextProvider i18n={i18n}>
+          <MemoryRouter>
+            <BookAppointment sessionId={'dummy-session-id'} />
+          </MemoryRouter>
+        </I18nextProvider>
+      );
+    });
   });
 
   test('renders book appointment headline', () => {
@@ -46,12 +54,16 @@ describe('BookAppointment Component', () => {
     const endDateInput = screen.getByLabelText('end_time');
     const bookAppointmentButton = screen.getByTestId('book-appointment-button');
 
-    fireEvent.change(titleInput, { target: { value: 'Meeting' } });
-    fireEvent.change(descriptionInput, { target: { value: 'Team sync-up' } });
-    fireEvent.change(startDateInput, { target: { value: '2025-01-26T10:00' } });
-    fireEvent.change(endDateInput, { target: { value: '2025-01-26T11:00' } });
+    act(() => {
+      fireEvent.change(titleInput, { target: { value: 'Meeting' } });
+      fireEvent.change(descriptionInput, { target: { value: 'Team sync-up' } });
+      fireEvent.change(startDateInput, {
+        target: { value: '2025-01-26T10:00' },
+      });
+      fireEvent.change(endDateInput, { target: { value: '2025-01-26T11:00' } });
 
-    fireEvent.click(bookAppointmentButton);
+      fireEvent.click(bookAppointmentButton);
+    });
 
     await waitFor(() => {
       expect(saveAs).toHaveBeenCalled();
@@ -66,14 +78,18 @@ describe('BookAppointment Component', () => {
     const endDateInput = screen.getByLabelText('end_time');
     const bookAppointmentButton = screen.getByTestId('book-appointment-button');
 
-    fireEvent.change(titleInput, { target: { value: 'Meeting' } });
-    fireEvent.change(descriptionInput, {
-      target: { value: 'Follow-up Meeting' },
-    });
-    fireEvent.change(startDateInput, { target: { value: '2025-01-26T11:00' } });
-    fireEvent.change(endDateInput, { target: { value: '2025-01-26T10:00' } });
+    act(() => {
+      fireEvent.change(titleInput, { target: { value: 'Meeting' } });
+      fireEvent.change(descriptionInput, {
+        target: { value: 'Follow-up Meeting' },
+      });
+      fireEvent.change(startDateInput, {
+        target: { value: '2025-01-26T11:00' },
+      });
+      fireEvent.change(endDateInput, { target: { value: '2025-01-26T10:00' } });
 
-    fireEvent.click(bookAppointmentButton);
+      fireEvent.click(bookAppointmentButton);
+    });
 
     await waitFor(() => {
       expect(showToast).toHaveBeenCalledTimes(1);

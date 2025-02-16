@@ -75,7 +75,5 @@ export const getEvents = async (req: Request, res: Response) => {
   }
 
   const events = await Event.find({ session: sessionId });
-  logger.info('Events fetched successfully.');
-
   res.status(200).json(events);
 };

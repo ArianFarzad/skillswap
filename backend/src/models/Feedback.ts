@@ -1,6 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
-interface IFeedback extends Document {
+export interface IFeedback extends Document {
   sessionId: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId;
   feedback: string;

@@ -1,5 +1,6 @@
 export interface IFeedback {
   userId: {
+    _id: string;
     name: string;
   };
   rating: number;

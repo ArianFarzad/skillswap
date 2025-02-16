@@ -1,19 +1,13 @@
 import { Router } from 'express';
 import {
   createFeedback,
-  getAverageRatingForUser,
-  getFeedbackForSession,
+  getFeedbacksInfoForSession,
 } from '../controllers/feedback.controller';
 import { verifyToken } from '../utils/jwt';
 
 const router = Router();
-
+// /api/feedbacks
 router.post('/', verifyToken, createFeedback);
-router.get('/session/:sessionId', verifyToken, getFeedbackForSession);
-router.get(
-  '/user/:userId/average-rating',
-  verifyToken,
-  getAverageRatingForUser
-);
+router.get('/:sessionId', verifyToken, getFeedbacksInfoForSession);
 
 export default router;
