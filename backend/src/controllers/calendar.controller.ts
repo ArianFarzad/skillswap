@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import logger from "../utils/logger";
-import fs from "fs";
-import ical from "ical";
-import multer from "multer";
-import Session from "../models/Session";
-import Event from "../models/Event";
+import { Request, Response } from 'express';
+import logger from '../utils/logger';
+import fs from 'fs';
+import ical from 'ical';
+import multer from 'multer';
+import Session from '../models/Session';
+import Event from '../models/Event';
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -48,7 +48,7 @@ export const importEvent = [
       }
 
       const savedEvents = await Event.insertMany(
-        events.map(event => ({
+        events.map((event) => ({
           ...event,
           session: sessionId,
         }))
@@ -62,7 +62,7 @@ export const importEvent = [
       // delete temp file
       fs.unlinkSync(filePath);
     }
-  }
+  },
 ];
 
 export const getEvents = async (req: Request, res: Response) => {
@@ -78,4 +78,4 @@ export const getEvents = async (req: Request, res: Response) => {
   logger.info('Events fetched successfully.');
 
   res.status(200).json(events);
-}
+};

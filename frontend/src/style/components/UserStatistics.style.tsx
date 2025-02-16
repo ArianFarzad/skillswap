@@ -10,14 +10,15 @@ export const StatisticsContainer = styled.div`
 `;
 
 export const SectionTitle = styled.h3`
-  color: var(--primary-color);
+  color: var(--text-color);
   font-size: 1.8rem;
   margin-bottom: 2rem;
   text-align: center;
 `;
 
 export const GridContainer = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
 `;

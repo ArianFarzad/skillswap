@@ -188,3 +188,20 @@ export const checkSession = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'error.server_error' });
   }
 };
+
+export const getSessionsByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const sessions = await Session.find({
+      $or: [{ tutor: userId }, { student: userId }],
+    })
+      .populate('tutor', 'name')
+      .populate('student', 'name');
+
+    res.json(sessions);
+  } catch (error) {
+    logger.error('Error fetching sessions by user ID:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

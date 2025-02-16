@@ -29,12 +29,15 @@ export const ProfileImageSection = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 1rem;
+  background-color: var(--background-color-secondary);
+  padding-right: 2rem;
+  border-radius: 12px;
 `;
 
 export const ProfileImageContainer = styled.div`
   position: relative;
   display: flex;
-  margin-bottom: 1rem;
+  padding: 2rem;
 `;
 
 export const ProfileImage = styled.img`
@@ -47,8 +50,8 @@ export const ProfileImage = styled.img`
 
 export const ProfileEditLabel = styled.label`
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: 2rem;
+  right: 2rem;
   background-color: var(--primary-color);
   color: var(--text-color-on-button);
   border-radius: 50%;
@@ -132,7 +135,7 @@ export const Section = styled.div`
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  flex: 1.5;
+  flex: 1;
 `;
 
 export const SectionTitle = styled.h2`

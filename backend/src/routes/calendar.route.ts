@@ -4,7 +4,6 @@ import { verifyToken } from '../utils/jwt';
 
 const router = express.Router();
 
-
 router.post('/import/:sessionId', verifyToken, importEvent);
 router.get('/:sessionId', verifyToken, getEvents);
 

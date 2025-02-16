@@ -13,7 +13,7 @@ import {
   EditButton,
   ProfileContent,
   StyledInput,
-  Line
+  Line,
 } from '../style/components/MyProfile.style';
 
 interface MyProfileProps {

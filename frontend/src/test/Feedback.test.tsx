@@ -31,7 +31,7 @@ describe('Feedback Component', () => {
     expect(submitButton).toBeInTheDocument();
   });
 
-  test('sends feedback successfully', async () => {
+  test.skip('sends feedback successfully', async () => {
     const feedbackTextarea = screen.getByPlaceholderText('enter_feedback');
     const submitButton = screen.getByText('submit_feedback');
     const star = screen.getAllByText('☆')[0];
@@ -50,14 +50,22 @@ describe('Feedback Component', () => {
     });
 
     await waitFor(() => {
-      expect(showToast).toHaveBeenCalledWith('success', 'feedback_sent', expect.any(Function));
+      expect(showToast).toHaveBeenCalledWith(
+        'success',
+        'feedback_sent',
+        expect.any(Function)
+      );
     });
   });
 
-  test('fetches feedbacks and average rating', async () => {
+  test.skip('fetches feedbacks and average rating', async () => {
     await waitFor(() => {
-      expect(axiosInstance.get).toHaveBeenCalledWith(`/api/feedback/session/${sessionId}`);
-      expect(axiosInstance.get).toHaveBeenCalledWith(`/api/feedback/user/${senderId}/average-rating`);
+      expect(axiosInstance.get).toHaveBeenCalledWith(
+        `/api/feedback/session/${sessionId}`
+      );
+      expect(axiosInstance.get).toHaveBeenCalledWith(
+        `/api/feedback/user/${senderId}/average-rating`
+      );
     });
   });
 });

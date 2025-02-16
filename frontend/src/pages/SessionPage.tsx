@@ -77,7 +77,7 @@ const SessionPage: React.FC = () => {
         <SettingsBar profile={null} />
         <SessionContent>
           <CalendarContainer className={isFeedbackVisible ? 'hide' : ''}>
-            <BookAppointment sessionId={sessionId}/>
+            <BookAppointment sessionId={sessionId} />
           </CalendarContainer>
           <ChatContainer>
             {isFeedbackVisible ? (

@@ -29,3 +29,12 @@ export interface IUser {
   name: string;
   email: string;
 }
+
+export interface ISession {
+  _id: string;
+  tutor: IUser;
+  student: IUser;
+  date: string;
+  status: string;
+  messages: IMessage[];
+}

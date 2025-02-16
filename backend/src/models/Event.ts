@@ -8,12 +8,15 @@ export interface IEvent extends Document {
   end: Date;
 }
 
-const EventSchema: Schema = new Schema({
-  session: { type: Schema.Types.ObjectId, ref: 'Session', required: true },
-  summary: { type: String, required: true },
-  description: { type: String, required: false },
-  start: { type: Date, required: true },
-  end: { type: Date, required: true },
-}, { timestamps: true });
+const EventSchema: Schema = new Schema(
+  {
+    session: { type: Schema.Types.ObjectId, ref: 'Session', required: true },
+    summary: { type: String, required: true },
+    description: { type: String, required: false },
+    start: { type: Date, required: true },
+    end: { type: Date, required: true },
+  },
+  { timestamps: true }
+);
 
 export default mongoose.model<IEvent>('Event', EventSchema);
