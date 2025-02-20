@@ -14,7 +14,7 @@ export const AllProfilesContainer = styled.div`
   z-index: 100;
 
   @media (max-width: 768px) {
-    top: 20em;
+    top: 8em;
     right: 20%;
   }
 `;

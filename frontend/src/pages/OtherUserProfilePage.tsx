@@ -13,6 +13,8 @@ const OtherUserProfilePage: React.FC = () => {
   const { profileId } = useParams<{ profileId: string }>();
   const { t } = useTypedTranslation();
   const [profile, setProfile] = useState<IProfile | null>(null);
+  const [ownProfile, setOwnProfile] = useState<IProfile | null>(null);
+
   const fetchProfile = useCallback(async () => {
     try {
       const response = await axiosInstance.get(`/api/profiles/${profileId}`);
@@ -22,16 +24,26 @@ const OtherUserProfilePage: React.FC = () => {
     }
   }, [profileId, t]);
 
-  useEffect(() => {
-    if (profileId) {
-      fetchProfile().catch((error) => showToast('error', error, t));
+  const fetchOwnProfile = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get('/api/profiles');
+      setOwnProfile(response.data);
+    } catch (error) {
+      showToast('error', error, t);
     }
-  }, [profileId, fetchProfile, t]);
+  }, [t]);
+
+  useEffect(() => {
+    if (profileId)
+      fetchProfile().catch((error) => showToast('error', error, t));
+
+    fetchOwnProfile().catch((error) => showToast('error', error, t));
+  }, [profileId, fetchProfile, t, fetchOwnProfile]);
 
   return (
     <div>
-      <SettingsBar />
-      <NavBar profile={profile} />
+      <SettingsBar profile={ownProfile} />
+      <NavBar />
       {profile && <Profile profile={profile} setProfile={setProfile} />}
       <Footer />
     </div>

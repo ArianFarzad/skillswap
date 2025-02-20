@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
-import Profile from '@mui/icons-material/AccountCircle';
 import { IProfile } from '../models/models.ts';
-import { Edit } from '@mui/icons-material';
-import { Save } from '@mui/icons-material';
+import { Clear, Edit, Save } from '@mui/icons-material';
 import axios from '../utils/axiosInstance.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import log from '../utils/loggerInstance.ts';
 import {
-  Column,
-  Line,
-  PointsBadge,
-  ProfileContainer,
-  ProfileIconWrapper,
-  Row,
-  StyledP,
+  ButtonGroup,
+  CancelButton,
   EditButton,
+  Line,
+  ProfileCard,
+  ProfileContent,
+  ProfileHeader,
+  ProfileName,
+  ProfilePoints,
   StyledInput,
 } from '../style/components/MyProfile.style';
 
@@ -39,7 +38,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
       if (name.trim() === '') {
         setName(previousName);
         showToast('error', 'name_empty', t);
-      } else {
+      } else if (name !== profile?.name) {
         try {
           const response = await axios.put('api/profiles', {
             name: name,
@@ -49,22 +48,11 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
           if (response.status === 200) {
             showToast('success', 'name_changed', t);
           } else {
-            throw new Error(`Unexpected status code: ${response.status}`);
+            log.error(`Unexpected status code: ${response.status}`);
+            showToast('error', 'error.name_change_failed', t);
           }
-        } catch (error: unknown) {
-          if (error && typeof error === 'object' && 'response' in error) {
-            const axiosError = error as { response: { status: number } };
-            if (axiosError.response.status === 400) {
-              setName(previousName);
-              showToast('error', 'name_exists', t);
-            } else {
-              log.error('Failed to change name', error);
-              showToast('error', 'name_change_failed', t);
-            }
-          } else {
-            log.error('Failed to change name', error);
-            showToast('error', 'name_change_failed', t);
-          }
+        } catch (error) {
+          showToast('error', error, t);
         }
       }
     } else {
@@ -77,35 +65,49 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
     setName(e.target.value);
   };
 
+  const handleCancel = () => {
+    setName(previousName);
+    setIsEditMode((prev) => !prev);
+  };
+
   return (
-    <ProfileContainer>
-      <Row $pointsContainer={false}>
-        <ProfileIconWrapper>
-          <Profile className="profile-icon" />
-        </ProfileIconWrapper>
-        <Column>
-          <Row $pointsContainer={false}>
+    <ProfileCard>
+      <ProfileHeader>
+        <ProfileName>
+          {isEditMode ? (
             <StyledInput
               id={'input-name'}
-              disabled={!isEditMode}
-              $onedit={isEditMode}
               value={name}
               onChange={handleNameChange}
+              autoFocus
             />
-            {loggedInUserId === profile?.userId && (
-              <EditButton onClick={handleEdit}>
-                {isEditMode ? <Save /> : <Edit />}
-              </EditButton>
+          ) : (
+            name
+          )}
+        </ProfileName>
+        {loggedInUserId === profile?.userId && (
+          <ButtonGroup>
+            {isEditMode && (
+              <CancelButton onClick={handleCancel} title={t('cancel')}>
+                <Clear />
+              </CancelButton>
             )}
-          </Row>
-          <Line />
-          <Row $pointsContainer={true}>
-            <StyledP>{t('points')}</StyledP>
-            <PointsBadge>{profile?.points ?? 0}</PointsBadge>
-          </Row>
-        </Column>
-      </Row>
-    </ProfileContainer>
+            <EditButton
+              onClick={handleEdit}
+              title={isEditMode ? t('save') : t('edit')}
+            >
+              {isEditMode ? <Save /> : <Edit />}
+            </EditButton>
+          </ButtonGroup>
+        )}
+      </ProfileHeader>
+      <Line />
+      <ProfileContent>
+        <ProfilePoints>
+          {t('points')}: <span>{profile?.points ?? 0}</span>
+        </ProfilePoints>
+      </ProfileContent>
+    </ProfileCard>
   );
 };
 

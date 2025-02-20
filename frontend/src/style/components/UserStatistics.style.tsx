@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const StatisticsContainer = styled.div`
   background: var(--background-color-secondary);
   padding: 0 2rem;
-  height: 80vh;
+  height: 90vh;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--primary-color) var(--background-color-secondary);
@@ -38,7 +38,7 @@ export const StatCard = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;;
+  text-align: center;
 `;
 
 export const StatValue = styled.div`
