@@ -9,9 +9,15 @@ import {
   SessionTitle,
   SessionList,
   SessionItem,
-  SessionDetail,
+  ParticipantsContainer,
+  RoleContainer,
+  RoleBadge,
+  ProfileImage,
+  UserName,
   NoSessionsMessage,
-  Button,
+  ContinueButton,
+  SessionContent,
+  Divider,
 } from '../style/components/MySessions.style.tsx';
 
 const MySessions: React.FC = () => {
@@ -24,14 +30,7 @@ const MySessions: React.FC = () => {
     const fetchSessions = async () => {
       try {
         const response = await axios.get(`/api/sessions/users/${myUserId}`);
-
-        if (Array.isArray(response.data)) {
-          setSessions(response.data);
-        } else {
-          log.error('Invalid response from server:', response.data);
-          setSessions([]);
-        }
-
+        setSessions(Array.isArray(response.data) ? response.data : []);
         log.info('Sessions fetched:', response.data);
       } catch (error) {
         log.error('Error fetching sessions:', error);
@@ -46,38 +45,56 @@ const MySessions: React.FC = () => {
     <SessionsContainer>
       <SessionTitle>{t('my_sessions')}</SessionTitle>
       <SessionList>
-        {Array.isArray(sessions) && sessions.length > 0 ? (
-          sessions.map((session: ISession) => (
+        {sessions.length > 0 ? (
+          sessions.map((session) => (
             <SessionItem key={session._id}>
-              <SessionDetail>
-                <strong>{t('tutor')}:</strong>{' '}
-                <img src={session.tutor?.profilePicture || 'avatar.png'} alt="Tutor Profile" width="30" height="30" />
-                {session.tutor?._id === myUserId
-                  ? t('you')
-                  : session.tutor?.name}
-              </SessionDetail>
-              <SessionDetail>
-                <strong>{t('student')}:</strong>{' '}
-                <img src={session.student?.profilePicture || 'avatar.png'} alt="Student Profile" width="30" height="30" />
-                {session.student?._id === myUserId
-                  ? t('you')
-                  : session.student?.name}
-              </SessionDetail>
-              <Button
-                onClick={() =>
-                  handleChatRequest(
-                    session.tutor?._id === myUserId
-                      ? session.student?._id
-                      : session.tutor?._id
-                  )
-                }
-              >
-                {t('continue_session')}
-              </Button>
+              <SessionContent>
+                <ParticipantsContainer>
+                  <RoleContainer>
+                    <RoleBadge>{t('tutor')}</RoleBadge>
+                    <ProfileImage
+                      src={session.tutor?.profilePicture || 'avatar.png'}
+                      alt="Tutor"
+                    />
+                    <UserName>
+                      {session.tutor?._id === myUserId
+                        ? t('you')
+                        : session.tutor?.name}
+                    </UserName>
+                  </RoleContainer>
+
+                  <Divider>➔</Divider>
+
+                  <RoleContainer>
+                    <RoleBadge>{t('student')}</RoleBadge>
+                    <ProfileImage
+                      src={session.student?.profilePicture || 'avatar.png'}
+                      alt="Student"
+                    />
+                    <UserName>
+                      {session.student?._id === myUserId
+                        ? t('you')
+                        : session.student?.name}
+                    </UserName>
+                  </RoleContainer>
+                </ParticipantsContainer>
+
+                <ContinueButton
+                  onClick={() =>
+                    handleChatRequest(
+                      session.tutor?._id === myUserId
+                        ? session.student?._id
+                        : session.tutor?._id
+                    )
+                  }
+                >
+                  {t('continue_session')}
+                </ContinueButton>
+              </SessionContent>
             </SessionItem>
           ))
         ) : (
-          <NoSessionsMessage>No sessions available.</NoSessionsMessage>
+          <NoSessionsMessage>{t('no_sessions')}</NoSessionsMessage>
         )}
       </SessionList>
     </SessionsContainer>

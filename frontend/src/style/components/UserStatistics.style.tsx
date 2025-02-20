@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const StatisticsContainer = styled.div`
   background: var(--background-color-secondary);
   padding: 2rem;
-  
+
   border-radius: 12px;
 `;
 
@@ -15,8 +15,7 @@ export const SectionTitle = styled.h3`
 `;
 
 export const GridContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   overflow-y: auto;

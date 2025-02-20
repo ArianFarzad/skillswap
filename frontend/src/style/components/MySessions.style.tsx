@@ -1,41 +1,39 @@
 import styled, { keyframes } from 'styled-components';
 
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 export const SessionsContainer = styled.div`
-  background-color: var(--background-color-secondary);
-  padding: 1.5rem;
-  margin-top: 2rem;
-  margin-right: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 87vh;
-  animation: ${fadeIn} 0.5s ease-in-out;
+  background: var(--background-color-secondary);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  animation: ${fadeIn} 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  margin: 2rem 2rem 2rem 0;
+  width: 25%;
 `;
 
 export const SessionTitle = styled.h1`
   color: var(--text-color);
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  font-weight: 700;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
   text-align: center;
   position: relative;
-  &:after {
+  font-weight: 800;
+
+  &::after {
     content: '';
     display: block;
-    width: 60px;
+    width: 80px;
     height: 4px;
-    background: var(--primary-color);
-    margin: 10px auto 0;
+    background: linear-gradient(
+      90deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    margin: 1rem auto 0;
     border-radius: 2px;
   }
 `;
@@ -44,57 +42,150 @@ export const SessionList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  height: 70vh;
+  height: 80vh;
   overflow-y: auto;
   scrollbar-width: none;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const SessionItem = styled.div`
-  background-color: var(--background-color);
+  background: var(--background-color);
+  border-radius: 16px;
   padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 80%;
+
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   }
 `;
 
-export const SessionDetail = styled.p`
+export const SessionContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+`;
+
+export const ParticipantsContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const RoleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const RoleBadge = styled.span`
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+export const ProfileImage = styled.img`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid transparent;
+  background: linear-gradient(
+      45deg,
+      var(--primary-color),
+      var(--secondary-color)
+    )
+    border-box;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+export const UserName = styled.span`
+  font-weight: 600;
   color: var(--text-color);
+  font-size: 1.1rem;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const Divider = styled.span`
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  margin: 0 1rem;
+  opacity: 0.6;
+`;
+
+export const ContinueButton = styled.button`
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
   font-size: 1rem;
-  margin: 0;
-  strong {
-    color: var(--primary-color);
-    font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      45deg,
+      transparent 25%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 75%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 15px rgba(var(--primary-color), 0.4);
+
+    &::after {
+      transform: translateX(100%);
+    }
   }
 `;
 
 export const NoSessionsMessage = styled.p`
-  color: var(--text-color);
-  font-size: 1.25rem;
   text-align: center;
-  margin-top: 2rem;
-  opacity: 0.7;
-`;
-
-export const Button = styled.button`
-  background-color: var(--primary-color);
-  color: var(--text-color-on-button);
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: var(--primary-color-hover);
-  }
+  color: var(--text-color-secondary);
+  font-size: 1.2rem;
+  padding: 3rem;
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  margin: 2rem auto;
+  max-width: 500px;
 `;

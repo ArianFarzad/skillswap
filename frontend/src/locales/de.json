@@ -154,5 +154,7 @@
   "tutor": "Tutor",
   "student": "Student",
   "continue_session": "Sitzung fortsetzen",
-  "you": "Sie"
+  "you": "Sie",
+  "no_sessions": "Keine Sitzungen",
+  "about_me": "Über mich"
 }

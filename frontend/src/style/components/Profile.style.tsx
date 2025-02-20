@@ -18,14 +18,11 @@ export const ProfileContent = styled.div`
   display: flex;
   flex-direction: row;
   gap: 2rem;
-  
 
   @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
-
-
 
 export const ProfileImageSection = styled.div`
   background-color: var(--background-color-secondary);
@@ -35,7 +32,6 @@ export const ProfileImageSection = styled.div`
   padding: 1rem;
   border-radius: 12px;
 `;
-
 
 export const ProfileImageContainer = styled.div`
   position: relative;
@@ -271,6 +267,7 @@ export const EditButton = styled.button`
 export const Column = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 1rem;
   flex: 1;
 `;

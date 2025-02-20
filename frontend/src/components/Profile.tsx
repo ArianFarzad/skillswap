@@ -237,151 +237,156 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
   const hasCustomProfilePicture = isNotBlank(profile?.profilePicture);
 
   return (
-    <MainContainer>
-      {profile && (
-        <ProfileContent>
-          <Column>
-            {/* Profile Picture */}
-            <ProfileImageSection>
-              <ProfileImageContainer ref={menuRef}>
-                <ProfileImage
-                  src={profile?.profilePicture || '/avatar.png'}
-                  alt={'Profile'}
-                />
-                {isOwnProfile && (
-                  <ProfileEditLabel onClick={toggleMenu}>
-                    <CameraAltIcon />
-                  </ProfileEditLabel>
-                )}
+    <>
+      <MainContainer>
+        {profile && (
+          <ProfileContent>
+            <Column>
+              {/* Profile Picture */}
+              <ProfileImageSection>
+                <ProfileImageContainer ref={menuRef}>
+                  <ProfileImage
+                    src={profile?.profilePicture || '/avatar.png'}
+                    alt={'Profile'}
+                  />
+                  {isOwnProfile && (
+                    <ProfileEditLabel onClick={toggleMenu}>
+                      <CameraAltIcon />
+                    </ProfileEditLabel>
+                  )}
 
-                {/*Floating Menu*/}
-                {showMenu && (
-                  <FloatingMenu>
-                    <FloatingMenuItem>
-                      <label htmlFor="profilePicture">
-                        <UploadIcon />
-                        {t('upload_profile_picture')}
-                        <input
-                          id={'profilePicture'}
-                          type={'file'}
-                          accept={'image/*'}
-                          onChange={handleImageUpload}
-                        />
-                      </label>
-                    </FloatingMenuItem>
-                    {hasCustomProfilePicture && (
-                      <FloatingMenuItem onClick={handleDeleteProfilePicture}>
-                        <DeleteIcon /> {t('delete_profile_picture')}
+                  {/*Floating Menu*/}
+                  {showMenu && (
+                    <FloatingMenu>
+                      <FloatingMenuItem>
+                        <label htmlFor="profilePicture">
+                          <UploadIcon />
+                          {t('upload_profile_picture')}
+                          <input
+                            id={'profilePicture'}
+                            type={'file'}
+                            accept={'image/*'}
+                            onChange={handleImageUpload}
+                          />
+                        </label>
                       </FloatingMenuItem>
-                    )}
-                  </FloatingMenu>
-                )}
-              </ProfileImageContainer>
-              <MyProfile profile={profile} />
-            </ProfileImageSection>
-            <Section>
-              <SectionTitle>
-                {t('skills')}
-                {isOwnProfile && (
-                  <EditButton onClick={handleEditSkill}>
-                    {editModeSkill ? <Save /> : <EditIcon />}
-                  </EditButton>
-                )}
-              </SectionTitle>
-              <SkillList>
-                {profile.skills.map((skill) => (
-                  <SkillItem key={skill}>
-                    {skill}
-                    {editModeSkill && isOwnProfile && (
-                      <RemoveButton onClick={() => handleRemoveSkill(skill)}>
-                        <RemoveIcon />
-                      </RemoveButton>
-                    )}
-                  </SkillItem>
-                ))}
-              </SkillList>
-              {editModeSkill && isOwnProfile && (
-                <InputGroup>
-                  <TextInput
-                    type="text"
-                    placeholder={t('new_skill')}
-                    value={newSkill}
-                    autoFocus
-                    onChange={(e) => setNewSkill(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter')
-                        handleAddSkill().catch((error) =>
-                          log.error(`Error adding skill: ${error}`)
-                        );
-                    }}
-                  />
-                  {newSkill && (
-                    <ClearButton onClick={() => setNewSkill('')}>
-                      <ClearIcon />
-                    </ClearButton>
+                      {hasCustomProfilePicture && (
+                        <FloatingMenuItem onClick={handleDeleteProfilePicture}>
+                          <DeleteIcon /> {t('delete_profile_picture')}
+                        </FloatingMenuItem>
+                      )}
+                    </FloatingMenu>
                   )}
-                  <AddButton onClick={handleAddSkill}>
-                    <AddIcon />
-                  </AddButton>
-                </InputGroup>
-              )}
-            </Section>
-
-            <Section>
-              <SectionTitle>
-                {t('interests')}
-                {isOwnProfile && (
-                  <EditButton onClick={handleEditInterest}>
-                    {editModeInterest ? <Save /> : <EditIcon />}
-                  </EditButton>
-                )}
-              </SectionTitle>
-              <InterestList>
-                {profile.interests.map((interest) => (
-                  <InterestItem key={interest}>
-                    {interest}
-                    {editModeInterest && isOwnProfile && (
-                      <RemoveButton
-                        onClick={() => handleRemoveInterest(interest)}
-                      >
-                        <RemoveIcon />
-                      </RemoveButton>
-                    )}
-                  </InterestItem>
-                ))}
-              </InterestList>
-
-              {editModeInterest && isOwnProfile && (
-                <InputGroup>
-                  <TextInput
-                    type="text"
-                    placeholder={t('new_interest')}
-                    value={newInterest}
-                    onChange={(e) => setNewInterest(e.target.value)}
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter')
-                        handleAddInterest().catch((error) => {
-                          log.error(`Error adding interest: ${error}`);
-                        });
-                    }}
-                  />
-                  {newInterest && (
-                    <ClearButton onClick={() => setNewInterest('')}>
-                      <ClearIcon />
-                    </ClearButton>
+                </ProfileImageContainer>
+                <MyProfile profile={profile} />
+              </ProfileImageSection>
+              <Section>
+                <SectionTitle>{t('about_me')}</SectionTitle>
+              </Section>
+              <Section>
+                <SectionTitle>
+                  {t('skills')}
+                  {isOwnProfile && (
+                    <EditButton onClick={handleEditSkill}>
+                      {editModeSkill ? <Save /> : <EditIcon />}
+                    </EditButton>
                   )}
-                  <AddButton onClick={handleAddInterest}>
-                    <AddIcon />
-                  </AddButton>
-                </InputGroup>
-              )}
-            </Section>
-          </Column>
-          <UserStatistics {...statistics} />
-        </ProfileContent>
-      )}
-    </MainContainer>
+                </SectionTitle>
+                <SkillList>
+                  {profile.skills.map((skill) => (
+                    <SkillItem key={skill}>
+                      {skill}
+                      {editModeSkill && isOwnProfile && (
+                        <RemoveButton onClick={() => handleRemoveSkill(skill)}>
+                          <RemoveIcon />
+                        </RemoveButton>
+                      )}
+                    </SkillItem>
+                  ))}
+                </SkillList>
+                {editModeSkill && isOwnProfile && (
+                  <InputGroup>
+                    <TextInput
+                      type="text"
+                      placeholder={t('new_skill')}
+                      value={newSkill}
+                      autoFocus
+                      onChange={(e) => setNewSkill(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter')
+                          handleAddSkill().catch((error) =>
+                            log.error(`Error adding skill: ${error}`)
+                          );
+                      }}
+                    />
+                    {newSkill && (
+                      <ClearButton onClick={() => setNewSkill('')}>
+                        <ClearIcon />
+                      </ClearButton>
+                    )}
+                    <AddButton onClick={handleAddSkill}>
+                      <AddIcon />
+                    </AddButton>
+                  </InputGroup>
+                )}
+              </Section>
+
+              <Section>
+                <SectionTitle>
+                  {t('interests')}
+                  {isOwnProfile && (
+                    <EditButton onClick={handleEditInterest}>
+                      {editModeInterest ? <Save /> : <EditIcon />}
+                    </EditButton>
+                  )}
+                </SectionTitle>
+                <InterestList>
+                  {profile.interests.map((interest) => (
+                    <InterestItem key={interest}>
+                      {interest}
+                      {editModeInterest && isOwnProfile && (
+                        <RemoveButton
+                          onClick={() => handleRemoveInterest(interest)}
+                        >
+                          <RemoveIcon />
+                        </RemoveButton>
+                      )}
+                    </InterestItem>
+                  ))}
+                </InterestList>
+
+                {editModeInterest && isOwnProfile && (
+                  <InputGroup>
+                    <TextInput
+                      type="text"
+                      placeholder={t('new_interest')}
+                      value={newInterest}
+                      onChange={(e) => setNewInterest(e.target.value)}
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter')
+                          handleAddInterest().catch((error) => {
+                            log.error(`Error adding interest: ${error}`);
+                          });
+                      }}
+                    />
+                    {newInterest && (
+                      <ClearButton onClick={() => setNewInterest('')}>
+                        <ClearIcon />
+                      </ClearButton>
+                    )}
+                    <AddButton onClick={handleAddInterest}>
+                      <AddIcon />
+                    </AddButton>
+                  </InputGroup>
+                )}
+              </Section>
+            </Column>
+            <UserStatistics {...statistics} />
+          </ProfileContent>
+        )}
+      </MainContainer>
+    </>
   );
 };
 
