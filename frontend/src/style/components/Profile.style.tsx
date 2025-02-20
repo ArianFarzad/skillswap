@@ -215,7 +215,7 @@ export const AddButton = styled.button`
   background-color: var(--primary-color);
   border: none;
   border-radius: 12px;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0.75rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
@@ -271,4 +271,29 @@ export const Column = styled.div`
   flex-direction: column;
   gap: 1rem;
   flex: 1;
+`;
+
+export const ClearButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+
+  svg {
+    color: var(--text-color-secondary);
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+  }
+
+  &:hover svg {
+    color: var(--error-color);
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;

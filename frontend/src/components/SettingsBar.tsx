@@ -10,12 +10,12 @@ import {
 } from '@mui/icons-material';
 import { FiArrowLeft } from 'react-icons/fi';
 import {
-  StyledButton,
   Label,
   LeftContainer,
   MainContainer,
   ProfilePictureSmall,
   RightContainer,
+  StyledButton,
   StyledFlag,
   StyledInput,
 } from '../style/components/SettingsBar.style';
@@ -103,14 +103,12 @@ const SettingsBar: React.FC<SettingsBarProps> = ({ profile }) => {
         </Label>
       </LeftContainer>
       <RightContainer>
-        {profile?.profilePicture ? (
-          <ProfilePictureSmall src={profile.profilePicture} alt="Profile" />
-        ) : (
-          <StyledButton onClick={() => navigate('/profile')}>
-            <span>👤</span>
-          </StyledButton>
+        {!isAuthPage && (
+          <ProfilePictureSmall
+            src={profile?.profilePicture || '/avatar.png'}
+            alt="Profile"
+          />
         )}
-        {/*// TODO continue from here, yb*/}
         <StyledFlag
           code="GB"
           lang={lang}

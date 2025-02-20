@@ -9,6 +9,32 @@ export const ProfileCard = styled.div`
   flex-direction: column;
 `;
 
+export const ButtonGroup = styled.div`
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.2rem;
+`;
+
+export const CancelButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--error-color);
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--error-color-hover);
+  }
+
+  svg {
+    font-size: 1.3rem;
+  }
+`;
+
 export const Line = styled.div`
   display: flex;
   align-items: center;
@@ -50,14 +76,16 @@ export const ProfileHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem;
 `;
 
 export const ProfileName = styled.div`
   font-weight: 600;
   color: var(--text-color);
-  flex: 1;
+  flex-grow: 1;
   font-size: 2em;
+  min-width: 0;
+  overflow: hidden;
 `;
 
 export const StyledInput = styled.input`
@@ -68,7 +96,9 @@ export const StyledInput = styled.input`
   outline: none;
   width: 100%;
   padding: 0.25rem 0;
-  border-bottom: 2px solid #1e90ff;
+  border-bottom: 2px solid var(--primary-color);
+  flex-grow: 1;
+  min-width: 100px;
 `;
 
 export const EditButton = styled.button`

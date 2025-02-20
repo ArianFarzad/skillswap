@@ -1,15 +1,19 @@
 import { vi } from 'vitest';
 
-vi.mock('../../utils/axiosInstance', async () => {
-  const actual = await vi.importActual('../../utils/axiosInstance');
-  return {
-    ...actual,
-    default: {
-      post: vi.fn(),
-      get: vi.fn().mockResolvedValue({ data: [] }), // ✅ Mocked GET request
-    },
-  };
-});
+// Create a full axios mock
+const axiosMock = {
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
+};
+
+// Mock the axiosInstance module
+vi.mock('../../utils/axiosInstance', () => ({
+  default: axiosMock, // Ensures all axios calls are mocked
+}));
+
+export default axiosMock;
 
 vi.mock('react-hot-toast', async (importOriginal) => {
   const actual = (await importOriginal()) as {
