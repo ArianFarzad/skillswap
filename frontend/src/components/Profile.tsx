@@ -306,6 +306,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     type="text"
                     placeholder={t('new_skill')}
                     value={newSkill}
+                    autoFocus
                     onChange={(e) => setNewSkill(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter')
@@ -357,6 +358,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     placeholder={t('new_interest')}
                     value={newInterest}
                     onChange={(e) => setNewInterest(e.target.value)}
+                    autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Enter')
                         handleAddInterest().catch((error) => {
