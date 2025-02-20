@@ -6,6 +6,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import UploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import { IProfile } from '../models/models.ts';
@@ -15,6 +16,7 @@ import UserStatistics from './UserStatistics';
 import MyProfile from './MyProfile';
 import {
   AddButton,
+  ClearButton,
   Column,
   EditButton,
   FloatingMenu,
@@ -312,6 +314,11 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                         );
                     }}
                   />
+                  {newSkill && (
+                    <ClearButton onClick={() => setNewSkill('')}>
+                      <ClearIcon />
+                    </ClearButton>
+                  )}
                   <AddButton onClick={handleAddSkill}>
                     <AddIcon />
                   </AddButton>
@@ -357,6 +364,11 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                         });
                     }}
                   />
+                  {newInterest && (
+                    <ClearButton onClick={() => setNewInterest('')}>
+                      <ClearIcon />
+                    </ClearButton>
+                  )}
                   <AddButton onClick={handleAddInterest}>
                     <AddIcon />
                   </AddButton>
