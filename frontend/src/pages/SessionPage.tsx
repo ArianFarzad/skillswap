@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SettingsBar from '../components/SettingsBar.tsx';
 import BookAppointment from '../components/BookAppointment';
 import Feedback from '../components/Feedback';
@@ -22,6 +22,7 @@ import {
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import axios from '../utils/axiosInstance.ts';
 import log from '../utils/loggerInstance.ts';
+import { IProfile } from '../models/models.ts';
 
 const SessionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -29,11 +30,27 @@ const SessionPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const senderId = localStorage.getItem('myUserId') || '';
 
+  const [ownProfile, setOwnProfile] = useState<IProfile | null>(null);
   const [isFeedbackVisible, setIsFeedbackVisible] = useState(false);
   const [isEndSessionActivated, setIsEndSessionActivated] = useState(false);
   const [exchangeMessagesCount, setExchangeMessagesCount] = useState(0);
 
   const isEndSessionValid = exchangeMessagesCount < 10;
+
+  useEffect(() => {
+    const fetchOwnProfile = async () => {
+      try {
+        const response = await axios.get('/api/profiles');
+        setOwnProfile(response.data);
+      } catch (error) {
+        showToast('error', error, t);
+      }
+    };
+
+    fetchOwnProfile().catch((error) =>
+      log.error('Error fetching own profile:', error)
+    );
+  }, [t]);
 
   const handleFeedbackVisibility = () => {
     setIsFeedbackVisible((prevState) => !prevState);
@@ -73,8 +90,7 @@ const SessionPage: React.FC = () => {
         <Helmet>
           <title>SkillSwap - {t('session')}</title>
         </Helmet>
-        {/*// TODO fix null on this SettingsBar or modify the logic, yb*/}
-        <SettingsBar profile={null} />
+        <SettingsBar profile={ownProfile} />
         <SessionContent>
           <CalendarContainer className={isFeedbackVisible ? 'hide' : ''}>
             <BookAppointment />

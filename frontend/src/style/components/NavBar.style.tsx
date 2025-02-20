@@ -18,7 +18,6 @@ export const NavArea = styled.nav`
   }
 `;
 
-
 export const FilterContainer = styled.div`
   display: flex;
   justify-content: flex-end;

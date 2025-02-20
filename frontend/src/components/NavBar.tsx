@@ -9,7 +9,6 @@ import {
 } from '../style/components/NavBar.style';
 import { handleInputFieldChange } from '../utils/helpers.ts';
 
-
 const NavBar: React.FC = () => {
   const { t } = useTypedTranslation();
   const [keyword, setKeyword] = useState('');

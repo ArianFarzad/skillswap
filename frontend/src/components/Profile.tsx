@@ -12,7 +12,7 @@ import { IProfile } from '../models/models.ts';
 import EditIcon from '@mui/icons-material/Edit';
 import Save from '@mui/icons-material/Save';
 import UserStatistics from './UserStatistics';
-import MyProfile from "./MyProfile";
+import MyProfile from './MyProfile';
 import {
   AddButton,
   Column,
@@ -236,7 +236,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   return (
     <MainContainer>
-
       {profile && (
         <ProfileContent>
           <Column>
