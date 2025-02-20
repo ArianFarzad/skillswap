@@ -92,6 +92,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, points }) => {
     }
   }, [fetchProfiles, keyword, points, t]);
 
+
   const handleProfilePage = (profileId: string) => {
     void navigate(`/profile/${profileId}`);
   };

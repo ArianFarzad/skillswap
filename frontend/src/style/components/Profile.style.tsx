@@ -24,20 +24,19 @@ export const ProfileContent = styled.div`
   }
 `;
 
+
+
 export const ProfileImageSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 1rem;
-  background-color: var(--background-color-secondary);
-  padding-right: 2rem;
-  border-radius: 12px;
 `;
 
 export const ProfileImageContainer = styled.div`
   position: relative;
   display: flex;
-  padding: 2rem;
+  margin-bottom: 1rem;
 `;
 
 export const ProfileImage = styled.img`
@@ -50,8 +49,8 @@ export const ProfileImage = styled.img`
 
 export const ProfileEditLabel = styled.label`
   position: absolute;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 0;
+  right: 0;
   background-color: var(--primary-color);
   color: var(--text-color-on-button);
   border-radius: 50%;
