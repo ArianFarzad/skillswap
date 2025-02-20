@@ -15,10 +15,7 @@ import {
   ProfileHeader,
   ProfileName,
   ProfilePoints,
-  EditButton,
-  ProfileContent,
   StyledInput,
-  Line,
 } from '../style/components/MyProfile.style';
 
 interface MyProfileProps {
