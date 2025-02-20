@@ -25,6 +25,20 @@ export const RightContainer = styled.div`
   gap: 1rem;
 `;
 
+export const ProfilePictureSmall = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
 export const Label = styled.label`
   cursor: pointer;
   background-color: var(--primary-color);

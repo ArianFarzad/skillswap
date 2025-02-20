@@ -81,13 +81,21 @@ describe('Profile Routes', () => {
   it('should search profiles by skills', async () => {
     const { token } = await createTestUserWithProfile({}, {});
 
+    // need a second user because the own user is excluded from search results
+    const additionalProfile = await createTestUserWithProfile(
+      { email: 'another@example.com', name: 'Another User' },
+      { skills: ['JavaScript', 'React'], interests: ['Coding'] }
+    );
+
+    const skillToFilter = additionalProfile?.profile?.skills[1];
+
     const res = await request(app)
-      .get('/api/profiles/search/skills?skills=JavaScript')
+      .get(`/api/profiles/search?keyword=${skillToFilter}`)
       .set('Authorization', `Bearer ${token}`);
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveLength(1);
-    expect(res.body[0]).toHaveProperty('name', 'Test User');
+    expect(res.body[0]).toHaveProperty('name', 'Another User');
   });
 });
 

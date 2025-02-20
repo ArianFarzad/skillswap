@@ -8,7 +8,7 @@ import tsParser from '@typescript-eslint/parser';
 export default [
   // ✅ Base ESLint rules for all JS/TS files
   js.configs.recommended,
-
+  { ignores: ['node_modules', 'build', 'dist'] },
   // ✅ TypeScript ESLint rules (recommended + requiring type checking)
   {
     ignores: ['dist/'],

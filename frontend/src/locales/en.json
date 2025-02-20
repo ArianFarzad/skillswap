@@ -13,7 +13,8 @@
     "invalid_interest": "Invalid interest. Max 64 chars are allowed, please check format.",
     "duplicate_interest": "Error. Interest already exists.",
     "invalid_token": "Token verification failed, please log in again.",
-    "profile_not_found": "Profile not found."
+    "profile_not_found": "Profile not found.",
+    "name_change_failed": "Oops! Username change failed."
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",
@@ -137,5 +138,12 @@
   "name_changed": "Username changed successfully",
   "name_empty": "Username cannot be empty",
   "update_failed": "Update failed",
-  "name_exists": "Username already exists, please choose another one"
+  "name_exists": "Username already exists, please choose another one",
+  "profile_picture_updated": "Profile picture updated",
+  "upload_profile_picture": "Upload Profile Picture",
+  "delete_profile_picture": "Delete Profile Picture",
+  "profile_picture_deleted": "Profile picture deleted",
+  "edit": "Edit",
+  "save": "Save",
+  "cancel": "Cancel"
 }

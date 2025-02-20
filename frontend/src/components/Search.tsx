@@ -16,6 +16,7 @@ import {
   ProfileListItemActions,
   ProfileListItemHeader,
 } from '../style/components/Search.style';
+import { cleanParams } from '../utils/helpers.ts';
 
 interface Profile {
   _id: string;
@@ -25,7 +26,7 @@ interface Profile {
 
 interface SearchArgs {
   keyword: string;
-  filter: string;
+  points: string;
 }
 
 interface UserStatistics {
@@ -39,16 +40,18 @@ interface UserStatistics {
   receivedMessagesCount: number;
 }
 
-const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
+const Search: React.FC<SearchArgs> = ({ keyword, points }) => {
   const { t } = useTypedTranslation();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const navigate = useNavigate();
 
   const fetchProfiles = useCallback(async () => {
     try {
-      const response = await axios.get<Profile[]>(
-        `/api/profiles/search?keyword=${encodeURIComponent(keyword)}&filter=${encodeURIComponent(filter)}`
-      );
+      const params = cleanParams({ keyword, points });
+
+      const response = await axios.get<Profile[]>(`/api/profiles/search`, {
+        params,
+      });
 
       const data = Array.isArray(response.data)
         ? response.data
@@ -77,22 +80,22 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
     } catch (error) {
       log.error('Error fetching profiles:', error);
     }
-  }, [keyword, filter]);
+  }, [keyword, points]);
 
   useEffect(() => {
-    if (keyword || filter) {
+    if (keyword || points) {
       fetchProfiles().catch((error) => {
         showToast('error', error, t);
       });
     }
-  }, [fetchProfiles, keyword, filter, t]);
+  }, [fetchProfiles, keyword, points, t]);
 
   const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
     try {
-      const response = await axios.get(
-        `/api/sessions/check?user1=${myUserId}&user2=${otherUserId}`
-      );
+      const response = await axios.get(`/api/sessions/check`, {
+        params: { user1: myUserId, user2: otherUserId },
+      });
 
       let sessionId = response.data.sessionId;
 
@@ -116,7 +119,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, filter }) => {
     void navigate(`/profile/${profileId}`);
   };
 
-  if (!keyword && !filter) return null;
+  if (!keyword && !points) return null;
 
   return (
     <>

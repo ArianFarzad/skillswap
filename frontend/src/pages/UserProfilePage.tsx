@@ -41,12 +41,12 @@ const UserProfilePage: React.FC = () => {
         <Helmet>
           <title>SkillSwap - {t('user_profile')}</title>
         </Helmet>
-        <SettingsBar />
+        <SettingsBar profile={profile} />
         {loading ? (
           <Spinner />
         ) : (
           <>
-            <NavBar profile={profile} />
+            <NavBar />
             <Profile profile={profile} setProfile={setProfile} />
             <Footer />
           </>

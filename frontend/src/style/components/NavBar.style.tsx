@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const NavArea = styled.nav`
   background-color: var(--background-color-nav);
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   gap: 10em;
   padding: 1.5em;
   justify-content: space-between;
@@ -15,21 +15,6 @@ export const NavArea = styled.nav`
     gap: 2em;
     padding: 1em;
     margin-bottom: 4em;
-  }
-`;
-
-export const ListArea = styled.ul`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-  list-style: none;
-  gap: 4em;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 1em;
   }
 `;
 

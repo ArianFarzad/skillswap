@@ -8,13 +8,11 @@ export const MainContainer = styled.div`
     transform 0.2s ease,
     box-shadow 0.2s ease;
   position: relative;
-  margin-top: 3em;
 
   @media (max-width: 768px) {
-    margin-top: 15em;
+    height: auto;
   }
 `;
-
 
 export const ProfileContent = styled.div`
   display: flex;
@@ -23,6 +21,109 @@ export const ProfileContent = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
+  }
+`;
+
+export const ProfileImageSection = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
+export const ProfileImageContainer = styled.div`
+  position: relative;
+  display: flex;
+  margin-bottom: 1rem;
+`;
+
+export const ProfileImage = styled.img`
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border-color);
+`;
+
+export const ProfileEditLabel = styled.label`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background-color: var(--primary-color-hover);
+  }
+
+  input {
+    display: none;
+  }
+
+  svg {
+    font-size: 1.2rem;
+  }
+`;
+
+export const FloatingMenu = styled.div`
+  position: absolute;
+  bottom: 40px;
+  right: 20px;
+  background: var(--background-color-secondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.3s ease-in-out forwards;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const FloatingMenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  border-radius: 6px;
+
+  &:hover {
+    background: var(--primary-color-hover);
+  }
+
+  label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  input {
+    display: none;
   }
 `;
 
@@ -111,7 +212,7 @@ export const AddButton = styled.button`
   background-color: var(--primary-color);
   border: none;
   border-radius: 12px;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 0.75rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 
@@ -143,20 +244,22 @@ export const RemoveButton = styled.button`
 `;
 
 export const EditButton = styled.button`
-  background-color: var(--primary-color);
+  background: none;
   border: none;
   padding: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-radius: 50%;
-  font-size: 0.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e90ff;
+  transition: color 0.3s ease;
 
   &:hover {
-    background-color: var(--primary-color-hover);
+    color: #00ced1;
   }
 
   svg {
-    color: var(--text-color-on-button);
+    font-size: 1.5rem;
   }
 `;
 
@@ -165,4 +268,29 @@ export const Column = styled.div`
   flex-direction: column;
   gap: 1rem;
   flex: 1;
+`;
+
+export const ClearButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+
+  svg {
+    color: var(--text-color-secondary);
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+  }
+
+  &:hover svg {
+    color: var(--error-color);
+  }
+
+  &:focus {
+    outline: none;
+  }
 `;
