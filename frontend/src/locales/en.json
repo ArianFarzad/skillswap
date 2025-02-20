@@ -142,5 +142,8 @@
   "profile_picture_updated": "Profile picture updated",
   "upload_profile_picture": "Upload Profile Picture",
   "delete_profile_picture": "Delete Profile Picture",
-  "profile_picture_deleted": "Profile picture deleted"
+  "profile_picture_deleted": "Profile picture deleted",
+  "edit": "Edit",
+  "save": "Save",
+  "cancel": "Cancel"
 }

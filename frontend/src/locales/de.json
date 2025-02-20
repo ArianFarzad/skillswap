@@ -141,5 +141,8 @@
   "profile_picture_updated": "Profilbild aktualisiert",
   "upload_profile_picture": "Profilbild hochladen",
   "delete_profile_picture": "Profilbild löschen",
-  "profile_picture_deleted": "Profilbild gelöscht"
+  "profile_picture_deleted": "Profilbild gelöscht",
+  "edit": "Bearbeiten",
+  "save": "Speichern",
+  "cancel": "Abbrechen"
 }

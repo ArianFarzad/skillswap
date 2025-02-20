@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { IProfile } from '../models/models.ts';
-import { Edit, Save } from '@mui/icons-material';
+import { Clear, Edit, Save } from '@mui/icons-material';
 import axios from '../utils/axiosInstance.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import log from '../utils/loggerInstance.ts';
 import {
+  ButtonGroup,
+  CancelButton,
+  EditButton,
+  Line,
   ProfileCard,
+  ProfileContent,
   ProfileHeader,
   ProfileName,
   ProfilePoints,
-  EditButton,
-  ProfileContent,
   StyledInput,
-  Line,
 } from '../style/components/MyProfile.style';
 
 interface MyProfileProps {
@@ -49,20 +51,8 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
             log.error(`Unexpected status code: ${response.status}`);
             showToast('error', 'error.name_change_failed', t);
           }
-        } catch (error: unknown) {
-          if (error && typeof error === 'object' && 'response' in error) {
-            const axiosError = error as { response: { status: number } };
-            if (axiosError.response.status === 400) {
-              setName(previousName);
-              showToast('error', 'name_exists', t);
-            } else {
-              log.error('Failed to change name', error);
-              showToast('error', 'name_change_failed', t);
-            }
-          } else {
-            log.error('Failed to change name', error);
-            showToast('error', 'name_change_failed', t);
-          }
+        } catch (error) {
+          showToast('error', error, t);
         }
       }
     } else {
@@ -73,6 +63,11 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
+  };
+
+  const handleCancel = () => {
+    setName(previousName);
+    setIsEditMode((prev) => !prev);
   };
 
   return (
@@ -91,9 +86,19 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
           )}
         </ProfileName>
         {loggedInUserId === profile?.userId && (
-          <EditButton onClick={handleEdit}>
-            {isEditMode ? <Save /> : <Edit />}
-          </EditButton>
+          <ButtonGroup>
+            {isEditMode && (
+              <CancelButton onClick={handleCancel} title={t('cancel')}>
+                <Clear />
+              </CancelButton>
+            )}
+            <EditButton
+              onClick={handleEdit}
+              title={isEditMode ? t('save') : t('edit')}
+            >
+              {isEditMode ? <Save /> : <Edit />}
+            </EditButton>
+          </ButtonGroup>
         )}
       </ProfileHeader>
       <Line />
