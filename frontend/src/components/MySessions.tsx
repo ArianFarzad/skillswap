@@ -51,12 +51,14 @@ const MySessions: React.FC = () => {
             <SessionItem key={session._id}>
               <SessionDetail>
                 <strong>{t('tutor')}:</strong>{' '}
+                <img src={session.tutor?.profilePicture || 'avatar.png'} alt="Tutor Profile" width="30" height="30" />
                 {session.tutor?._id === myUserId
                   ? t('you')
                   : session.tutor?.name}
               </SessionDetail>
               <SessionDetail>
                 <strong>{t('student')}:</strong>{' '}
+                <img src={session.student?.profilePicture || 'avatar.png'} alt="Student Profile" width="30" height="30" />
                 {session.student?._id === myUserId
                   ? t('you')
                   : session.student?.name}

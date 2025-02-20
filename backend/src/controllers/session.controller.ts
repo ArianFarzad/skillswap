@@ -190,18 +190,19 @@ export const checkSession = async (req: Request, res: Response) => {
 };
 
 export const getSessionsByUserId = async (req: Request, res: Response) => {
-  const { userId } = req.params;
+  const userId = req.params.userId;
 
   try {
     const sessions = await Session.find({
       $or: [{ tutor: userId }, { student: userId }],
     })
-      .populate('tutor', 'name')
-      .populate('student', 'name');
+      .populate('tutor', 'name profilePicture')
+      .populate('student', 'name profilePicture')
+      .exec();
 
-    res.json(sessions);
+    res.status(200).json(sessions);
   } catch (error) {
-    logger.error('Error fetching sessions by user ID:', error);
+    logger.error(`Error fetching sessions for user ${userId}: ${error}`);
     res.status(500).json({ error: 'Server error' });
   }
 };
