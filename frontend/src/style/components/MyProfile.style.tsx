@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const ProfileCard = styled.div`
-  border-radius: 12px;
   padding: 1.5rem;
   width: 100%;
   max-width: 400px;

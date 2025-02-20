@@ -13,9 +13,9 @@ const fadeIn = keyframes`
 
 export const SessionsContainer = styled.div`
   background-color: var(--background-color-secondary);
-  padding: 2rem;
+  padding: 1.5rem;
   margin-top: 2rem;
-  margin-right: 1rem;
+  margin-right: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: 87vh;
@@ -46,9 +46,7 @@ export const SessionList = styled.div`
   gap: 1.5rem;
   height: 70vh;
   overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) transparent;
-  padding-right: 0.5em;
+  scrollbar-width: none;
 `;
 
 export const SessionItem = styled.div`

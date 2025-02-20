@@ -50,13 +50,6 @@ const MySessions: React.FC = () => {
           sessions.map((session: ISession) => (
             <SessionItem key={session._id}>
               <SessionDetail>
-                <strong>{t('date')}:</strong>{' '}
-                {new Date(session.date).toLocaleDateString()}
-              </SessionDetail>
-              <SessionDetail>
-                <strong>{t('status')}:</strong> {session.status}
-              </SessionDetail>
-              <SessionDetail>
                 <strong>{t('tutor')}:</strong>{' '}
                 {session.tutor?._id === myUserId
                   ? t('you')

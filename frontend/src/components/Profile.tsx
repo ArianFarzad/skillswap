@@ -378,9 +378,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
               )}
             </Section>
           </Column>
-          <Section>
-            <UserStatistics {...statistics} />
-          </Section>
+          <UserStatistics {...statistics} />
         </ProfileContent>
       )}
     </MainContainer>

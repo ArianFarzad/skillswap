@@ -2,11 +2,9 @@ import styled from 'styled-components';
 
 export const StatisticsContainer = styled.div`
   background: var(--background-color-secondary);
-  padding: 0 2rem;
-  height: 90vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) var(--background-color-secondary);
+  padding: 2rem;
+  
+  border-radius: 12px;
 `;
 
 export const SectionTitle = styled.h3`
@@ -21,6 +19,10 @@ export const GridContainer = styled.div`
   flex-direction: column;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scrollbar-color: var(--primary-color) var(--background-color-secondary);
+  height: 90vh;
 `;
 
 export const ChartContainer = styled.div`

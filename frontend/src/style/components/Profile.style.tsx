@@ -18,6 +18,7 @@ export const ProfileContent = styled.div`
   display: flex;
   flex-direction: row;
   gap: 2rem;
+  
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -27,11 +28,14 @@ export const ProfileContent = styled.div`
 
 
 export const ProfileImageSection = styled.div`
+  background-color: var(--background-color-secondary);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
 `;
+
 
 export const ProfileImageContainer = styled.div`
   position: relative;
@@ -134,7 +138,6 @@ export const Section = styled.div`
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  flex: 1;
 `;
 
 export const SectionTitle = styled.h2`
