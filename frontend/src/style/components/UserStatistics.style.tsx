@@ -21,7 +21,7 @@ export const GridContainer = styled.div`
   overflow-y: auto;
   scrollbar-width: none;
   scrollbar-color: var(--primary-color) var(--background-color-secondary);
-  height: 90vh;
+  height: 100vh;
 `;
 
 export const ChartContainer = styled.div`
