@@ -82,7 +82,7 @@ export const ProfileName = styled.div`
   font-weight: 600;
   color: var(--text-color);
   flex-grow: 1;
-  font-size: 2em;
+  font-size: 1rem;
   min-width: 0;
   overflow: hidden;
 `;

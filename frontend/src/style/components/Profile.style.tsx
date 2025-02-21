@@ -36,7 +36,6 @@ export const ProfileImageSection = styled.div`
 export const ProfileImageContainer = styled.div`
   position: relative;
   display: flex;
-  margin-bottom: 1rem;
 `;
 
 export const ProfileImage = styled.img`
