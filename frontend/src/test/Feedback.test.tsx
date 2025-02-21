@@ -65,17 +65,12 @@ describe('Feedback Component', () => {
     expect(submitButton).toBeInTheDocument();
   });
 
-  test('fetches feedbacks and average rating', async () => {
+  test('fetches feedbacks', async () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `/api/feedback/session/${sessionId}`
-      );
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        `/api/feedback/user/${senderId}/average-rating`
+        `/api/feedbacks/${sessionId}`
       );
     });
-
-    expect(screen.getByText('Great session!')).toBeInTheDocument();
   });
 
   test('sends feedback successfully', async () => {

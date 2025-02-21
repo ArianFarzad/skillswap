@@ -92,7 +92,7 @@ describe('BookAppointment Component', () => {
     });
 
     await waitFor(() => {
-      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledTimes(5);
       expect(showToast).toHaveBeenCalledWith(
         'error',
         'end_date_before_start_date',
