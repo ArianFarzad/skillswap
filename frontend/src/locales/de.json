@@ -13,7 +13,8 @@
     "duplicate_interest": "Fehler. Interesse existiert bereits.",
     "invalid_token": "Token-Überprüfung fehlgeschlagen, bitte melden Sie sich erneut an.",
     "profile_not_found": "Profil nicht gefunden.",
-    "name_change_failed": "Hoppla! Benutzername ändern fehlgeschlagen."
+    "name_change_failed": "Hoppla! Benutzername ändern fehlgeschlagen.",
+    "about_me_too_long": "Bio ist zu lang. Max. 50 Wörter sind erlaubt."
   },
   "loading": "Laden...",
   "welcome": "Willkommen bei SkillSwap",
@@ -156,5 +157,6 @@
   "continue_session": "Sitzung fortsetzen",
   "you": "Sie",
   "no_sessions": "Keine Sitzungen",
-  "about_me": "Über mich"
+  "about_me": "Über mich",
+  "about_me_updated": "Bio erfolgreich aktualisiert"
 }

@@ -14,7 +14,8 @@
     "duplicate_interest": "Error. Interest already exists.",
     "invalid_token": "Token verification failed, please log in again.",
     "profile_not_found": "Profile not found.",
-    "name_change_failed": "Oops! Username change failed."
+    "name_change_failed": "Oops! Username change failed.",
+    "about_me_too_long": "Bio is too long. Max 50 words are allowed."
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",
@@ -157,5 +158,6 @@
   "continue_session": "Continue Session",
   "you": "You",
   "no_sessions": "No sessions",
-  "about_me": "About Me"
+  "about_me": "About Me",
+  "about_me_updated": "Bio updated successfully"
 }

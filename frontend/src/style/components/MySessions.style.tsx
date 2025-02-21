@@ -42,7 +42,7 @@ export const SessionList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  height: 80vh;
+  height: 85vh;
   overflow-y: auto;
   scrollbar-width: none;
   justify-content: center;

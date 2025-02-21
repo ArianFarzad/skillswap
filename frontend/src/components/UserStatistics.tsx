@@ -120,7 +120,7 @@ const UserStatistics: React.FC<UserStatisticsProps> = ({
         {/* Average Rating */}
         <StatCard>
           <RatingContainer>
-            2<StatLabel>{t('average_rating')}</StatLabel>
+            <StatLabel>{t('average_rating')}</StatLabel>
             <RatingValue>{averageRating.toFixed(2)}</RatingValue>
             <div className="rating-stars">
               {'★'.repeat(Math.round(averageRating))}

@@ -8,7 +8,7 @@ import {
 } from '../../../shared/validation';
 import cloudinary from '../config/cloudinary';
 import multer from 'multer';
-import { isNotBlank } from '../utils/stringUtils';
+import { isNotBlank, countWords } from '../utils/stringUtils';
 import {
   getFeedbackStats,
   getMessageStats,
@@ -60,7 +60,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { name, skills, interests, addSkill, removeSkill } = req.body;
+  const { name, aboutMe, skills, interests, addSkill, removeSkill } = req.body;
+  const maxWordsAboutMeSection = 50;
+
   try {
     logger.info(`Updating profile for user: ${req.user?.userId}`);
 
@@ -68,6 +70,7 @@ export const updateProfile = async (req: Request, res: Response) => {
       $push?: { skills?: string };
       $pull?: { skills?: string };
     } = {};
+
     if (name) {
       const existingProfile = await Profile.findOne({ name });
       if (existingProfile) {
@@ -77,6 +80,14 @@ export const updateProfile = async (req: Request, res: Response) => {
       }
       updateFields.name = name;
     }
+
+    if (aboutMe) {
+      if (countWords(aboutMe) > maxWordsAboutMeSection) {
+        return res.status(400).json({ error: 'error.about_me_too_long' });
+      }
+      updateFields.aboutMe = aboutMe;
+    }
+
     if (skills) updateFields.skills = skills;
     if (interests) updateFields.interests = interests;
     if (addSkill) updateFields.$push = { skills: addSkill };
@@ -87,10 +98,12 @@ export const updateProfile = async (req: Request, res: Response) => {
       updateFields,
       { new: true }
     );
+
     if (!profile) {
       logger.warn('Profile not found for user:', req.user?.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
+
     res.status(200).json(profile);
   } catch (error) {
     logger.error(`Error updating profile: ${error}`);

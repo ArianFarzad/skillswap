@@ -58,6 +58,8 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
   const [editModeSkill, setEditModeSkill] = useState(false);
   const [editModeInterest, setEditModeInterest] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [editModeAboutMe, setEditModeAboutMe] = useState(false);
+  const [prevAboutMe, setPrevAboutMe] = useState(profile?.aboutMe || '');
   const [statistics, setStatistics] = useState({
     sessionCount: 0,
     tutorSessionCount: 0,
@@ -234,6 +236,27 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
+  const handleEditAboutMe = () => {
+    setEditModeAboutMe(!editModeAboutMe);
+  };
+
+  const handleSetAboutMe = async (aboutMe: string) => {
+    try {
+      const response = await axios.put('/api/profiles', {
+        aboutMe: aboutMe,
+        userId: loggedInUserId,
+      });
+      setProfile((prev) => prev && { ...prev, aboutMe: response.data.aboutMe });
+      setPrevAboutMe(response.data.aboutMe);
+      showToast('success', 'about_me_updated', t);
+    } catch (error) {
+      let p = document.getElementById('about-me') as HTMLParagraphElement;
+      p.innerText = prevAboutMe;
+      showToast('error', error, t);
+      log.error('Error updating about me:', error);
+    }
+  };
+
   const hasCustomProfilePicture = isNotBlank(profile?.profilePicture);
 
   return (
@@ -281,7 +304,42 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                 <MyProfile profile={profile} />
               </ProfileImageSection>
               <Section>
-                <SectionTitle>{t('about_me')}</SectionTitle>
+                <SectionTitle>
+                  {t('about_me')}
+                  {isOwnProfile && (
+                    <EditButton onClick={handleEditAboutMe}>
+                      {editModeAboutMe ? (
+                        <Save
+                          onClick={() =>
+                            handleSetAboutMe(
+                              (
+                                document.getElementById(
+                                  'aboutMe-input'
+                                ) as HTMLTextAreaElement
+                              )?.value || ''
+                            )
+                          }
+                        />
+                      ) : (
+                        <EditIcon />
+                      )}
+                    </EditButton>
+                  )}
+                </SectionTitle>
+                {editModeAboutMe ? (
+                  <TextInput
+                    id={'aboutMe-input'}
+                    as={'textarea'}
+                    value={profile.aboutMe}
+                    onChange={(e) =>
+                      setProfile(
+                        (prev) => prev && { ...prev, aboutMe: e.target.value }
+                      )
+                    }
+                  />
+                ) : (
+                  <p id={'about-me'}>{profile.aboutMe}</p>
+                )}
               </Section>
               <Section>
                 <SectionTitle>

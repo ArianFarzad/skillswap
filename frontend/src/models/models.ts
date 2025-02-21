@@ -23,6 +23,7 @@ export interface IProfile {
   points: number;
   userId: string;
   profilePicture: string | undefined;
+  aboutMe: string | undefined;
 }
 
 export interface IUser {
