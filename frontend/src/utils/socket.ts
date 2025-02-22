@@ -18,9 +18,10 @@ export const disconnectSocket = (): void => {
 export const sendMessage = (
   sessionId: string,
   senderId: string,
-  content: string
+  content: string,
+  attachments: { url: string; type: string }[] = []
 ): void => {
-  socket.emit('sendMessage', { sessionId, senderId, content });
+  socket.emit('sendMessage', { sessionId, senderId, content, attachments });
 };
 
 export const onNewMessage = (callback: (message: IMessage) => void): void => {

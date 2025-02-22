@@ -53,7 +53,7 @@ export const MessageInputContainer = styled.div`
   display: flex;
   flex-direction: row;
   gap: 0.3rem;
-  padding: 1.5rem;
+  padding: 1rem;
   background-color: var(--background-color-secondary);
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
   justify-content: center;
@@ -185,4 +185,67 @@ export const ScrollToBottomButton = styled.button`
   svg {
     font-size: 1.2rem;
   }
+`;
+
+export const FilePreviewContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-top: 1px solid var(--border-color);
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: var(--background-color-secondary);
+  border-radius: 8px;
+`;
+
+export const FilePreviewItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color--light);
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  max-width: 200px;
+  overflow: hidden;
+`;
+
+export const RemoveFileButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+
+  &:hover {
+    color: darkred;
+  }
+`;
+
+export const StyledImage = styled.img`
+  max-width: 200px;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+`;
+
+export const StyledPDFLink = styled.a`
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 0.5rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const StyledTimestamp = styled.span`
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 0.5rem;
+  display: block;
+  text-align: right;
 `;

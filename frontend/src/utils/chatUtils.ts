@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { useTypedTranslation } from './translationUtils.ts';
 import axios from '../utils/axiosInstance.ts';
 import log from '../utils/loggerInstance.ts';
-import { showToast } from '../utils/toastUtils.ts';
+import { showToast } from './toastUtils.ts';
 
 export const useHandleChatRequest = () => {
   const navigate = useNavigate();
   const { t } = useTypedTranslation();
 
-  const handleChatRequest = async (otherUserId: string) => {
+  return async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
 
     try {
@@ -33,6 +33,4 @@ export const useHandleChatRequest = () => {
       showToast('error', error, t);
     }
   };
-
-  return handleChatRequest;
 };

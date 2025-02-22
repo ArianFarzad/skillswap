@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import SendIcon from '@mui/icons-material/Send';
+import AttachFileIcon from '@mui/icons-material/Send';
+import CloseIcon from '@mui/icons-material/Send';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import { IMessage, IUser } from '../models/models.ts';
@@ -14,12 +16,18 @@ import socket, {
 import {
   ChatContainer,
   ChatHeader,
+  FilePreviewContainer,
+  FilePreviewItem,
   MessageInputContainer,
   MessageInputField,
   MessagesContainer,
   MyMessageBubble,
+  RemoveFileButton,
   ScrollToBottomButton,
   SendButton,
+  StyledImage,
+  StyledPDFLink,
+  StyledTimestamp,
   TheirMessageBubble,
 } from '../style/components/Chat.style';
 
@@ -38,6 +46,7 @@ const Chat: React.FC<ChatParams> = ({
 
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [otherPerson, setOtherPerson] = useState<IUser | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [exchangedMessagesCount, setExchangedMessagesCount] = useState(0);
@@ -52,7 +61,6 @@ const Chat: React.FC<ChatParams> = ({
   useEffect(() => {
     if (!sessionId) return;
 
-    // Fetch messages and other person's details
     axios
       .get(`/api/sessions/${sessionId}`)
       .then((res) => {
@@ -63,7 +71,6 @@ const Chat: React.FC<ChatParams> = ({
       })
       .catch((error) => log.error('Error fetching messages:', error));
 
-    // Connect to socket
     connectSocket(sessionId);
 
     // Handle new messages from socket
@@ -80,16 +87,34 @@ const Chat: React.FC<ChatParams> = ({
     };
   }, [sessionId, senderId]);
 
-  // Notify parent component about message count changes
   useEffect(() => {
     onMessagesCountChange(exchangedMessagesCount);
   }, [exchangedMessagesCount, onMessagesCountChange]);
 
-  // Handle sending a new message
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      sendMessage(sessionId!, senderId, newMessage);
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() && selectedFiles.length === 0) return;
+
+    const formData = new FormData();
+    selectedFiles.forEach((file) => formData.append('attachments', file));
+
+    try {
+      const { data } = await axios.post('/api/messages/uploads', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      sendMessage(sessionId!, senderId, newMessage, data.attachments);
       setNewMessage('');
+      setSelectedFiles([]);
+    } catch (error) {
+      log.error('Error sending message:', error);
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setSelectedFiles([...selectedFiles, ...Array.from(event.target.files)]);
     }
   };
 
@@ -98,6 +123,10 @@ const Chat: React.FC<ChatParams> = ({
     const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
     setShowScrollToBottom(scrollHeight - clientHeight - scrollTop > 100);
   };
+
+  function handleRemoveFile(index: number) {
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  }
 
   return (
     <ChatContainer>
@@ -108,19 +137,64 @@ const Chat: React.FC<ChatParams> = ({
 
       {/* Messages List */}
       <MessagesContainer onScroll={handleScroll}>
-        {messages.map((msg, index) =>
-          msg.sender._id === senderId ? (
-            <MyMessageBubble key={index}>
-              <p>{msg.content}</p>
-              <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-            </MyMessageBubble>
-          ) : (
-            <TheirMessageBubble key={index}>
-              <p>{msg.content}</p>
-              <span>{new Date(msg.timestamp).toLocaleTimeString()}</span>
-            </TheirMessageBubble>
-          )
-        )}
+        {messages.map((msg, index) => (
+          <React.Fragment key={index}>
+            {msg.sender._id === senderId ? (
+              <MyMessageBubble key={index}>
+                {msg.content && <p>{msg.content}</p>}
+                {msg.attachments?.map((file, i) => (
+                  <div key={i}>
+                    {file.type === 'image' ? (
+                      <StyledImage
+                        src={file.url}
+                        alt={'attachment'}
+                      ></StyledImage>
+                    ) : (
+                      <StyledPDFLink
+                        href={file.url}
+                        target="_blank"
+                      ></StyledPDFLink>
+                    )}
+                  </div>
+                ))}
+                <StyledTimestamp>
+                  {new Date(msg.timestamp).toLocaleDateString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </StyledTimestamp>
+                <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>
+                  {new Date(msg.timestamp).toLocaleTimeString()}
+                </span>
+              </MyMessageBubble>
+            ) : (
+              <TheirMessageBubble key={index}>
+                {msg.content && <p>{msg.content}</p>}
+                {msg.attachments?.map((file, i) => (
+                  <div key={i}>
+                    {file.type === 'image' ? (
+                      <StyledImage
+                        src={file.url}
+                        alt={'attachment'}
+                      ></StyledImage>
+                    ) : (
+                      <StyledPDFLink
+                        href={file.url}
+                        target="_blank"
+                      ></StyledPDFLink>
+                    )}
+                  </div>
+                ))}
+                <StyledTimestamp>
+                  {new Date(msg.timestamp).toLocaleDateString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </StyledTimestamp>
+              </TheirMessageBubble>
+            )}
+          </React.Fragment>
+        ))}
         <div ref={messagesEndRef} />
       </MessagesContainer>
 
@@ -137,16 +211,29 @@ const Chat: React.FC<ChatParams> = ({
 
       {/* Message Input Area */}
       <MessageInputContainer>
+        <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
+          <AttachFileIcon
+            fontSize={'large'}
+            style={{ color: 'var(--primary-color)' }}
+          />
+        </label>
+        <input
+          type={'file'}
+          multiple
+          accept={'image/*,.pdf'}
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
         <MessageInputField
           type="text"
           placeholder={t('type_message')}
           maxLength={2000}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => {
+          onKeyDown={async (e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
-              handleSendMessage();
+              await handleSendMessage();
             }
           }}
         />
@@ -154,6 +241,31 @@ const Chat: React.FC<ChatParams> = ({
           <SendIcon />
         </SendButton>
       </MessageInputContainer>
+
+      <FilePreviewContainer>
+        {selectedFiles.map((file, index) => (
+          <FilePreviewItem key={index}>
+            {file.type.startsWith('image') ? (
+              <img
+                src={URL.createObjectURL(file)}
+                alt={'preview'}
+                style={{
+                  width: '50px',
+                  height: '50px',
+                  objectFit: 'cover',
+                  borderRadius: '8px',
+                  marginRight: '0.5rem',
+                }}
+              />
+            ) : (
+              <span>📄 {file.name}</span>
+            )}
+            <RemoveFileButton onClick={() => handleRemoveFile(index)}>
+              <CloseIcon fontSize={'small'} />
+            </RemoveFileButton>
+          </FilePreviewItem>
+        ))}
+      </FilePreviewContainer>
     </ChatContainer>
   );
 };

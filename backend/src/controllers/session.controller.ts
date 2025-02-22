@@ -118,11 +118,9 @@ export const completeSession = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Session not found' });
     }
 
-    // Aktualisieren des Sitzungsstatus
     session.status = 'completed';
     await session.save();
 
-    // Punkte zum Profil hinzufügen
     const profile = await Profile.findOne({ userId: session.student });
     if (profile) {
       profile.points += 10; // Beispiel: 10 Punkte pro abgeschlossene Sitzung
@@ -201,27 +199,25 @@ export const getSessionsByUserId = async (req: Request, res: Response) => {
       .lean()
       .exec();
 
-
-    const userIds = sessions.flatMap(session => [
+    const userIds = sessions.flatMap((session) => [
       session.tutor._id.toString(),
       session.student._id.toString(),
     ]);
 
-
     const profiles = await Profile.find({
       userId: { $in: userIds },
-    }).lean().exec();
-
+    })
+      .lean()
+      .exec();
 
     const profileMap = new Map(
-      profiles.map(profile => [
+      profiles.map((profile) => [
         profile.userId.toString(),
         profile.profilePicture || '',
       ])
     );
 
-
-    const sessionsWithProfilePictures = sessions.map(session => ({
+    const sessionsWithProfilePictures = sessions.map((session) => ({
       ...session,
       tutor: {
         ...session.tutor,
