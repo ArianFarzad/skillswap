@@ -20,9 +20,10 @@ import {
 
 interface MyProfileProps {
   profile: IProfile | null;
+  setProfile: React.Dispatch<React.SetStateAction<IProfile | null>>;
 }
 
-const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
+const MyProfile: React.FC<MyProfileProps> = ({ profile, setProfile }) => {
   const { t } = useTypedTranslation();
   const [isEditMode, setIsEditMode] = useState(false);
   const [name, setName] = useState(profile?.name || '');
@@ -46,6 +47,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
           });
 
           if (response.status === 200) {
+            setProfile(response.data);
             showToast('success', 'name_changed', t);
           } else {
             log.error(`Unexpected status code: ${response.status}`);
@@ -82,7 +84,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile }) => {
               autoFocus
             />
           ) : (
-            name
+            profile?.name
           )}
         </ProfileName>
         {loggedInUserId === profile?.userId && (

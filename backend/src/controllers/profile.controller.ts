@@ -8,7 +8,7 @@ import {
 } from '../../../shared/validation';
 import cloudinary from '../config/cloudinary';
 import multer from 'multer';
-import { isNotBlank, countWords } from '../utils/stringUtils';
+import { countWords, isNotBlank } from '../utils/stringUtils';
 import {
   getFeedbackStats,
   getMessageStats,
@@ -74,14 +74,12 @@ export const updateProfile = async (req: Request, res: Response) => {
     if (name) {
       const existingProfile = await Profile.findOne({ name });
       if (existingProfile) {
-        return res
-          .status(400)
-          .json({ error: 'Profile with this name already exists' });
+        return res.status(400).json({ error: 'error.name_already_exists' });
       }
       updateFields.name = name;
     }
 
-    if (aboutMe) {
+    if (aboutMe !== undefined) {
       if (countWords(aboutMe) > maxWordsAboutMeSection) {
         return res.status(400).json({ error: 'error.about_me_too_long' });
       }

@@ -14,7 +14,7 @@ export const importEvent = [
     const sessionId = req.params.sessionId;
 
     if (!req.file) {
-      return res.status(400).json({ error: 'Keine Datei hochgeladen' });
+      return res.status(400).json({ error: 'error.no_file_uploaded' });
     }
 
     logger.info('Received file:', req.file);

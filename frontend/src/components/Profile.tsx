@@ -42,6 +42,7 @@ import {
   isValidSkillOrInterest,
 } from '../../../shared/validation.ts';
 import { isNotBlank } from '../utils/helpers.ts';
+import { Edit } from '@mui/icons-material';
 
 interface ProfileProps {
   profile: IProfile | null;
@@ -55,11 +56,11 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
-  const [editModeSkill, setEditModeSkill] = useState(false);
-  const [editModeInterest, setEditModeInterest] = useState(false);
+  const [isEditingSkill, setIsEditingSkill] = useState(false);
+  const [isEditingInterest, setIsEditingInterest] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [editModeAboutMe, setEditModeAboutMe] = useState(false);
-  const [prevAboutMe, setPrevAboutMe] = useState(profile?.aboutMe || '');
+  const [isEditingAboutMe, setIsEditingAboutMe] = useState(false);
+  const [aboutMeText, setAboutMeText] = useState(profile?.aboutMe || '');
   const [statistics, setStatistics] = useState({
     sessionCount: 0,
     tutorSessionCount: 0,
@@ -104,12 +105,39 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   }, [profile, t]);
 
+  useEffect(() => {
+    if (!isEditingAboutMe) {
+      setAboutMeText(profile?.aboutMe || '');
+    }
+  }, [isEditingAboutMe, profile]);
+
+  const handleSetAboutMe = async () => {
+    if (isEditingAboutMe && aboutMeText.trim() != profile?.aboutMe) {
+      try {
+        const response = await axios.put('/api/profiles', {
+          aboutMe: aboutMeText,
+          userId: loggedInUserId,
+        });
+
+        setProfile(
+          (prev) => prev && { ...prev, aboutMe: response.data.aboutMe }
+        );
+        showToast('success', 'about_me_updated', t);
+      } catch (error) {
+        showToast('error', error, t);
+      }
+    } else {
+      setAboutMeText(profile?.aboutMe || '');
+    }
+    setIsEditingAboutMe((prev) => !prev);
+  };
+
   const handleEditSkill = () => {
-    setEditModeSkill(!editModeSkill);
+    setIsEditingSkill(!isEditingSkill);
   };
 
   const handleEditInterest = () => {
-    setEditModeInterest(!editModeInterest);
+    setIsEditingInterest(!isEditingInterest);
   };
 
   const handleAddSkill = async () => {
@@ -236,29 +264,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
     }
   };
 
-  const handleEditAboutMe = () => {
-    setEditModeAboutMe(!editModeAboutMe);
-  };
-
-  const handleSetAboutMe = async (aboutMe: string) => {
-    try {
-      const response = await axios.put('/api/profiles', {
-        aboutMe: aboutMe,
-        userId: loggedInUserId,
-      });
-      setProfile((prev) => prev && { ...prev, aboutMe: response.data.aboutMe });
-      setPrevAboutMe(response.data.aboutMe);
-      showToast('success', 'about_me_updated', t);
-    } catch (error) {
-      let p = document.getElementById('about-me') as HTMLParagraphElement;
-      p.innerText = prevAboutMe;
-      showToast('error', error, t);
-      log.error('Error updating about me:', error);
-    }
-  };
-
-  const hasCustomProfilePicture = isNotBlank(profile?.profilePicture);
-
   return (
     <>
       <MainContainer>
@@ -278,7 +283,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     </ProfileEditLabel>
                   )}
 
-                  {/*Floating Menu*/}
+                  {/* Floating Menu */}
                   {showMenu && (
                     <FloatingMenu>
                       <FloatingMenuItem>
@@ -286,14 +291,14 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                           <UploadIcon />
                           {t('upload_profile_picture')}
                           <input
-                            id={'profilePicture'}
-                            type={'file'}
-                            accept={'image/*'}
+                            id="profilePicture"
+                            type="file"
+                            accept="image/*"
                             onChange={handleImageUpload}
                           />
                         </label>
                       </FloatingMenuItem>
-                      {hasCustomProfilePicture && (
+                      {isNotBlank(profile?.profilePicture) && (
                         <FloatingMenuItem onClick={handleDeleteProfilePicture}>
                           <DeleteIcon /> {t('delete_profile_picture')}
                         </FloatingMenuItem>
@@ -301,44 +306,26 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     </FloatingMenu>
                   )}
                 </ProfileImageContainer>
-                <MyProfile profile={profile} />
+                <MyProfile profile={profile} setProfile={setProfile} />
               </ProfileImageSection>
               <Section>
                 <SectionTitle>
                   {t('about_me')}
                   {isOwnProfile && (
-                    <EditButton onClick={handleEditAboutMe}>
-                      {editModeAboutMe ? (
-                        <Save
-                          onClick={() =>
-                            handleSetAboutMe(
-                              (
-                                document.getElementById(
-                                  'aboutMe-input'
-                                ) as HTMLTextAreaElement
-                              )?.value || ''
-                            )
-                          }
-                        />
-                      ) : (
-                        <EditIcon />
-                      )}
+                    <EditButton onClick={handleSetAboutMe}>
+                      {isEditingAboutMe ? <Save /> : <Edit />}
                     </EditButton>
                   )}
                 </SectionTitle>
-                {editModeAboutMe ? (
+                {isEditingAboutMe ? (
                   <TextInput
-                    id={'aboutMe-input'}
-                    as={'textarea'}
-                    value={profile.aboutMe}
-                    onChange={(e) =>
-                      setProfile(
-                        (prev) => prev && { ...prev, aboutMe: e.target.value }
-                      )
-                    }
+                    id="aboutMe-input"
+                    as="textarea"
+                    value={aboutMeText}
+                    onChange={(e) => setAboutMeText(e.target.value)}
                   />
                 ) : (
-                  <p id={'about-me'}>{profile.aboutMe}</p>
+                  profile?.aboutMe
                 )}
               </Section>
               <Section>
@@ -346,7 +333,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   {t('skills')}
                   {isOwnProfile && (
                     <EditButton onClick={handleEditSkill}>
-                      {editModeSkill ? <Save /> : <EditIcon />}
+                      {isEditingSkill ? <Save /> : <EditIcon />}
                     </EditButton>
                   )}
                 </SectionTitle>
@@ -354,7 +341,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   {profile.skills.map((skill) => (
                     <SkillItem key={skill}>
                       {skill}
-                      {editModeSkill && isOwnProfile && (
+                      {isEditingSkill && isOwnProfile && (
                         <RemoveButton onClick={() => handleRemoveSkill(skill)}>
                           <RemoveIcon />
                         </RemoveButton>
@@ -362,7 +349,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     </SkillItem>
                   ))}
                 </SkillList>
-                {editModeSkill && isOwnProfile && (
+                {isEditingSkill && isOwnProfile && (
                   <InputGroup>
                     <TextInput
                       type="text"
@@ -394,7 +381,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   {t('interests')}
                   {isOwnProfile && (
                     <EditButton onClick={handleEditInterest}>
-                      {editModeInterest ? <Save /> : <EditIcon />}
+                      {isEditingInterest ? <Save /> : <EditIcon />}
                     </EditButton>
                   )}
                 </SectionTitle>
@@ -402,7 +389,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   {profile.interests.map((interest) => (
                     <InterestItem key={interest}>
                       {interest}
-                      {editModeInterest && isOwnProfile && (
+                      {isEditingInterest && isOwnProfile && (
                         <RemoveButton
                           onClick={() => handleRemoveInterest(interest)}
                         >
@@ -413,7 +400,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   ))}
                 </InterestList>
 
-                {editModeInterest && isOwnProfile && (
+                {isEditingInterest && isOwnProfile && (
                   <InputGroup>
                     <TextInput
                       type="text"

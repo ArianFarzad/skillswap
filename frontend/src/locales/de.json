@@ -14,7 +14,9 @@
     "invalid_token": "Token-Überprüfung fehlgeschlagen, bitte melden Sie sich erneut an.",
     "profile_not_found": "Profil nicht gefunden.",
     "name_change_failed": "Hoppla! Benutzername ändern fehlgeschlagen.",
-    "about_me_too_long": "Bio ist zu lang. Max. 50 Wörter sind erlaubt."
+    "about_me_too_long": "Bio ist zu lang. Max. 50 Wörter sind erlaubt.",
+    "no_file_uploaded": "Keine Datei hochgeladen",
+    "name_already_exists": "Benutzername existiert bereits, bitte wählen Sie einen anderen Benutzernamen"
   },
   "loading": "Laden...",
   "welcome": "Willkommen bei SkillSwap",
@@ -141,7 +143,6 @@
   "name_changed": "Benutzername erfolgreich geändert",
   "name_empty": "Benutzername darf nicht leer sein",
   "updated_failed": "Aktualisierung fehlgeschlagen",
-  "name_exists": "Benutzername existiert bereits, bitte wählen Sie einen anderen Benutzernamen",
   "profile_picture_updated": "Profilbild aktualisiert",
   "upload_profile_picture": "Profilbild hochladen",
   "delete_profile_picture": "Profilbild löschen",

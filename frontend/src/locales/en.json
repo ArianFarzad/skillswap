@@ -15,7 +15,9 @@
     "invalid_token": "Token verification failed, please log in again.",
     "profile_not_found": "Profile not found.",
     "name_change_failed": "Oops! Username change failed.",
-    "about_me_too_long": "Bio is too long. Max 50 words are allowed."
+    "about_me_too_long": "Bio is too long. Max 50 words are allowed.",
+    "no_file_uploaded": "No file uploaded",
+    "name_already_exists": "Username already exists, please choose another one"
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",
@@ -142,7 +144,6 @@
   "name_changed": "Username changed successfully",
   "name_empty": "Username cannot be empty",
   "update_failed": "Update failed",
-  "name_exists": "Username already exists, please choose another one",
   "profile_picture_updated": "Profile picture updated",
   "upload_profile_picture": "Upload Profile Picture",
   "delete_profile_picture": "Delete Profile Picture",
