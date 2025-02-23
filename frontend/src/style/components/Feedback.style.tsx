@@ -22,7 +22,7 @@ export const FeedbackContainer = styled.div`
 
 export const FeedbackHeader = styled.h2`
   color: var(--primary-color);
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
 `;

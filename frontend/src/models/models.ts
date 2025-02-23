@@ -1,5 +1,6 @@
 export interface IFeedback {
   userId: {
+    _id: string;
     name: string;
   };
   rating: number;
@@ -22,10 +23,21 @@ export interface IProfile {
   points: number;
   userId: string;
   profilePicture: string | undefined;
+  aboutMe: string | undefined;
 }
 
 export interface IUser {
   _id: string;
   name: string;
   email: string;
+  profilePicture: string;
+}
+
+export interface ISession {
+  _id: string;
+  tutor: IUser;
+  student: IUser;
+  date: string;
+  status: string;
+  messages: IMessage[];
 }

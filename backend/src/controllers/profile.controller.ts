@@ -2,15 +2,18 @@ import { Request, Response } from 'express';
 import Profile, { IProfile } from '../models/Profile';
 import mongoose, { FilterQuery } from 'mongoose';
 import logger from '../utils/logger';
-import Session from '../models/Session';
-import Feedback from '../models/Feedback';
 import {
   hasDuplicates,
   isValidSkillOrInterest,
 } from '../../../shared/validation';
 import cloudinary from '../config/cloudinary';
 import multer from 'multer';
-import { isNotBlank } from '../utils/stringUtils';
+import { countWords, isNotBlank } from '../utils/stringUtils';
+import {
+  getFeedbackStats,
+  getMessageStats,
+  getSessionStats,
+} from '../helpers/statisticsHelpers';
 
 declare module 'express' {
   export interface Request {
@@ -57,7 +60,9 @@ export const getMyProfile = async (req: Request, res: Response) => {
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { name, skills, interests, addSkill, removeSkill } = req.body;
+  const { name, aboutMe, skills, interests, addSkill, removeSkill } = req.body;
+  const maxWordsAboutMeSection = 50;
+
   try {
     logger.info(`Updating profile for user: ${req.user?.userId}`);
 
@@ -65,15 +70,22 @@ export const updateProfile = async (req: Request, res: Response) => {
       $push?: { skills?: string };
       $pull?: { skills?: string };
     } = {};
+
     if (name) {
       const existingProfile = await Profile.findOne({ name });
       if (existingProfile) {
-        return res
-          .status(400)
-          .json({ error: 'Profile with this name already exists' });
+        return res.status(400).json({ error: 'error.name_already_exists' });
       }
       updateFields.name = name;
     }
+
+    if (aboutMe !== undefined) {
+      if (countWords(aboutMe) > maxWordsAboutMeSection) {
+        return res.status(400).json({ error: 'error.about_me_too_long' });
+      }
+      updateFields.aboutMe = aboutMe;
+    }
+
     if (skills) updateFields.skills = skills;
     if (interests) updateFields.interests = interests;
     if (addSkill) updateFields.$push = { skills: addSkill };
@@ -84,10 +96,12 @@ export const updateProfile = async (req: Request, res: Response) => {
       updateFields,
       { new: true }
     );
+
     if (!profile) {
       logger.warn('Profile not found for user:', req.user?.userId);
       return res.status(404).json({ error: 'Profile not found' });
     }
+
     res.status(200).json(profile);
   } catch (error) {
     logger.error(`Error updating profile: ${error}`);
@@ -281,62 +295,18 @@ export const removeInterest = async (req: Request, res: Response) => {
 export const getUserStatistics = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
+    const userObjectId = new mongoose.Types.ObjectId(userId);
 
-    const sessionCount = await Session.countDocuments({
-      $or: [{ tutor: userId }, { student: userId }],
-    });
+    const { sessionCount, tutorSessionCount, studentSessionCount, sessionIds } =
+      await getSessionStats(userObjectId);
 
-    const tutorSessionCount = await Session.countDocuments({ tutor: userId });
-    const studentSessionCount = await Session.countDocuments({
-      student: userId,
-    });
-
-    const feedbackCount = await Feedback.countDocuments({ userId });
-
-    const feedbacks = await Feedback.find({ userId });
-    const totalRating = feedbacks.reduce(
-      (sum, feedback) => sum + feedback.rating,
-      0
+    const { feedbackCount, averageRating } = await getFeedbackStats(
+      sessionIds,
+      userObjectId
     );
-    const averageRating = feedbacks.length ? totalRating / feedbacks.length : 0;
 
-    const messageCount = await Session.aggregate([
-      {
-        $match: {
-          $or: [
-            { tutor: new mongoose.Types.ObjectId(userId) },
-            { student: new mongoose.Types.ObjectId(userId) },
-          ],
-        },
-      },
-      { $unwind: '$messages' },
-      { $count: 'totalMessages' },
-    ]);
-
-    const sentMessagesCount = await Session.aggregate([
-      { $match: { 'messages.sender': new mongoose.Types.ObjectId(userId) } },
-      { $unwind: '$messages' },
-      { $match: { 'messages.sender': new mongoose.Types.ObjectId(userId) } },
-      { $count: 'sentMessages' },
-    ]);
-
-    const receivedMessagesCount = await Session.aggregate([
-      {
-        $match: {
-          $or: [
-            { tutor: new mongoose.Types.ObjectId(userId) },
-            { student: new mongoose.Types.ObjectId(userId) },
-          ],
-        },
-      },
-      { $unwind: '$messages' },
-      {
-        $match: {
-          'messages.sender': { $ne: new mongoose.Types.ObjectId(userId) },
-        },
-      },
-      { $count: 'receivedMessages' },
-    ]);
+    const { totalMessages, sentMessages, receivedMessages } =
+      await getMessageStats(userObjectId);
 
     res.status(200).json({
       sessionCount,
@@ -344,9 +314,9 @@ export const getUserStatistics = async (req: Request, res: Response) => {
       studentSessionCount,
       averageRating,
       feedbackCount,
-      messageCount: messageCount[0]?.totalMessages || 0,
-      sentMessagesCount: sentMessagesCount[0]?.sentMessages || 0,
-      receivedMessagesCount: receivedMessagesCount[0]?.receivedMessages || 0,
+      messageCount: totalMessages,
+      sentMessagesCount: sentMessages,
+      receivedMessagesCount: receivedMessages,
     });
   } catch (error) {
     logger.error(`Error fetching user statistics: ${error}`);

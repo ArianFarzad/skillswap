@@ -188,3 +188,54 @@ export const checkSession = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'error.server_error' });
   }
 };
+
+export const getSessionsByUserId = async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+
+  try {
+    const sessions = await Session.find({
+      $or: [{ tutor: userId }, { student: userId }],
+    })
+      .populate('tutor', 'name')
+      .populate('student', 'name')
+      .lean()
+      .exec();
+
+
+    const userIds = sessions.flatMap(session => [
+      session.tutor._id.toString(),
+      session.student._id.toString(),
+    ]);
+
+
+    const profiles = await Profile.find({
+      userId: { $in: userIds },
+    }).lean().exec();
+
+
+    const profileMap = new Map(
+      profiles.map(profile => [
+        profile.userId.toString(),
+        profile.profilePicture || '',
+      ])
+    );
+
+
+    const sessionsWithProfilePictures = sessions.map(session => ({
+      ...session,
+      tutor: {
+        ...session.tutor,
+        profilePicture: profileMap.get(session.tutor._id.toString()) || '',
+      },
+      student: {
+        ...session.student,
+        profilePicture: profileMap.get(session.student._id.toString()) || '',
+      },
+    }));
+
+    res.status(200).json(sessionsWithProfilePictures);
+  } catch (error) {
+    logger.error(`Error fetching sessions for user ${userId}: ${error}`);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

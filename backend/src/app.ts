@@ -35,6 +35,6 @@ app.use('/api/profiles', profileRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/sessions', sessionRoutes);
-app.use('/api/feedback', feedbackRoutes);
+app.use('/api/feedbacks', feedbackRoutes);
 
 export default app;

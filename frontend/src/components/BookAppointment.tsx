@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { saveAs } from 'file-saver';
 import { format, isSameDay } from 'date-fns';
 import Calendar from 'react-calendar';
@@ -42,7 +42,11 @@ interface Event {
   end: string;
 }
 
-const BookAppointment: React.FC = () => {
+interface BookAppointmentProps {
+  sessionId: string | undefined;
+}
+
+const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
   const { t } = useTypedTranslation();
   const [formData, setFormData] = useState({
     title: '',
@@ -55,6 +59,22 @@ const BookAppointment: React.FC = () => {
   const [selectedDateEvents, setSelectedDateEvents] = useState<Event[]>([]);
   const [showEventsPopup, setShowEventsPopup] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+
+  const fetchEvents = useCallback(async () => {
+    try {
+      const response = await axios.get<Event[]>(`/api/calendar/${sessionId}`);
+      setUploadedEvents(response.data);
+    } catch (error) {
+      showToast('error', error, t);
+      log.error('Error fetching events:', error);
+    }
+  }, [sessionId, t]);
+
+  useEffect(() => {
+    if (sessionId) {
+      fetchEvents().catch((error) => showToast('error', error, t));
+    }
+  }, [fetchEvents, sessionId, t]);
 
   const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
@@ -122,7 +142,7 @@ END:VCALENDAR
 
       try {
         const response = await axios.post<Event[]>(
-          '/api/calendar/import',
+          `/api/calendar/import/${sessionId}`,
           formData
         );
         setUploadedEvents([...uploadedEvents, ...response.data]);

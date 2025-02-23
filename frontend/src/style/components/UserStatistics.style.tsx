@@ -1,16 +1,19 @@
 import styled from 'styled-components';
 
 export const StatisticsContainer = styled.div`
-  background: var(--background-color-secondary);
-  padding: 0 2rem;
-  height: 90vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary-color) var(--background-color-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--background-color-secondary) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-left: 4px solid var(--primary-color);
+  padding: 2rem;
+
+  border-radius: 12px;
 `;
 
 export const SectionTitle = styled.h3`
-  color: var(--primary-color);
+  color: var(--text-color);
   font-size: 1.8rem;
   margin-bottom: 2rem;
   text-align: center;
@@ -20,6 +23,10 @@ export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  scrollbar-color: var(--primary-color) var(--background-color-secondary);
+  height: 130vh;
 `;
 
 export const ChartContainer = styled.div`
