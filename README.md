@@ -11,14 +11,16 @@ konzentriert sich auf eine geldfreie Interaktion, die soziale Netzwerke und Lern
 ## Inhaltsverzeichnis
 
 1. [Installation](#installation)
-2. [Umgebungsvariablen](#umgebungsvariablen)
-3. [Verwendung](#verwendung)
+2. [Backend-Funktionalitäten](#backend-funktionalitäten)
+3. [Frontend-Funktionalitäten](#frontend-funktionalitäten)
 4. [API-Endpunkte](#api-endpunkte)
 5. [Datenbankstruktur](#datenbankstruktur)
-6. [E-Mail-Service](#e-mail-service)
-7. [Feature Requests](#feature-requests)
-8. [Mitwirkende](#mitwirkende)
-9. [Lizenz](#lizenz)
+6. [Authentifizierung & Sicherheit](#authentifizierung--sicherheit)
+7. [Gamification & Feedback](#gamification--feedback)
+8. [Abhängigkeiten](#abhängigkeiten)
+9. [Konfigurationsdateien](#konfigurationsdateien)
+10. [Mitwirkende](#mitwirkende)
+11. [Lizenz](#lizenz)
 
 ---
 
@@ -26,9 +28,9 @@ konzentriert sich auf eine geldfreie Interaktion, die soziale Netzwerke und Lern
 
 ### Voraussetzungen
 
-- Node.js (Version 16 oder höher)
-- npm
-- MongoDB
+- **Node.js** (Version 16 oder höher)
+- **npm**
+- **MongoDB**
 
 ### Backend
 
@@ -42,7 +44,7 @@ konzentriert sich auf eine geldfreie Interaktion, die soziale Netzwerke und Lern
    ```
 3. Starte den Entwicklungsserver:
    ```bash
-   npm start
+   npm run dev
    ```
 
 ### Frontend
@@ -62,151 +64,135 @@ konzentriert sich auf eine geldfreie Interaktion, die soziale Netzwerke und Lern
 
 ---
 
-## Umgebungsvariablen
+## Backend-Funktionalitäten
 
-Die Backend-Anwendung erfordert eine Konfigurationsdatei `.env`. Beispiel:
+Das Backend basiert auf **Node.js** mit **Express.js** und kommuniziert mit einer **MongoDB-Datenbank**.
 
-```env
-DATABASE_URL=postgres://username:password@localhost:5432/fwe_skillswap
-JWT_SECRET=dein_jwt_geheimnis
-EMAIL_SERVICE=smtp.gmail.com
-EMAIL_USER=deine_email@gmail.com
-EMAIL_PASS=dein_email_passwort
-```
+### Wichtige Funktionen:
 
-Weitere Details befinden sich in der Datei `.env.test` für Tests.
+- **Authentifizierung** (JWT-basiert)
+- **Profilverwaltung** (Erstellung, Aktualisierung, Löschung)
+- **Sitzungen & Buchungen** (Terminplanung)
+- **Gamification** (Punktevergabe, Leaderboard)
+- **Feedback-System** (Bewertungen, Kommentare)
+- **Socket.IO** für Echtzeit-Kommunikation
 
 ---
 
-## Verwendung
+## Frontend-Funktionalitäten
 
-### Umgesetzte Features
+Das Frontend ist mit **React (Vite) und TypeScript** entwickelt.
 
-1. **Benutzerregistrierung und Authentifizierung**: Nutzer können sich registrieren und sicher anmelden (JWT-basiert).
-2. **Profilverwaltung**: Nutzer können Fähigkeiten und Interessen zu ihrem Profil hinzufügen und bearbeiten.
-3. **Skill-Matching**: Suche und Filterung nach Fähigkeiten, um passende Lernpartner zu finden.
-4. **Sitzungsbuchung**: Integration mit Google Calendar, um Sitzungen zu planen und Erinnerungen zu erhalten.
-5. **Feedback-System**: Bewertungen und Kommentare nach abgeschlossenen Sitzungen.
+### Kernkomponenten:
 
-### Nice-to-Have Features
-
-1. **Gamification**: Nutzer erhalten Punkte für ihre Hilfeleistungen.
-2. **Mehrsprachigkeit**: Implementierung mit `react-intl`.
-3. **Gruppen und Foren**: Diskussionsbereiche für Nutzer.
-4. **Nutzerstatistiken**: Einblicke in die Aktivitäten und den Fortschritt der Nutzer.
+- **Benutzerregistrierung & Login**
+- **Dashboard mit Profilverwaltung**
+- **Terminbuchung & Kalender**
+- **Live-Chat & Kommunikation**
+- **Gamification**
+- **Feedback-System**
 
 ---
 
 ## API-Endpunkte
 
-### Authentifizierung
+Das Backend stellt mehrere API-Endpunkte zur Verfügung, die für Authentifizierung, Profilverwaltung, Gamification,
+Kalender, Sitzungen, Feedback und Nachrichten verwendet werden. Eine vollständige Liste ist in der API-Dokumentation zu
+finden.
 
-- POST `/api/auth/register` - Registriert einen neuen Nutzer.
-- POST `/api/auth/login` - Authentifiziert einen Nutzer.
+**Wichtige Endpunkte:**
 
-### Profile
+| Methode | Endpoint                 | Beschreibung             |
+|---------|--------------------------|--------------------------|
+| POST    | /api/auth/register       | Benutzerregistrierung    |
+| POST    | /api/auth/login          | Benutzer-Login           |
+| GET     | /api/profiles/:id        | Einzelnes Profil abrufen |
+| PUT     | /api/profiles/:id        | Profil aktualisieren     |
+| DELETE  | /api/profiles/:id        | Profil löschen           |
+| POST    | /api/sessions            | Sitzung erstellen        |
+| GET     | /api/sessions/:id        | Sitzung abrufen          |
+| PUT     | /api/sessions/:id        | Sitzung aktualisieren    |
+| DELETE  | /api/sessions/:id        | Sitzung löschen          |
+| POST    | /api/feedbacks           | Feedback erstellen       |
+| GET     | /api/gamification/points | Punktestand abrufen      |
 
-- GET `/api/profile` - Holt das Profil des aktuellen Nutzers.
-- PUT `/api/profile` - Aktualisiert Nutzerdaten.
-
-### Feedback
-
-- GET `/api/feedback` - Holt alle Feedbacks.
-- POST `/api/feedback` - Erstellt ein neues Feedback.
-
-### Gamification
-
-- PUT `/api/gamification/points` - Fügt dem Nutzer Punkte hinzu. Authentifizierung über JWT erforderlich.
-- GET `/api/gamification/points` - Ruft die Punkte eines Nutzers ab. Authentifizierung über JWT erforderlich.
-
-### Sitzungen
-
-- POST `/api/sessions` - Erstellt eine neue Sitzung. Authentifizierung über JWT erforderlich.
-- GET `/api/sessions` - Ruft alle Sitzungen des Nutzers ab. Authentifizierung über JWT erforderlich.
-- PATCH `/api/sessions/:id` - Aktualisiert die Sitzung mit der angegebenen ID. Authentifizierung über JWT erforderlich.
-- DELETE `/api/sessions/:id` - Löscht die Sitzung mit der angegebenen ID. Authentifizierung über JWT erforderlich.
+Weitere Endpunkte sind direkt im Code einsehbar unter [app](backend/src/app.ts) und [routes](backend/src/routes).
 
 ---
 
 ## Datenbankstruktur
 
-Die wichtigsten Tabellen:
+Die Plattform nutzt **MongoDB** für die Speicherung von Daten. Hier sind die wichtigsten Collections:
 
-### User
-
-| Spalte   | Typ    | Beschreibung       |
-|----------|--------|--------------------|
-| id       | UUID   | Primärschlüssel    |
-| email    | String | E-Mail des Nutzers |
-| password | String | Gehashtes Passwort |
-
-### Feedback
-
-| Spalte  | Typ  | Beschreibung    |
-|---------|------|-----------------|
-| id      | UUID | Primärschlüssel |
-| content | Text | Feedback-Inhalt |
-| userId  | UUID | ID des Nutzers  |
-
-### Profiles
-
-| Spalte    | Typ   | Beschreibung                  |
-|-----------|-------|-------------------------------|
-| id        | UUID  | Primärschlüssel               |
-| userId    | UUID  | Referenz auf die User-Tabelle |
-| skills    | Array | Liste der Fähigkeiten         |
-| interests | Array | Liste der Interessen          |
-
-### Sessions
-
-| Spalte          | Typ      | Beschreibung                                     |
-|-----------------|----------|--------------------------------------------------|
-| id              | UUID     | Primärschlüssel                                  |
-| userId          | UUID     | ID des Buchenden                                 |
-| skillProviderId | UUID     | ID des Anbieters                                 |
-| date            | DateTime | Datum und Uhrzeit der Sitzung                    |
-| status          | String   | Status der Sitzung (z.B. geplant, abgeschlossen) |
+- **users**: Enthält Benutzerdaten (E-Mail, Passwort-Hash, Rollen, Registrierungshistorie).
+- **profiles**: Speichert Profildaten wie Fähigkeiten, Interessen und persönliche Informationen.
+- **sessions**: Enthält alle geplanten und vergangenen Sitzungen.
+- **feedbacks**: Speichert Bewertungen und Kommentare zu Sitzungen.
+- **gamification**: Enthält Punktestände und Leaderboard-Daten.
 
 ---
 
-## E-Mail-Service
+## Authentifizierung & Sicherheit
 
-Das Projekt verwendet Nodemailer zur Verwaltung von E-Mails. Beispiel-Konfiguration in `src/utils/nodemailer.ts`:
+- **JWT-Token** zur Authentifizierung
+- **Passwort-Hashing mit bcrypt**
+- **CORS-Schutzmechanismen**
+- **Eingabevalidierung**
 
-```javascript
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+---
+
+## Gamification & Feedback
+
+Die Plattform nutzt Gamification, um Benutzer zur aktiven Teilnahme zu motivieren:
+
+- **Punkte sammeln** für das Geben von Wissen
+- **Feedback-System** für Bewertungen & Kommentare
+
+---
+
+## Abhängigkeiten
+
+Eine vollständige Liste aller Abhängigkeiten befindet sich in den Dateien [backend/package.json](backend/package.json)
+und [frontend/package.json](frontend/package.json).
+
+**Wichtige Abhängigkeiten:**
+
+- **Backend:** express, mongoose, jsonwebtoken, bcryptjs, socket.io
+- **Frontend:** react, react-router-dom, axios, react-calendar, socket.io-client
+
+---
+
+## Konfigurationsdateien
+
+Das Projekt verwendet `.env`-Dateien für Umgebungsvariablen.
+
+### `.env.test` Datei :
+
+```
+MONGO_URI='mongodb://localhost:27017/skill-swap-test'
+JWT_SECRET='your_jwt_secret'
+JWT_REFRESH_SECRET='your_refresh_token_secret'
+CLOUDINARY_CLOUD_NAME=<your_cloud_name>
+CLOUDINARY_API_KEY=<your_api_key>
+CLOUDINARY_API_SECRET=<your_api_secret>
 ```
 
----
-
-## Feature Requests
-
-- Erweiterte Statistiken zur Feedback-Nutzung
-- Mobile App-Unterstützung
-- Zusätzliche Sprachen
+Bitte die Credentials mit den echten Werten ersetzen und die `.env.test` umbenennen zum `.env`.
 
 ---
 
 ## Mitwirkende
 
-- **Dias Baikenov**: Backend-Entwicklung
-- **Bogdan Polskiy**: Backend-Entwicklung
-- **Yusuf Birdane**: Frontend-Entwicklung
-- **Arian Farzad**: Frontend-Entwicklung
+| Name           | Rolle                |
+|----------------|----------------------|
+| Dias Baikenov  | Backend-Entwicklung  |
+| Bogdan Polskiy | Backend-Entwicklung  |
+| Yusuf Birdane  | Frontend-Entwicklung |
+| Arian Farzad   | Frontend-Entwicklung |
 
 ---
 
 ## Lizenz
 
-Dieses Projekt ist unter der [MIT-Lizenz](LICENSE) lizenziert.
-
----
-
-
+Dieses Projekt steht unter der **MIT-Lizenz**. Mehr Informationen findest du in der `LICENSE`-Datei.
 
