@@ -8,12 +8,14 @@ export interface IFeedback {
 }
 
 export interface IMessage {
+  _id: string;
   sender: {
-    _id: string; // Use string to represent ObjectId in the frontend
-    name: string; // Include `name` since it's used in the UI
+    _id: string;
+    name: string;
   };
   content: string;
   timestamp: string; // Use string because dates are usually serialized as strings in JSON
+  attachments?: { url: string; type: 'image' | 'pdf' }[];
 }
 
 export interface IProfile {

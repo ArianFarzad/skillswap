@@ -76,30 +76,3 @@ export const Divider = styled.div`
   );
   margin: 0.5rem 0;
 `;
-
-// Responsive Design
-const responsiveStyles = `
-  @media (max-width: 768px) {
-    ${TeamList} {
-      gap: 1rem;
-    }
-    
-    ${TeamMember} {
-      &:not(:last-child)::after {
-        display: none;
-      }
-    }
-    
-    ${FooterLink} {
-      font-size: 0.9rem;
-    }
-    
-    ${CopyrightText} {
-      flex-direction: column;
-    }
-  }
-`;
-
-export const StyleInjector = styled.div`
-  ${responsiveStyles}
-`;

@@ -7,6 +7,7 @@ import calendarRoutes from './routes/calendar.route';
 import sessionRoutes from './routes/session.route';
 import feedbackRoutes from './routes/feedback.route';
 import cookieParser from 'cookie-parser';
+import messageRoutes from './routes/message.routes';
 
 const app = express();
 
@@ -36,5 +37,6 @@ app.use('/api/gamification', gamificationRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/feedbacks', feedbackRoutes);
+app.use('/api/messages', messageRoutes);
 
 export default app;

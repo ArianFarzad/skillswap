@@ -16,7 +16,8 @@
     "name_change_failed": "Hoppla! Benutzername ändern fehlgeschlagen.",
     "about_me_too_long": "Bio ist zu lang. Max. 50 Wörter sind erlaubt.",
     "no_file_uploaded": "Keine Datei hochgeladen",
-    "name_already_exists": "Benutzername existiert bereits, bitte wählen Sie einen anderen Benutzernamen"
+    "name_already_exists": "Benutzername existiert bereits, bitte wählen Sie einen anderen Benutzernamen",
+    "language_change_failed": "Fehler. Sprachänderung fehlgeschlagen..."
   },
   "loading": "Laden...",
   "welcome": "Willkommen bei SkillSwap",

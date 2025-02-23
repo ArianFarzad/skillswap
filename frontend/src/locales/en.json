@@ -17,7 +17,8 @@
     "name_change_failed": "Oops! Username change failed.",
     "about_me_too_long": "Bio is too long. Max 50 words are allowed.",
     "no_file_uploaded": "No file uploaded",
-    "name_already_exists": "Username already exists, please choose another one"
+    "name_already_exists": "Username already exists, please choose another one",
+    "language_change_failed": "Error. Language change failed..."
   },
   "loading": "Loading...",
   "welcome": "Welcome to SkillSwap",

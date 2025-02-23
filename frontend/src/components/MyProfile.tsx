@@ -4,7 +4,6 @@ import { IProfile } from '../models/models.ts';
 import { Clear, Edit, Save } from '@mui/icons-material';
 import axios from '../utils/axiosInstance.ts';
 import { showToast } from '../utils/toastUtils.ts';
-import log from '../utils/loggerInstance.ts';
 import {
   ButtonGroup,
   CancelButton,
@@ -48,7 +47,6 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile, setProfile }) => {
             setProfile(response.data);
             showToast('success', 'name_changed', t);
           } else {
-            log.error(`Unexpected status code: ${response.status}`);
             showToast('error', 'error.name_change_failed', t);
           }
         } catch (error) {

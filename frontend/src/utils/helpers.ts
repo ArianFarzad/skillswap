@@ -1,5 +1,15 @@
 import React from 'react';
 
+export const handleEnterKeyPress = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  action: () => void
+) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    action();
+  }
+};
+
 export const calculatePoints = (messagesCount: number) => {
   return Math.floor(messagesCount / 10);
 };

@@ -1,20 +1,7 @@
 import { Request, Response } from 'express';
 import Session from '../models/Session';
-import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
-import { env } from '../config/config';
 import logger from '../utils/logger';
-
-interface PopulatedSession {
-  tutor: {
-    email: string;
-  };
-  student: {
-    email: string;
-  };
-  date: Date;
-  status: string;
-}
 
 export const createSession = async (req: Request, res: Response) => {
   const { tutor, student, date } = req.body;
@@ -75,41 +62,6 @@ export const deleteSession = async (req: Request, res: Response) => {
   }
 };
 
-export const sendReminderEmails = async () => {
-  try {
-    const sessions = await Session.find({
-      date: {
-        $gte: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        $lt: new Date(Date.now() + 25 * 60 * 60 * 1000),
-      },
-      status: 'confirmed',
-    })
-      .populate('tutor', 'email')
-      .populate('student', 'email');
-
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: env.EMAIL_USER,
-        pass: env.EMAIL_PASS,
-      },
-    });
-
-    for (const session of sessions as unknown as PopulatedSession[]) {
-      const mailOptions = {
-        from: env.EMAIL_USER,
-        to: [session.tutor.email, session.student.email],
-        subject: 'Session Reminder',
-        text: `Reminder: You have a session scheduled on ${session.date}`,
-      };
-
-      await transporter.sendMail(mailOptions);
-    }
-  } catch (error) {
-    logger.error('Error sending reminder emails:', error);
-  }
-};
-
 export const completeSession = async (req: Request, res: Response) => {
   const { id } = req.params; // ID der Sitzung
   try {
@@ -118,11 +70,9 @@ export const completeSession = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Session not found' });
     }
 
-    // Aktualisieren des Sitzungsstatus
     session.status = 'completed';
     await session.save();
 
-    // Punkte zum Profil hinzufügen
     const profile = await Profile.findOne({ userId: session.student });
     if (profile) {
       profile.points += 10; // Beispiel: 10 Punkte pro abgeschlossene Sitzung
@@ -201,27 +151,25 @@ export const getSessionsByUserId = async (req: Request, res: Response) => {
       .lean()
       .exec();
 
-
-    const userIds = sessions.flatMap(session => [
+    const userIds = sessions.flatMap((session) => [
       session.tutor._id.toString(),
       session.student._id.toString(),
     ]);
 
-
     const profiles = await Profile.find({
       userId: { $in: userIds },
-    }).lean().exec();
-
+    })
+      .lean()
+      .exec();
 
     const profileMap = new Map(
-      profiles.map(profile => [
+      profiles.map((profile) => [
         profile.userId.toString(),
         profile.profilePicture || '',
       ])
     );
 
-
-    const sessionsWithProfilePictures = sessions.map(session => ({
+    const sessionsWithProfilePictures = sessions.map((session) => ({
       ...session,
       tutor: {
         ...session.tutor,

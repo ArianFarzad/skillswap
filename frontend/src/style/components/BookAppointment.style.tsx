@@ -66,10 +66,10 @@ export const CalendarWrapper = styled.div`
   }
 `;
 
-export const EventDot = styled.span<{ count: number }>`
+export const EventDot = styled.span<{ $count: number }>`
   display: inline-block;
-  width: ${(props) => Math.max(6, 10 - props.count)}px;
-  height: ${(props) => Math.max(6, 10 - props.count)}px;
+  width: ${(props) => Math.max(6, 10 - props.$count)}px;
+  height: ${(props) => Math.max(6, 10 - props.$count)}px;
   background: var(--primary-color);
   border-radius: 50%;
   margin: 2px;

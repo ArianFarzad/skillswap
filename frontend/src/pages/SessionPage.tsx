@@ -21,7 +21,6 @@ import {
 } from '../style/pages/SessionPage.style';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import axios from '../utils/axiosInstance.ts';
-import log from '../utils/loggerInstance.ts';
 import { IProfile } from '../models/models.ts';
 
 const SessionPage: React.FC = () => {
@@ -47,9 +46,7 @@ const SessionPage: React.FC = () => {
       }
     };
 
-    fetchOwnProfile().catch((error) =>
-      log.error('Error fetching own profile:', error)
-    );
+    fetchOwnProfile().catch((error) => showToast('error', error, t));
   }, [t]);
 
   const handleFeedbackVisibility = () => {
@@ -77,10 +74,8 @@ const SessionPage: React.FC = () => {
       showToast('success', 'congrats_and_points', t, {
         params: { points: points.toString() },
       });
-
-      log.info('Points saved:', points);
     } catch (error) {
-      log.error('Error saving points:', error);
+      showToast('error', error, t);
     }
   };
 
