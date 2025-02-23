@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosInstance';
-import log from '../utils/loggerInstance.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import {
@@ -36,7 +35,6 @@ const Login: React.FC = () => {
       });
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('myUserId', response.data.userId);
-      log.info('Login successful, saved userId:', response.data.userId);
 
       const redirectPath =
         new URLSearchParams(location.search).get('redirect') || '/profile';

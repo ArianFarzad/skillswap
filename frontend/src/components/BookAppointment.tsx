@@ -5,7 +5,6 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Value } from 'react-calendar/dist/cjs/shared/types';
 import axios from '../utils/axiosInstance';
-import log from '../utils/loggerInstance.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
 import {
@@ -66,7 +65,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
       setUploadedEvents(response.data);
     } catch (error) {
       showToast('error', error, t);
-      log.error('Error fetching events:', error);
     }
   }, [sessionId, t]);
 
@@ -113,7 +111,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
     e.preventDefault();
 
     if (new Date(formData.endDateTime) <= new Date(formData.startDateTime)) {
-      log.debug('Validation triggered: End date is before start date');
       showToast('error', 'end_date_before_start_date', t);
       return;
     }
@@ -149,7 +146,6 @@ END:VCALENDAR
         showToast('success', 'upload_ics', t);
       } catch (error) {
         showToast('error', error, t);
-        log.error('Error uploading ICS file:', error);
       }
     }
   };

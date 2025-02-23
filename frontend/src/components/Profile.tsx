@@ -45,7 +45,7 @@ import {
   hasDuplicates,
   isValidSkillOrInterest,
 } from '../../../shared/validation.ts';
-import { isNotBlank } from '../utils/helpers.ts';
+import { handleEnterKeyPress, isNotBlank } from '../utils/helpers.ts';
 import { Edit } from '@mui/icons-material';
 
 interface ProfileProps {
@@ -104,7 +104,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
 
     if (profile) {
       fetchStatistics().catch((error) => {
-        log.error(`Error fetching statistics: ${error}`);
+        showToast('error', error, t);
       });
     }
   }, [profile, t]);
@@ -252,7 +252,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       showToast('success', 'profile_picture_updated', t);
     } catch (error) {
       showToast('error', error, t);
-      log.error('Error uploading profile picture:', error);
     }
   };
 
@@ -264,7 +263,6 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
       setShowMenu(false);
     } catch (error) {
       showToast('error', error, t);
-      log.error('Error deleting profile picture:', error);
     }
   };
 
@@ -370,12 +368,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                       value={newSkill}
                       autoFocus
                       onChange={(e) => setNewSkill(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter')
-                          handleAddSkill().catch((error) =>
-                            log.error(`Error adding skill: ${error}`)
-                          );
-                      }}
+                      onKeyDown={(e) => handleEnterKeyPress(e, handleAddSkill)}
                     />
                     {newSkill && (
                       <ClearButton onClick={() => setNewSkill('')}>
@@ -421,12 +414,9 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                       value={newInterest}
                       onChange={(e) => setNewInterest(e.target.value)}
                       autoFocus
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter')
-                          handleAddInterest().catch((error) => {
-                            log.error(`Error adding interest: ${error}`);
-                          });
-                      }}
+                      onKeyDown={(e) =>
+                        handleEnterKeyPress(e, handleAddInterest)
+                      }
                     />
                     {newInterest && (
                       <ClearButton onClick={() => setNewInterest('')}>
