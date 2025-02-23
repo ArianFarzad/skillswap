@@ -154,6 +154,29 @@ export const MessageInputField = styled.input`
   }
 `;
 
+export const AttachFileButton = styled.label`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-1px);
+  }
+
+  svg {
+    transform: scale(1.25);
+    font-size: 1.5rem;
+  }
+`;
+
 export const SendButton = styled.button`
   display: flex;
   align-items: center;
@@ -172,7 +195,7 @@ export const SendButton = styled.button`
   }
 
   svg {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 `;
 

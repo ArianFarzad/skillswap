@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { startTransition, useEffect, useRef, useState } from 'react';
 import axios from '../utils/axiosInstance';
-import log from '../utils/loggerInstance.ts';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -16,6 +15,7 @@ import socket, {
   sendMessage,
 } from '../utils/socket';
 import {
+  AttachFileButton,
   ChatContainer,
   ChatHeader,
   FilePreviewContainer,
@@ -37,6 +37,7 @@ import {
 } from '../style/components/Chat.style';
 import { formatTimestamp } from '../utils/chatUtils.ts';
 import { handleEnterKeyPress } from '../utils/helpers.ts';
+import { showToast } from '../utils/toastUtils.ts';
 
 interface ChatParams {
   sessionId: string | undefined;
@@ -52,13 +53,14 @@ const Chat: React.FC<ChatParams> = ({
   const { t } = useTypedTranslation();
 
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [newMessage, setNewMessage] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [otherPerson, setOtherPerson] = useState<IUser | null>(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [exchangedMessagesCount, setExchangedMessagesCount] = useState(0);
+  const [fileInputKey, setFileInputKey] = useState(Date.now());
+
+  const messageInputRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -69,23 +71,29 @@ const Chat: React.FC<ChatParams> = ({
   useEffect(() => {
     if (!sessionId) return;
 
-    axios
-      .get(`/api/sessions/${sessionId}`)
-      .then((res) => {
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(`/api/sessions/${sessionId}`);
         setMessages(res.data.messages);
         const otherPerson =
           res.data.tutor._id === senderId ? res.data.student : res.data.tutor;
         setOtherPerson(otherPerson);
-      })
-      .catch((error) => log.error('Error fetching messages:', error));
+      } catch (error) {
+        showToast('error', error, t);
+      }
+    };
 
+    void fetchMessages();
     connectSocket(sessionId);
 
     // Handle new messages from socket
     const handleNewMessage = (message: IMessage) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-      setExchangedMessagesCount((prevCount) => prevCount + 1);
+      startTransition(() => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+        setExchangedMessagesCount((prevCount) => prevCount + 1);
+      });
     };
+
     onNewMessage(handleNewMessage);
 
     // Cleanup socket on unmount
@@ -93,52 +101,88 @@ const Chat: React.FC<ChatParams> = ({
       socket.off('newMessage', handleNewMessage);
       disconnectSocket();
     };
-  }, [sessionId, senderId]);
+  }, [sessionId, senderId, t]);
 
   useEffect(() => {
     onMessagesCountChange(exchangedMessagesCount);
   }, [exchangedMessagesCount, onMessagesCountChange]);
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() && selectedFiles.length === 0) return;
+    const messageValue = messageInputRef.current?.value.trim();
+    if (!messageValue && selectedFiles.length === 0) return;
 
     const formData = new FormData();
     selectedFiles.forEach((file) => formData.append('attachments', file));
 
     try {
-      const { data } = await axios.post('/api/messages/uploads', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      let uploadedFiles = [];
+      if (selectedFiles.length > 0) {
+        const { data } = await axios.post('/api/messages/uploads', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        uploadedFiles = data.attachments;
+      }
 
-      sendMessage(sessionId!, senderId, newMessage, data.attachments);
-      setNewMessage('');
+      sendMessage(sessionId!, senderId, messageValue || '', uploadedFiles);
+
       setSelectedFiles([]);
-      if (fileInputRef.current) fileInputRef.current.value = '';
+      if (messageInputRef.current) messageInputRef.current.value = '';
     } catch (error) {
-      log.error('Error sending message:', error);
+      showToast('error', error, t);
     }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setSelectedFiles([...selectedFiles, ...Array.from(event.target.files)]);
-    }
+    const files = event.target.files;
+    if (!files) return;
 
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    startTransition(() => {
+      setSelectedFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
+    });
+
+    setFileInputKey(Date.now());
   };
 
   function handleRemoveFile(index: number) {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-
-    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   // Handle scroll events to show/hide scroll-to-bottom button
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
     setShowScrollToBottom(scrollHeight - clientHeight - scrollTop > 100);
+  };
+
+  const MessageAttachments: React.FC<{
+    attachments?: { type: string; url: string }[];
+  }> = ({ attachments }) => {
+    return (
+      <>
+        {attachments?.map((file, i) => (
+          <div key={i}>
+            {file.type === 'image' ? (
+              <StyledImage
+                src={file.url}
+                alt={'attachment'}
+                onClick={() => window.open(file.url, '_blank')}
+                onLoad={() => messagesEndRef.current?.scrollIntoView()}
+              />
+            ) : (
+              <StyledFileContainer>
+                <InsertDriveFileIcon fontSize={'large'} />
+                <StyledFileLink href={file.url} target={'_blank'}>
+                  <Tooltip title={file.url} arrow>
+                    <StyledFileName>{file.url.split('/').pop()}</StyledFileName>
+                  </Tooltip>
+                </StyledFileLink>
+              </StyledFileContainer>
+            )}
+          </div>
+        ))}
+      </>
+    );
   };
 
   return (
@@ -155,28 +199,7 @@ const Chat: React.FC<ChatParams> = ({
             {msg.sender._id === senderId ? (
               <MyMessageBubble>
                 {msg.content && <p>{msg.content}</p>}
-                {msg.attachments?.map((file, i) => (
-                  <div key={i}>
-                    {file.type === 'image' ? (
-                      <StyledImage
-                        src={file.url}
-                        alt={'attachment'}
-                        onClick={() => window.open(file.url, '_blank')}
-                      />
-                    ) : (
-                      <StyledFileContainer>
-                        <InsertDriveFileIcon fontSize={'large'} />
-                        <StyledFileLink href={file.url} target={'_blank'}>
-                          <Tooltip title={file.url} arrow>
-                            <StyledFileName>
-                              {file.url.split('/').pop()}
-                            </StyledFileName>
-                          </Tooltip>
-                        </StyledFileLink>
-                      </StyledFileContainer>
-                    )}
-                  </div>
-                ))}
+                <MessageAttachments attachments={msg.attachments} />
                 <StyledTimestamp>
                   {formatTimestamp(msg.timestamp)}
                 </StyledTimestamp>
@@ -184,28 +207,7 @@ const Chat: React.FC<ChatParams> = ({
             ) : (
               <TheirMessageBubble key={index}>
                 {msg.content && <p>{msg.content}</p>}
-                {msg.attachments?.map((file, i) => (
-                  <div key={i}>
-                    {file.type === 'image' ? (
-                      <StyledImage
-                        src={file.url}
-                        alt={'attachment'}
-                        onClick={() => window.open(file.url, '_blank')}
-                      />
-                    ) : (
-                      <StyledFileContainer>
-                        <InsertDriveFileIcon fontSize={'large'} />
-                        <StyledFileLink href={file.url} target={'_blank'}>
-                          <Tooltip title={file.url} arrow>
-                            <StyledFileName>
-                              {file.url.split('/').pop()}
-                            </StyledFileName>
-                          </Tooltip>
-                        </StyledFileLink>
-                      </StyledFileContainer>
-                    )}
-                  </div>
-                ))}
+                <MessageAttachments attachments={msg.attachments} />
                 <StyledTimestamp>
                   {formatTimestamp(msg.timestamp)}
                 </StyledTimestamp>
@@ -255,28 +257,28 @@ const Chat: React.FC<ChatParams> = ({
 
       {/* Message Input Area */}
       <MessageInputContainer>
-        <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
-          <AttachFileIcon
-            fontSize={'large'}
-            style={{ color: 'var(--primary-color)' }}
-          />
-        </label>
+        <MessageInputField
+          id={'message-input'}
+          type="text"
+          placeholder={t('type_message')}
+          maxLength={2000}
+          onKeyDown={(e) => handleEnterKeyPress(e, handleSendMessage)}
+          ref={messageInputRef}
+          autoComplete={'off'}
+          autoCorrect={'off'}
+          spellCheck={'false'}
+        />
+        <AttachFileButton htmlFor={'file-upload'}>
+          <AttachFileIcon />
+        </AttachFileButton>
         <input
+          key={fileInputKey}
           id={'file-upload'}
           type={'file'}
           multiple
           accept={'image/*,.pdf'}
-          ref={fileInputRef}
           onChange={handleFileChange}
           style={{ display: 'none' }}
-        />
-        <MessageInputField
-          type="text"
-          placeholder={t('type_message')}
-          maxLength={2000}
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => handleEnterKeyPress(e, handleSendMessage)}
         />
         <SendButton onClick={handleSendMessage}>
           <SendIcon />
