@@ -9,7 +9,7 @@ import {
   waitFor,
 } from '@testing-library/react';
 import BookAppointment from '../components/BookAppointment';
-import { saveAs } from 'file-saver';
+import axios from '../utils/axiosInstance';
 import { I18nextProvider } from 'react-i18next';
 import { showToast } from '../utils/toastUtils';
 import { beforeEach, describe, expect, test } from 'vitest';
@@ -47,6 +47,7 @@ describe('BookAppointment Component', () => {
     expect(bookAppointmentButton).toBeInTheDocument();
   });
 
+
   test('submit book appointment form successfully', async () => {
     const titleInput = screen.getByLabelText('event_title');
     const descriptionInput = screen.getByLabelText('description');
@@ -54,7 +55,7 @@ describe('BookAppointment Component', () => {
     const endDateInput = screen.getByLabelText('end_time');
     const bookAppointmentButton = screen.getByTestId('book-appointment-button');
 
-    act(() => {
+    await act(async () => {
       fireEvent.change(titleInput, { target: { value: 'Meeting' } });
       fireEvent.change(descriptionInput, { target: { value: 'Team sync-up' } });
       fireEvent.change(startDateInput, {
@@ -66,8 +67,15 @@ describe('BookAppointment Component', () => {
     });
 
     await waitFor(() => {
-      expect(saveAs).toHaveBeenCalled();
-      expect(saveAs).toHaveBeenCalledWith(expect.any(Blob), 'appointment.ics');
+      expect(axios.post).toHaveBeenCalledWith(
+        '/api/calendar/create/dummy-session-id',
+        {
+          summary: 'Meeting',
+          description: 'Team sync-up',
+          start: '2025-01-26T10:00',
+          end: '2025-01-26T11:00',
+        }
+      );
     });
   });
 
@@ -92,7 +100,7 @@ describe('BookAppointment Component', () => {
     });
 
     await waitFor(() => {
-      expect(showToast).toHaveBeenCalledTimes(5);
+      expect(showToast).toHaveBeenCalledTimes(6);
       expect(showToast).toHaveBeenCalledWith(
         'error',
         'end_date_before_start_date',

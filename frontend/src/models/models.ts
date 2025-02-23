@@ -43,3 +43,11 @@ export interface ISession {
   status: string;
   messages: IMessage[];
 }
+
+export interface IEvent {
+  summary: string;
+  description: string;
+  start: string;
+  end: string;
+  _id: string;
+}

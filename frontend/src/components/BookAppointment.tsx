@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { saveAs } from 'file-saver';
 import { format, isSameDay } from 'date-fns';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -7,9 +6,11 @@ import { Value } from 'react-calendar/dist/cjs/shared/types';
 import axios from '../utils/axiosInstance';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
+import { IEvent } from '../models/models.ts';
 import {
   FiCalendar,
   FiClock,
+  FiDownload,
   FiUploadCloud,
   FiWatch,
   FiX,
@@ -19,8 +20,13 @@ import {
   CalendarWrapper,
   CloseButton,
   Container,
+  DownloadButton,
+  EventActions,
+  EventCard,
+  EventDescription,
+  EventDetails,
   EventDot,
-  EventItem,
+  EventHeader,
   EventsPopup,
   EventTime,
   EventTitle,
@@ -34,13 +40,6 @@ import {
   UploadZone,
 } from '../style/components/BookAppointment.style';
 
-interface Event {
-  summary: string;
-  description: string;
-  start: string;
-  end: string;
-}
-
 interface BookAppointmentProps {
   sessionId: string | undefined;
 }
@@ -53,15 +52,15 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
     startDateTime: '',
     endDateTime: '',
   });
-  const [uploadedEvents, setUploadedEvents] = useState<Event[]>([]);
+  const [uploadedEvents, setUploadedEvents] = useState<IEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<Value>(new Date());
-  const [selectedDateEvents, setSelectedDateEvents] = useState<Event[]>([]);
+  const [selectedDateEvents, setSelectedDateEvents] = useState<IEvent[]>([]);
   const [showEventsPopup, setShowEventsPopup] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const fetchEvents = useCallback(async () => {
     try {
-      const response = await axios.get<Event[]>(`/api/calendar/${sessionId}`);
+      const response = await axios.get<IEvent[]>(`/api/calendar/${sessionId}`);
       setUploadedEvents(response.data);
     } catch (error) {
       showToast('error', error, t);
@@ -107,29 +106,27 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ sessionId }) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (new Date(formData.endDateTime) <= new Date(formData.startDateTime)) {
       showToast('error', 'end_date_before_start_date', t);
       return;
     }
-    const icsContent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:${formData.title}
-DESCRIPTION:${formData.description}
-DTSTART:${format(new Date(formData.startDateTime), "yyyyMMdd'T'HHmmss'Z'")}
-DTEND:${format(new Date(formData.endDateTime), "yyyyMMdd'T'HHmmss'Z'")}
-END:VEVENT
-END:VCALENDAR
-    `.trim();
 
-    const blob = new Blob([icsContent], {
-      type: 'text/calendar;charset=utf-8',
-    });
-    saveAs(blob, 'appointment.ics');
+    try {
+      const response = await axios.post(`/api/calendar/create/${sessionId}`, {
+        summary: formData.title,
+        description: formData.description,
+        start: formData.startDateTime,
+        end: formData.endDateTime,
+      });
+
+      setUploadedEvents([...uploadedEvents, response.data]);
+      showToast('success', 'event_created', t);
+    } catch (error) {
+      showToast('error', error, t);
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,7 +135,7 @@ END:VCALENDAR
       formData.append('file', e.target.files[0]);
 
       try {
-        const response = await axios.post<Event[]>(
+        const response = await axios.post<IEvent[]>(
           `/api/calendar/import/${sessionId}`,
           formData
         );
@@ -158,18 +155,25 @@ END:VCALENDAR
     setShowEventsPopup(true);
   };
 
-  const tileContent = ({ date }: { date: Date }) => {
-    const dayEvents = uploadedEvents.filter((event) =>
-      isSameDay(new Date(event.start), date)
-    );
+  const handleDownloadSingleEventICS = async (eventId: string) => {
+    try {
+      const response = await axios.get(
+        `/api/calendar/download/event/${eventId}`,
+        {
+          responseType: 'blob',
+        }
+      );
 
-    return (
-      <div className="calendar-day" onClick={() => handleDateClick(date)}>
-        {dayEvents.map((_, index) => (
-          <EventDot key={index} $count={dayEvents.length} />
-        ))}
-      </div>
-    );
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'event.ics');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      showToast('error', error, t);
+    }
   };
 
   return (
@@ -182,7 +186,15 @@ END:VCALENDAR
         <Calendar
           value={selectedDate}
           onChange={setSelectedDate}
-          tileContent={tileContent}
+          tileContent={({ date }) => (
+            <div className="calendar-day" onClick={() => handleDateClick(date)}>
+              {uploadedEvents
+                .filter((event) => isSameDay(new Date(event.start), date))
+                .map((_, index) => (
+                  <EventDot key={index} $count={index + 1} />
+                ))}
+            </div>
+          )}
           className="custom-calendar"
         />
 
@@ -191,20 +203,33 @@ END:VCALENDAR
             <CloseButton onClick={() => setShowEventsPopup(false)}>
               <FiX />
             </CloseButton>
-            <h3>{format(selectedDate as Date, 'dd.MM.yyyy')}</h3>
+            <EventHeader>
+              <h3>{format(selectedDate as Date, 'dd.MM.yyyy')}</h3>
+              <p>{t('events_for_day')}</p>
+            </EventHeader>
             {selectedDateEvents.length > 0 ? (
               selectedDateEvents.map((event, index) => (
-                <EventItem key={index}>
-                  <EventTitle>
-                    <FiWatch />
-                    {event.summary}
-                  </EventTitle>
-                  <EventTime>
-                    {format(new Date(event.start), 'HH:mm')} -{' '}
-                    {format(new Date(event.end), 'HH:mm')}
-                  </EventTime>
-                  <p>{event.description}</p>
-                </EventItem>
+                <EventCard key={index}>
+                  <EventDetails>
+                    <EventTitle>
+                      <FiWatch />
+                      {event.summary}
+                    </EventTitle>
+                    <EventTime>
+                      {format(new Date(event.start), 'HH:mm')} -{' '}
+                      {format(new Date(event.end), 'HH:mm')}
+                    </EventTime>
+                    <EventDescription>{event.description}</EventDescription>
+                  </EventDetails>
+                  <EventActions>
+                    <DownloadButton
+                      onClick={() => handleDownloadSingleEventICS(event._id)}
+                    >
+                      <FiDownload />
+                      {t('download')}
+                    </DownloadButton>
+                  </EventActions>
+                </EventCard>
               ))
             ) : (
               <p>{t('no_events')}</p>
@@ -213,12 +238,7 @@ END:VCALENDAR
         )}
       </CalendarWrapper>
 
-      <FormCard
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit(e);
-        }}
-      >
+      <FormCard onSubmit={handleSubmit}>
         <FormHeader>
           <h2>{t('new_appointment')}</h2>
           <div className="accent-line" />

@@ -163,5 +163,8 @@
   "about_me": "About Me",
   "about_me_updated": "Bio updated successfully",
   "tell_us_about_yourself": "Tell us about yourself",
-  "no_about_me": "No bio"
+  "no_about_me": "No bio",
+  "events_for_day": "Events for this day",
+  "download": "Download",
+  "event_created": "Event created"
 }
