@@ -37,6 +37,7 @@
   --error-color: #ff7675;
   --error-color-hover: #ff5252;
   --placeholder-color: #999999;
+  --primary-color-light: #5588b3;
 }
 
 body.dark-mode {
@@ -78,6 +79,7 @@ body.dark-mode {
   --error-color: #ff5252;
   --error-color-hover: #ff1744;
   --placeholder-color: #a0a0a0;
+  --primary-color-light: #2c5b80;
 }
 
 html,

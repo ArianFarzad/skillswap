@@ -170,7 +170,7 @@ END:VCALENDAR
     return (
       <div className="calendar-day" onClick={() => handleDateClick(date)}>
         {dayEvents.map((_, index) => (
-          <EventDot key={index} count={dayEvents.length} />
+          <EventDot key={index} $count={dayEvents.length} />
         ))}
       </div>
     );

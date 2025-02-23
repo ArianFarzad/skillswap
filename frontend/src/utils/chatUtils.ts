@@ -34,3 +34,15 @@ export const useHandleChatRequest = () => {
     }
   };
 };
+
+export const formatTimestamp = (timestamp: string | Date): string => {
+  const date = new Date(timestamp);
+  return `${date.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })}, ${date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}`;
+};

@@ -49,6 +49,86 @@ export const MessagesContainer = styled.div`
   }
 `;
 
+export const MyMessageBubble = styled.div`
+  align-self: flex-end;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--primary-color-hover)
+  );
+  color: var(--text-color-on-button);
+  padding: 1rem 1.5rem;
+  border-radius: 20px 20px 4px 20px;
+  max-width: 70%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: messageAppear 0.3s ease;
+
+  p {
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  span {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+
+  @keyframes messageAppear {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+`;
+
+export const TheirMessageBubble = styled(MyMessageBubble)`
+  align-self: flex-start;
+  background: var(--background-color-secondary);
+  color: var(--text-color);
+  border-radius: 20px 20px 20px 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+  span {
+    color: var(--text-color-secondary);
+    opacity: unset;
+  }
+`;
+
+export const ScrollToBottomButton = styled.button`
+  position: fixed;
+  bottom: 6rem;
+  right: 2rem;
+  background-color: var(--primary-color);
+  color: var(--text-color-on-button);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-2px) scale(1.1);
+  }
+
+  svg {
+    font-size: 1.2rem;
+  }
+`;
+
 export const MessageInputContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -96,97 +176,6 @@ export const SendButton = styled.button`
   }
 `;
 
-export const MyMessageBubble = styled.div`
-  align-self: flex-end;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--primary-color-hover)
-  );
-  color: var(--text-color-on-button);
-  padding: 1rem 1.5rem;
-  border-radius: 20px 20px 4px 20px;
-  max-width: 70%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  animation: messageAppear 0.3s ease;
-
-  p {
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  span {
-    display: block;
-    font-size: 0.8rem;
-    opacity: 0.8;
-    margin-top: 0.5rem;
-    text-align: right;
-  }
-
-  @keyframes messageAppear {
-    from {
-      transform: translateY(10px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-`;
-
-export const TheirMessageBubble = styled.div`
-  align-self: flex-start;
-  background-color: var(--background-color-secondary);
-  color: var(--text-color);
-  padding: 1rem 1.5rem;
-  border-radius: 20px 20px 20px 4px;
-  max-width: 70%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  animation: messageAppear 0.3s ease;
-
-  p {
-    margin: 0;
-    line-height: 1.4;
-  }
-
-  span {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--text-color-secondary);
-    margin-top: 0.5rem;
-    text-align: right;
-  }
-`;
-
-export const ScrollToBottomButton = styled.button`
-  position: fixed;
-  bottom: 6rem;
-  right: 2rem;
-  background-color: var(--primary-color);
-  color: var(--text-color-on-button);
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: var(--primary-color-hover);
-    transform: translateY(-2px) scale(1.1);
-  }
-
-  svg {
-    font-size: 1.2rem;
-  }
-`;
-
 export const FilePreviewContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -203,13 +192,25 @@ export const FilePreviewItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--primary-color--light);
+  background-color: var(--primary-color-light);
   padding: 0.5rem;
   border-radius: 8px;
   font-size: 0.9rem;
   color: var(--text-color);
   max-width: 200px;
   overflow: hidden;
+`;
+
+export const StyledImage = styled.img`
+  max-width: 200px;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+`;
+
+export const StyledImagePreview = styled(StyledImage)`
+  max-width: 80px;
+  height: 80px;
+  object-fit: cover;
 `;
 
 export const RemoveFileButton = styled.button`
@@ -225,10 +226,31 @@ export const RemoveFileButton = styled.button`
   }
 `;
 
-export const StyledImage = styled.img`
-  max-width: 200px;
-  border-radius: 8px;
+export const StyledPDFContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--primary-color);
+  font-size: 0.9rem;
+
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const StyledTimestamp = styled.span`
+  font-size: 0.75rem;
+  opacity: 0.7;
   margin-top: 0.5rem;
+  display: block;
+  text-align: right;
+  color: var(--text-color-muted);
 `;
 
 export const StyledPDFLink = styled.a`
@@ -240,12 +262,4 @@ export const StyledPDFLink = styled.a`
   &:hover {
     text-decoration: underline;
   }
-`;
-
-export const StyledTimestamp = styled.span`
-  font-size: 0.8rem;
-  opacity: 0.7;
-  margin-top: 0.5rem;
-  display: block;
-  text-align: right;
 `;

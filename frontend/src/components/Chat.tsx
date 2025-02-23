@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from '../utils/axiosInstance';
 import log from '../utils/loggerInstance.ts';
 import SendIcon from '@mui/icons-material/Send';
-import AttachFileIcon from '@mui/icons-material/Send';
-import CloseIcon from '@mui/icons-material/Send';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
+import CloseIcon from '@mui/icons-material/Close';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { IMessage, IUser } from '../models/models.ts';
 import socket, {
   connectSocket,
@@ -26,10 +27,14 @@ import {
   ScrollToBottomButton,
   SendButton,
   StyledImage,
+  StyledImagePreview,
+  StyledPDFContainer,
   StyledPDFLink,
   StyledTimestamp,
   TheirMessageBubble,
 } from '../style/components/Chat.style';
+import { formatTimestamp } from '../utils/chatUtils.ts';
+import { handleEnterKeyPress } from '../utils/helpers.ts';
 
 interface ChatParams {
   sessionId: string | undefined;
@@ -51,6 +56,7 @@ const Chat: React.FC<ChatParams> = ({
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [exchangedMessagesCount, setExchangedMessagesCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -107,6 +113,7 @@ const Chat: React.FC<ChatParams> = ({
       sendMessage(sessionId!, senderId, newMessage, data.attachments);
       setNewMessage('');
       setSelectedFiles([]);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (error) {
       log.error('Error sending message:', error);
     }
@@ -118,15 +125,15 @@ const Chat: React.FC<ChatParams> = ({
     }
   };
 
+  function handleRemoveFile(index: number) {
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  }
+
   // Handle scroll events to show/hide scroll-to-bottom button
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollHeight, clientHeight, scrollTop } = e.currentTarget;
     setShowScrollToBottom(scrollHeight - clientHeight - scrollTop > 100);
   };
-
-  function handleRemoveFile(index: number) {
-    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-  }
 
   return (
     <ChatContainer>
@@ -140,32 +147,25 @@ const Chat: React.FC<ChatParams> = ({
         {messages.map((msg, index) => (
           <React.Fragment key={index}>
             {msg.sender._id === senderId ? (
-              <MyMessageBubble key={index}>
+              <MyMessageBubble>
                 {msg.content && <p>{msg.content}</p>}
                 {msg.attachments?.map((file, i) => (
                   <div key={i}>
                     {file.type === 'image' ? (
-                      <StyledImage
-                        src={file.url}
-                        alt={'attachment'}
-                      ></StyledImage>
+                      <StyledImage src={file.url} alt={'attachment'} />
                     ) : (
-                      <StyledPDFLink
-                        href={file.url}
-                        target="_blank"
-                      ></StyledPDFLink>
+                      <StyledPDFContainer>
+                        <InsertDriveFileIcon fontSize={'large'} />
+                        <a href={file.url} target={'_blank'}>
+                          {file.url.split('/').pop()}
+                        </a>
+                      </StyledPDFContainer>
                     )}
                   </div>
                 ))}
                 <StyledTimestamp>
-                  {new Date(msg.timestamp).toLocaleDateString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                  {formatTimestamp(msg.timestamp)}
                 </StyledTimestamp>
-                <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                  {new Date(msg.timestamp).toLocaleTimeString()}
-                </span>
               </MyMessageBubble>
             ) : (
               <TheirMessageBubble key={index}>
@@ -173,10 +173,7 @@ const Chat: React.FC<ChatParams> = ({
                 {msg.attachments?.map((file, i) => (
                   <div key={i}>
                     {file.type === 'image' ? (
-                      <StyledImage
-                        src={file.url}
-                        alt={'attachment'}
-                      ></StyledImage>
+                      <StyledImage src={file.url} alt={'attachment'} />
                     ) : (
                       <StyledPDFLink
                         href={file.url}
@@ -186,10 +183,7 @@ const Chat: React.FC<ChatParams> = ({
                   </div>
                 ))}
                 <StyledTimestamp>
-                  {new Date(msg.timestamp).toLocaleDateString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
+                  {formatTimestamp(msg.timestamp)}
                 </StyledTimestamp>
               </TheirMessageBubble>
             )}
@@ -209,6 +203,30 @@ const Chat: React.FC<ChatParams> = ({
         </ScrollToBottomButton>
       )}
 
+      {/* File Preview Area */}
+      {selectedFiles.length > 0 && (
+        <FilePreviewContainer>
+          {selectedFiles.map((file, index) => (
+            <FilePreviewItem key={index}>
+              {file.type.startsWith('image') ? (
+                <StyledImagePreview
+                  src={URL.createObjectURL(file)}
+                  alt={'preview'}
+                />
+              ) : (
+                <StyledPDFContainer>
+                  <InsertDriveFileIcon fontSize={'small'} />
+                  <p>{file.name}</p>
+                </StyledPDFContainer>
+              )}
+              <RemoveFileButton onClick={() => handleRemoveFile(index)}>
+                <CloseIcon fontSize={'small'} />
+              </RemoveFileButton>
+            </FilePreviewItem>
+          ))}
+        </FilePreviewContainer>
+      )}
+
       {/* Message Input Area */}
       <MessageInputContainer>
         <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
@@ -218,9 +236,11 @@ const Chat: React.FC<ChatParams> = ({
           />
         </label>
         <input
+          id={'file-upload'}
           type={'file'}
           multiple
           accept={'image/*,.pdf'}
+          ref={fileInputRef}
           onChange={handleFileChange}
           style={{ display: 'none' }}
         />
@@ -230,42 +250,12 @@ const Chat: React.FC<ChatParams> = ({
           maxLength={2000}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={async (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              await handleSendMessage();
-            }
-          }}
+          onKeyDown={(e) => handleEnterKeyPress(e, handleSendMessage)}
         />
         <SendButton onClick={handleSendMessage}>
           <SendIcon />
         </SendButton>
       </MessageInputContainer>
-
-      <FilePreviewContainer>
-        {selectedFiles.map((file, index) => (
-          <FilePreviewItem key={index}>
-            {file.type.startsWith('image') ? (
-              <img
-                src={URL.createObjectURL(file)}
-                alt={'preview'}
-                style={{
-                  width: '50px',
-                  height: '50px',
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  marginRight: '0.5rem',
-                }}
-              />
-            ) : (
-              <span>📄 {file.name}</span>
-            )}
-            <RemoveFileButton onClick={() => handleRemoveFile(index)}>
-              <CloseIcon fontSize={'small'} />
-            </RemoveFileButton>
-          </FilePreviewItem>
-        ))}
-      </FilePreviewContainer>
     </ChatContainer>
   );
 };
