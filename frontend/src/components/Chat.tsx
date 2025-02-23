@@ -89,7 +89,11 @@ const Chat: React.FC<ChatParams> = ({
     // Handle new messages from socket
     const handleNewMessage = (message: IMessage) => {
       startTransition(() => {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        setMessages((prevMessages) => {
+          if (prevMessages.some((msg) => msg._id === message._id))
+            return prevMessages;
+          return [...prevMessages, message];
+        });
         setExchangedMessagesCount((prevCount) => prevCount + 1);
       });
     };
@@ -167,7 +171,6 @@ const Chat: React.FC<ChatParams> = ({
                 src={file.url}
                 alt={'attachment'}
                 onClick={() => window.open(file.url, '_blank')}
-                onLoad={() => messagesEndRef.current?.scrollIntoView()}
               />
             ) : (
               <StyledFileContainer>

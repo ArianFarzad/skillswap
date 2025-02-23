@@ -162,5 +162,8 @@
   "about_me": "Über mich",
   "about_me_updated": "Bio erfolgreich aktualisiert",
   "tell_us_about_yourself": "Erzählen Sie uns etwas über sich",
-  "no_about_me": "Keine Bio"
+  "no_about_me": "Keine Bio",
+  "events_for_day": "Veranstaltungen für diesen Tag",
+  "download": "Herunterladen",
+  "event_created": "Veranstaltung erstellt"
 }

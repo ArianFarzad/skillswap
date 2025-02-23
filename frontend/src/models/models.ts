@@ -8,6 +8,7 @@ export interface IFeedback {
 }
 
 export interface IMessage {
+  _id: string;
   sender: {
     _id: string;
     name: string;
@@ -41,4 +42,12 @@ export interface ISession {
   date: string;
   status: string;
   messages: IMessage[];
+}
+
+export interface IEvent {
+  summary: string;
+  description: string;
+  start: string;
+  end: string;
+  _id: string;
 }
