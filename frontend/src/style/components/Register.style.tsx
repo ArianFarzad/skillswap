@@ -75,7 +75,7 @@ export const RegisterMessage = styled.p`
 export const RowLeft = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: left;
+  align-items: flex-start;
   gap: 0.3em;
 `;
 

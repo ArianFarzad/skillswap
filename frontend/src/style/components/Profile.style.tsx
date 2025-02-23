@@ -193,8 +193,14 @@ export const ClearButton = styled.button`
 `;
 
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 `;
 
 export const StyledSection = styled(Section)`
@@ -329,19 +335,11 @@ export const ProfileEditLabel = styled.label<{ showMenu: boolean }>`
       ? '2px solid var(--error-color)'
       : '2px solid var(--primary-color)'};
 
-  #clear-icon {
-    color: var(--error-color);
-  }
-
   &:hover {
     background: ${(props) =>
       props.showMenu ? 'var(--error-color)' : 'var(--primary-color)'};
 
     svg {
-      color: white;
-    }
-
-    #clear-icon {
       color: white;
     }
   }

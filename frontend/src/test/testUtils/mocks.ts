@@ -12,9 +12,6 @@ const axiosMock = {
 vi.mock('../../utils/axiosInstance', () => ({
   default: axiosMock, // Ensures all axios calls are mocked
 }));
-
-export default axiosMock;
-
 vi.mock('react-hot-toast', async (importOriginal) => {
   const actual = (await importOriginal()) as {
     default: { success: () => void; error: () => void };

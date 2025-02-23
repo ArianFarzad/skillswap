@@ -1,20 +1,7 @@
 import { Request, Response } from 'express';
 import Session from '../models/Session';
-import nodemailer from 'nodemailer';
 import Profile from '../models/Profile';
-import { env } from '../config/config';
 import logger from '../utils/logger';
-
-interface PopulatedSession {
-  tutor: {
-    email: string;
-  };
-  student: {
-    email: string;
-  };
-  date: Date;
-  status: string;
-}
 
 export const createSession = async (req: Request, res: Response) => {
   const { tutor, student, date } = req.body;
@@ -72,41 +59,6 @@ export const deleteSession = async (req: Request, res: Response) => {
   } catch (error) {
     logger.error('Error deleting session:', error);
     res.status(500).json({ error: 'Server error' });
-  }
-};
-
-export const sendReminderEmails = async () => {
-  try {
-    const sessions = await Session.find({
-      date: {
-        $gte: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        $lt: new Date(Date.now() + 25 * 60 * 60 * 1000),
-      },
-      status: 'confirmed',
-    })
-      .populate('tutor', 'email')
-      .populate('student', 'email');
-
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: env.EMAIL_USER,
-        pass: env.EMAIL_PASS,
-      },
-    });
-
-    for (const session of sessions as unknown as PopulatedSession[]) {
-      const mailOptions = {
-        from: env.EMAIL_USER,
-        to: [session.tutor.email, session.student.email],
-        subject: 'Session Reminder',
-        text: `Reminder: You have a session scheduled on ${session.date}`,
-      };
-
-      await transporter.sendMail(mailOptions);
-    }
-  } catch (error) {
-    logger.error('Error sending reminder emails:', error);
   }
 };
 
