@@ -81,7 +81,7 @@ describe('Feedback Component', () => {
     fireEvent.click(screen.getByText('submit_feedback')); // Click the submit button
 
     await waitFor(() => {
-      expect(mockedAxios.post).toHaveBeenCalledWith('/api/feedback', {
+      expect(mockedAxios.post).toHaveBeenCalledWith('/api/feedbacks', {
         sessionId,
         userId: senderId,
         rating: 1,

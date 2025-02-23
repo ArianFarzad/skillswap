@@ -1,7 +1,12 @@
 import styled from 'styled-components';
 
 export const StatisticsContainer = styled.div`
-  background: var(--background-color-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--background-color-secondary) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-left: 4px solid var(--primary-color);
   padding: 2rem;
 
   border-radius: 12px;
@@ -21,7 +26,7 @@ export const GridContainer = styled.div`
   overflow-y: auto;
   scrollbar-width: none;
   scrollbar-color: var(--primary-color) var(--background-color-secondary);
-  height: 100vh;
+  height: 130vh;
 `;
 
 export const ChartContainer = styled.div`

@@ -8,7 +8,7 @@ export const useHandleChatRequest = () => {
   const navigate = useNavigate();
   const { t } = useTypedTranslation();
 
-  return async (otherUserId: string) => {
+  const handleChatRequest = async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
 
     try {
@@ -33,8 +33,9 @@ export const useHandleChatRequest = () => {
       showToast('error', error, t);
     }
   };
-};
 
+  return handleChatRequest;
+};
 export const formatTimestamp = (timestamp: string | Date): string => {
   const date = new Date(timestamp);
   return `${date.toLocaleDateString('de-DE', {

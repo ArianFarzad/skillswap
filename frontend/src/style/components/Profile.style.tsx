@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import '../index.css';
 
 export const MainContainer = styled.div`
@@ -21,110 +21,6 @@ export const ProfileContent = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
-  }
-`;
-
-export const ProfileImageSection = styled.div`
-  background-color: var(--background-color-secondary);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  border-radius: 12px;
-`;
-
-export const ProfileImageContainer = styled.div`
-  position: relative;
-  display: flex;
-`;
-
-export const ProfileImage = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--border-color);
-`;
-
-export const ProfileEditLabel = styled.label`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background-color: var(--primary-color);
-  color: var(--text-color-on-button);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    background-color: var(--primary-color-hover);
-  }
-
-  input {
-    display: none;
-  }
-
-  svg {
-    font-size: 1.2rem;
-  }
-`;
-
-export const FloatingMenu = styled.div`
-  position: absolute;
-  bottom: 40px;
-  right: 20px;
-  background: var(--background-color-secondary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 10;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeIn 0.3s ease-in-out forwards;
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-
-export const FloatingMenuItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  border-radius: 6px;
-
-  &:hover {
-    background: var(--primary-color-hover);
-  }
-
-  label {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  input {
-    display: none;
   }
 `;
 
@@ -266,7 +162,7 @@ export const EditButton = styled.button`
 export const Column = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 1rem;
   flex: 1;
 `;
@@ -294,4 +190,211 @@ export const ClearButton = styled.button`
   &:focus {
     outline: none;
   }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+export const StyledSection = styled(Section)`
+  position: relative;
+  overflow: hidden;
+  border-left: 4px solid var(--primary-color);
+  transition: all 0.3s ease;
+  background: linear-gradient(
+    135deg,
+    var(--background-color-secondary) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+`;
+
+export const QuoteIcon = styled.div`
+  position: absolute;
+  opacity: 0.1;
+  font-size: 6rem;
+  color: var(--primary-color);
+
+  &:first-child {
+    top: -10px;
+    left: 10px;
+  }
+
+  &:last-child {
+    bottom: -20px;
+    right: 10px;
+    transform: rotate(180deg);
+  }
+`;
+
+export const AboutMeText = styled.div`
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-color);
+  font-family: 'Merriweather', serif;
+  position: relative;
+  padding: 1rem 2rem;
+  white-space: pre-wrap;
+  animation: ${fadeIn} 0.5s ease;
+
+  &::first-letter {
+    font-size: 2.5em;
+    float: left;
+    line-height: 0.8;
+    margin-right: 0.1em;
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+`;
+
+export const StyledTextArea = styled(TextInput)`
+  min-height: 150px;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--primary-color);
+  transition: all 0.3s ease;
+  resize: vertical;
+  scrollbar-width: none;
+  min-width: 85%;
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 15px rgba(30, 144, 255, 0.2);
+  }
+`;
+
+export const FloatingEditButton = styled(EditButton)`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  padding: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 2;
+
+  &:hover {
+    transform: scale(1.1) rotate(90deg);
+    background: var(--primary-color-hover);
+  }
+
+  svg {
+    font-size: 1.2rem;
+  }
+`;
+
+export const ProfileImageContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  border-radius: 50%;
+  width: 100%;
+`;
+
+export const ProfileImage = styled.img`
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  background: var(--background-color-secondary);
+  border: 4px solid white;
+`;
+
+export const ProfileEditLabel = styled.label<{ showMenu: boolean }>`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: ${(props) =>
+    props.showMenu ? 'rgba(255, 69, 0, 0.15)' : 'rgba(30, 144, 255, 0.2)'};
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: ${(props) =>
+    props.showMenu
+      ? '2px solid var(--error-color)'
+      : '2px solid var(--primary-color)'};
+
+  #clear-icon {
+    color: var(--error-color);
+  }
+
+  &:hover {
+    background: ${(props) =>
+      props.showMenu ? 'var(--error-color)' : 'var(--primary-color)'};
+
+    svg {
+      color: white;
+    }
+
+    #clear-icon {
+      color: white;
+    }
+  }
+
+  svg {
+    color: var(--primary-color);
+    font-size: 1.4rem;
+  }
+`;
+
+export const FloatingMenu = styled.div`
+  bottom: 60px;
+  background: var(--background-color);
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  margin-top: 1rem;
+`;
+
+export const HiddenFileInput = styled.input`
+  display: none;
+`;
+
+export const FloatingMenuItem = styled.div`
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-color);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--text-color);
+    color: var(--background-color);
+    cursor: pointer;
+  }
+
+  svg {
+    font-size: 1.2rem;
+    color: var(--text-color-secondary);
+  }
+`;
+
+export const StyledLabel = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  width: 100%;
 `;

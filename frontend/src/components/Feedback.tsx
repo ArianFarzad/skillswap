@@ -64,7 +64,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
 
   const handleSendFeedback = () => {
     axios
-      .post('/api/feedback', {
+      .post('/api/feedbacks', {
         sessionId,
         userId: senderId,
         rating,

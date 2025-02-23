@@ -15,12 +15,14 @@ import Save from '@mui/icons-material/Save';
 import UserStatistics from './UserStatistics';
 import MyProfile from './MyProfile';
 import {
+  AboutMeText,
   AddButton,
   ClearButton,
   Column,
-  EditButton,
+  FloatingEditButton,
   FloatingMenu,
   FloatingMenuItem,
+  HiddenFileInput,
   InputGroup,
   InterestItem,
   InterestList,
@@ -29,12 +31,14 @@ import {
   ProfileEditLabel,
   ProfileImage,
   ProfileImageContainer,
-  ProfileImageSection,
+  QuoteIcon,
   RemoveButton,
-  Section,
   SectionTitle,
   SkillItem,
   SkillList,
+  StyledLabel,
+  StyledSection,
+  StyledTextArea,
   TextInput,
 } from '../style/components/Profile.style';
 import {
@@ -271,15 +275,19 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
           <ProfileContent>
             <Column>
               {/* Profile Picture */}
-              <ProfileImageSection>
+              <StyledSection>
                 <ProfileImageContainer ref={menuRef}>
                   <ProfileImage
                     src={profile?.profilePicture || '/avatar.png'}
                     alt={'Profile'}
                   />
                   {isOwnProfile && (
-                    <ProfileEditLabel onClick={toggleMenu}>
-                      <CameraAltIcon />
+                    <ProfileEditLabel showMenu={showMenu} onClick={toggleMenu}>
+                      {showMenu ? (
+                        <ClearIcon id={'clear-icon'} />
+                      ) : (
+                        <CameraAltIcon />
+                      )}
                     </ProfileEditLabel>
                   )}
 
@@ -287,16 +295,17 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   {showMenu && (
                     <FloatingMenu>
                       <FloatingMenuItem>
-                        <label htmlFor="profilePicture">
+                        <StyledLabel htmlFor="profilePicture">
                           <UploadIcon />
-                          {t('upload_profile_picture')}
-                          <input
-                            id="profilePicture"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                          />
-                        </label>
+                          <span>{t('upload_profile_picture')}</span>
+                        </StyledLabel>
+
+                        <HiddenFileInput
+                          id="profilePicture"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                        />
                       </FloatingMenuItem>
                       {isNotBlank(profile?.profilePicture) && (
                         <FloatingMenuItem onClick={handleDeleteProfilePicture}>
@@ -307,34 +316,38 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                   )}
                 </ProfileImageContainer>
                 <MyProfile profile={profile} setProfile={setProfile} />
-              </ProfileImageSection>
-              <Section>
+              </StyledSection>
+              <StyledSection>
+                <QuoteIcon>❝</QuoteIcon>
+                <QuoteIcon>❞</QuoteIcon>
                 <SectionTitle>
                   {t('about_me')}
                   {isOwnProfile && (
-                    <EditButton onClick={handleSetAboutMe}>
+                    <FloatingEditButton onClick={handleSetAboutMe}>
                       {isEditingAboutMe ? <Save /> : <Edit />}
-                    </EditButton>
+                    </FloatingEditButton>
                   )}
                 </SectionTitle>
                 {isEditingAboutMe ? (
-                  <TextInput
-                    id="aboutMe-input"
+                  <StyledTextArea
                     as="textarea"
                     value={aboutMeText}
                     onChange={(e) => setAboutMeText(e.target.value)}
+                    placeholder={t('tell_us_about_yourself')}
                   />
                 ) : (
-                  profile?.aboutMe
+                  <AboutMeText>
+                    {profile?.aboutMe || t('no_about_me')}
+                  </AboutMeText>
                 )}
-              </Section>
-              <Section>
+              </StyledSection>
+              <StyledSection>
                 <SectionTitle>
                   {t('skills')}
                   {isOwnProfile && (
-                    <EditButton onClick={handleEditSkill}>
+                    <FloatingEditButton onClick={handleEditSkill}>
                       {isEditingSkill ? <Save /> : <EditIcon />}
-                    </EditButton>
+                    </FloatingEditButton>
                   )}
                 </SectionTitle>
                 <SkillList>
@@ -374,15 +387,15 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     </AddButton>
                   </InputGroup>
                 )}
-              </Section>
+              </StyledSection>
 
-              <Section>
+              <StyledSection>
                 <SectionTitle>
                   {t('interests')}
                   {isOwnProfile && (
-                    <EditButton onClick={handleEditInterest}>
+                    <FloatingEditButton onClick={handleEditInterest}>
                       {isEditingInterest ? <Save /> : <EditIcon />}
-                    </EditButton>
+                    </FloatingEditButton>
                   )}
                 </SectionTitle>
                 <InterestList>
@@ -425,7 +438,7 @@ const Profile: React.FC<ProfileProps> = ({ profile, setProfile }) => {
                     </AddButton>
                   </InputGroup>
                 )}
-              </Section>
+              </StyledSection>
             </Column>
             <UserStatistics {...statistics} />
           </ProfileContent>

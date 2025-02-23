@@ -9,9 +9,7 @@ import {
   ButtonGroup,
   CancelButton,
   EditButton,
-  Line,
   ProfileCard,
-  ProfileContent,
   ProfileHeader,
   ProfileName,
   ProfilePoints,
@@ -78,10 +76,11 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile, setProfile }) => {
         <ProfileName>
           {isEditMode ? (
             <StyledInput
-              id={'input-name'}
+              id="input-name"
               value={name}
               onChange={handleNameChange}
               autoFocus
+              placeholder={t('your_name')}
             />
           ) : (
             profile?.name
@@ -103,12 +102,10 @@ const MyProfile: React.FC<MyProfileProps> = ({ profile, setProfile }) => {
           </ButtonGroup>
         )}
       </ProfileHeader>
-      <Line />
-      <ProfileContent>
-        <ProfilePoints>
-          {t('points')}: <span>{profile?.points ?? 0}</span>
-        </ProfilePoints>
-      </ProfileContent>
+
+      <ProfilePoints>
+        {t('points')}: <span>{profile?.points?.toLocaleString() ?? 0}</span>
+      </ProfilePoints>
     </ProfileCard>
   );
 };

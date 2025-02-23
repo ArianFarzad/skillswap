@@ -6,7 +6,12 @@ const fadeIn = keyframes`
 `;
 
 export const SessionsContainer = styled.div`
-  background: var(--background-color-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--background-color-secondary) 0%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  border-left: 4px solid var(--primary-color);
   padding: 2rem;
   border-radius: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -42,7 +47,7 @@ export const SessionList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  height: 100vh;
+  height: 130vh;
   overflow-y: auto;
   scrollbar-width: none;
   justify-content: flex-start;

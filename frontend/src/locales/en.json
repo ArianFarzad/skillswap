@@ -160,5 +160,7 @@
   "you": "You",
   "no_sessions": "No sessions",
   "about_me": "About Me",
-  "about_me_updated": "Bio updated successfully"
+  "about_me_updated": "Bio updated successfully",
+  "tell_us_about_yourself": "Tell us about yourself",
+  "no_about_me": "No bio"
 }
