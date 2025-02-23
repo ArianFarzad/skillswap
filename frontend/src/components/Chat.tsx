@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import Tooltip from '@mui/material/Tooltip';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { IMessage, IUser } from '../models/models.ts';
 import socket, {
@@ -26,10 +27,11 @@ import {
   RemoveFileButton,
   ScrollToBottomButton,
   SendButton,
+  StyledFileContainer,
+  StyledFileLink,
+  StyledFileName,
   StyledImage,
   StyledImagePreview,
-  StyledPDFContainer,
-  StyledPDFLink,
   StyledTimestamp,
   TheirMessageBubble,
 } from '../style/components/Chat.style';
@@ -123,10 +125,14 @@ const Chat: React.FC<ChatParams> = ({
     if (event.target.files) {
       setSelectedFiles([...selectedFiles, ...Array.from(event.target.files)]);
     }
+
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   function handleRemoveFile(index: number) {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   // Handle scroll events to show/hide scroll-to-bottom button
@@ -152,14 +158,22 @@ const Chat: React.FC<ChatParams> = ({
                 {msg.attachments?.map((file, i) => (
                   <div key={i}>
                     {file.type === 'image' ? (
-                      <StyledImage src={file.url} alt={'attachment'} />
+                      <StyledImage
+                        src={file.url}
+                        alt={'attachment'}
+                        onClick={() => window.open(file.url, '_blank')}
+                      />
                     ) : (
-                      <StyledPDFContainer>
+                      <StyledFileContainer>
                         <InsertDriveFileIcon fontSize={'large'} />
-                        <a href={file.url} target={'_blank'}>
-                          {file.url.split('/').pop()}
-                        </a>
-                      </StyledPDFContainer>
+                        <StyledFileLink href={file.url} target={'_blank'}>
+                          <Tooltip title={file.url} arrow>
+                            <StyledFileName>
+                              {file.url.split('/').pop()}
+                            </StyledFileName>
+                          </Tooltip>
+                        </StyledFileLink>
+                      </StyledFileContainer>
                     )}
                   </div>
                 ))}
@@ -173,12 +187,22 @@ const Chat: React.FC<ChatParams> = ({
                 {msg.attachments?.map((file, i) => (
                   <div key={i}>
                     {file.type === 'image' ? (
-                      <StyledImage src={file.url} alt={'attachment'} />
+                      <StyledImage
+                        src={file.url}
+                        alt={'attachment'}
+                        onClick={() => window.open(file.url, '_blank')}
+                      />
                     ) : (
-                      <StyledPDFLink
-                        href={file.url}
-                        target="_blank"
-                      ></StyledPDFLink>
+                      <StyledFileContainer>
+                        <InsertDriveFileIcon fontSize={'large'} />
+                        <StyledFileLink href={file.url} target={'_blank'}>
+                          <Tooltip title={file.url} arrow>
+                            <StyledFileName>
+                              {file.url.split('/').pop()}
+                            </StyledFileName>
+                          </Tooltip>
+                        </StyledFileLink>
+                      </StyledFileContainer>
                     )}
                   </div>
                 ))}
@@ -214,10 +238,12 @@ const Chat: React.FC<ChatParams> = ({
                   alt={'preview'}
                 />
               ) : (
-                <StyledPDFContainer>
+                <StyledFileContainer>
                   <InsertDriveFileIcon fontSize={'small'} />
-                  <p>{file.name}</p>
-                </StyledPDFContainer>
+                  <Tooltip title={file.name} arrow>
+                    <StyledFileName>{file.name}</StyledFileName>
+                  </Tooltip>
+                </StyledFileContainer>
               )}
               <RemoveFileButton onClick={() => handleRemoveFile(index)}>
                 <CloseIcon fontSize={'small'} />

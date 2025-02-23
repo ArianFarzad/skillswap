@@ -205,6 +205,11 @@ export const StyledImage = styled.img`
   max-width: 200px;
   border-radius: 8px;
   margin-top: 0.5rem;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `;
 
 export const StyledImagePreview = styled(StyledImage)`
@@ -226,40 +231,71 @@ export const RemoveFileButton = styled.button`
   }
 `;
 
-export const StyledPDFContainer = styled.div`
+export const StyledFileContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--primary-color);
-  font-size: 0.9rem;
+  padding: 0.3rem 0.5rem;
+  background-color: var(--primary-color-light, #dde8f0);
+  border-radius: 8px;
+  max-width: 160px;
+  overflow: hidden;
 
   a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: bold;
+    flex-grow: 1;
   }
 
   a:hover {
     text-decoration: underline;
   }
+
+  body.dark-mode & {
+    background: var(--background-color-nav);
+  }
 `;
 
 export const StyledTimestamp = styled.span`
   font-size: 0.75rem;
-  opacity: 0.7;
+  opacity: 0.8;
   margin-top: 0.5rem;
   display: block;
   text-align: right;
   color: var(--text-color-muted);
+  font-weight: 500;
+
+  body.dark-mode & {
+    color: var(--reverse-text-color);
+  }
 `;
 
-export const StyledPDFLink = styled.a`
+export const StyledFileLink = styled.a`
   color: var(--primary-color);
   text-decoration: none;
   font-weight: bold;
   margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   &:hover {
     text-decoration: underline;
+  }
+`;
+
+export const StyledFileName = styled.p`
+  font-size: 0.85rem;
+  color: var(--text-color);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 140px;
+  padding: 0.2rem;
+  cursor: default;
+
+  body.dark-mode & {
+    color: var(--reverse-text-color);
   }
 `;

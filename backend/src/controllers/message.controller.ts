@@ -21,11 +21,10 @@ export const uploadAttachments = async (req: Request, res: Response) => {
       logger.error(`Multer upload error: ${err.message}`);
       return res.status(400).json({ error: err.message });
     }
-
     try {
       const files = (req.files as Express.Multer.File[]) ?? [];
 
-      logger.info(`Uploading ${files.length} files to cloudinary`);
+      logger.info(`Uploading ${files.length} files to Cloudinary...`);
 
       const uploadedFiles = await Promise.all(
         files.map(async (file) => {
