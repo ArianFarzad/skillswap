@@ -7,6 +7,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { showToast } from '../utils/toastUtils.ts';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
+import { useHandleChatRequest } from '../utils/chatUtils.ts';
 import {
   AllProfilesContainer,
   Headline,
@@ -44,6 +45,7 @@ const Search: React.FC<SearchArgs> = ({ keyword, points }) => {
   const { t } = useTypedTranslation();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const navigate = useNavigate();
+  const handleChatRequest = useHandleChatRequest();
 
   const fetchProfiles = useCallback(async () => {
     try {
@@ -89,31 +91,6 @@ const Search: React.FC<SearchArgs> = ({ keyword, points }) => {
       });
     }
   }, [fetchProfiles, keyword, points, t]);
-
-  const handleChatRequest = async (otherUserId: string) => {
-    const myUserId = localStorage.getItem('myUserId') || '';
-    try {
-      const response = await axios.get(`/api/sessions/check`, {
-        params: { user1: myUserId, user2: otherUserId },
-      });
-
-      let sessionId = response.data.sessionId;
-
-      if (!sessionId) {
-        const createResponse = await axios.post('/api/sessions', {
-          tutor: myUserId,
-          student: otherUserId,
-          date: new Date(),
-        });
-        sessionId = createResponse.data._id;
-      }
-
-      void navigate(`/chat/${sessionId}`);
-    } catch (error) {
-      log.error('Error handling chat request:', error);
-      showToast('error', error, t);
-    }
-  };
 
   const handleProfilePage = (profileId: string) => {
     void navigate(`/profile/${profileId}`);

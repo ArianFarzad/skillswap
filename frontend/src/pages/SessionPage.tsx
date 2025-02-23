@@ -93,7 +93,7 @@ const SessionPage: React.FC = () => {
         <SettingsBar profile={ownProfile} />
         <SessionContent>
           <CalendarContainer className={isFeedbackVisible ? 'hide' : ''}>
-            <BookAppointment />
+            <BookAppointment sessionId={sessionId} />
           </CalendarContainer>
           <ChatContainer>
             {isFeedbackVisible ? (

@@ -1,44 +1,41 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const float = keyframes`
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+`;
+
 
 export const ProfileCard = styled.div`
-  border-radius: 12px;
-  padding: 1.5rem;
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const ButtonGroup = styled.div`
-  display: flex;
-  flex-shrink: 0;
-  gap: 0.2rem;
-`;
-
-export const CancelButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.3rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--error-color);
-  transition: color 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.1) inset;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 
   &:hover {
-    color: var(--error-color-hover);
-  }
-
-  svg {
-    font-size: 1.3rem;
+    transform: translateY(-5px);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.2),
+      0 0 30px rgba(255, 255, 255, 0.15) inset;
   }
 `;
 
-export const Line = styled.div`
+export const ProfileHeader = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   position: relative;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 
   &::after {
     content: '';
@@ -49,91 +46,161 @@ export const Line = styled.div`
     height: 2px;
     background: linear-gradient(
       90deg,
-      var(--primary-color) 0%,
-      rgba(255, 255, 255, 0) 100%
+      rgba(30, 144, 255, 0) 0%,
+      var(--primary-color) 50%,
+      rgba(30, 144, 255, 0) 100%
     );
-    transition: all 0.3s ease-in-out;
+    opacity: 0.3;
+    transition: all 0.3s ease;
   }
 
   &:hover::after {
+    opacity: 1;
     height: 3px;
-    background: linear-gradient(
-      90deg,
-      var(--primary-color) 0%,
-      rgba(255, 255, 255, 0.2) 100%
-    );
   }
-
-  @media (max-width: 768px) {
-    padding: 0.5rem 0;
-    &::after {
-      height: 1px;
-    }
-  }
-`;
-
-export const ProfileHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
 `;
 
 export const ProfileName = styled.div`
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-color);
-  flex-grow: 1;
-  font-size: 2em;
-  min-width: 0;
+  font-size: 1.8rem;
+  letter-spacing: -0.5px;
+  position: relative;
   overflow: hidden;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const inputFloat = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
 `;
 
 export const StyledInput = styled.input`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333333;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  outline: none;
+  border-radius: 10px;
+  padding: 0.8rem 1.2rem;
   width: 100%;
-  padding: 0.25rem 0;
-  border-bottom: 2px solid var(--primary-color);
-  flex-grow: 1;
-  min-width: 100px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0 2px transparent;
+
+  &:focus {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--primary-color),
+      0 0 20px rgba(30, 144, 255, 0.2);
+    animation: ${inputFloat} 1.5s ease-in-out infinite;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+`;
+
+const buttonHover = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 `;
 
 export const EditButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0.5rem;
+  background: rgba(30, 144, 255, 0.2);
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  padding: 0.6rem;
+  border-radius: 12px;
   cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #1e90ff;
-  transition: color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &:hover {
-    color: #00ced1;
+    background: rgba(30, 144, 255, 0.3);
+    animation: ${buttonHover} 0.6s ease;
+
+    &::before {
+      opacity: 1;
+    }
   }
 
   svg {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
   }
 `;
 
-export const ProfileContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+export const CancelButton = styled(EditButton)`
+  background: rgba(255, 69, 0, 0.15);
+  border-color: var(--error-color);
+  color: var(--error-color);
+
+  &:hover {
+    background: rgba(255, 69, 0, 0.25);
+  }
 `;
 
 export const ProfilePoints = styled.div`
-  font-size: 1rem;
-  color: #666666;
-  margin-top: 1.5em;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    pointer-events: none;
+  }
 
   span {
-    font-weight: 600;
-    color: #1e90ff;
+    font-weight: 700;
+    color: var(--primary-color);
+    position: relative;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    background: rgba(30, 144, 255, 0.15);
+    animation: ${float} 3s ease-in-out infinite;
   }
 `;

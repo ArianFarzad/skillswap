@@ -10,6 +10,8 @@ import log from '../utils/loggerInstance.ts';
 import axios from '../utils/axiosInstance.ts';
 import { IProfile } from '../models/models.ts';
 import Spinner from '../components/Spinner.tsx';
+import MySessions from '../components/MySessions';
+import { Row } from '../style/pages/UserProfilePage.style';
 
 const UserProfilePage: React.FC = () => {
   const { t } = useTypedTranslation();
@@ -47,7 +49,10 @@ const UserProfilePage: React.FC = () => {
         ) : (
           <>
             <NavBar />
-            <Profile profile={profile} setProfile={setProfile} />
+            <Row>
+              <Profile profile={profile} setProfile={setProfile} />
+              <MySessions />
+            </Row>
             <Footer />
           </>
         )}
