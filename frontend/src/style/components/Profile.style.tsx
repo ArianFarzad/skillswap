@@ -316,7 +316,9 @@ export const ProfileImage = styled.img`
   border: 4px solid white;
 `;
 
-export const ProfileEditLabel = styled.label<{ showMenu: boolean }>`
+export const ProfileEditLabel = styled.label.withConfig({
+  shouldForwardProp: (prop) => prop !== 'showMenu',
+})<{ showMenu: boolean }>`
   position: absolute;
   bottom: 10px;
   right: 10px;
