@@ -193,8 +193,14 @@ export const ClearButton = styled.button`
 `;
 
 const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 `;
 
 export const StyledSection = styled(Section)`
@@ -207,7 +213,7 @@ export const StyledSection = styled(Section)`
     var(--background-color-secondary) 0%,
     rgba(255, 255, 255, 0.05) 100%
   );
-  
+
   &:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -219,12 +225,12 @@ export const QuoteIcon = styled.div`
   opacity: 0.1;
   font-size: 6rem;
   color: var(--primary-color);
-  
+
   &:first-child {
     top: -10px;
     left: 10px;
   }
-  
+
   &:last-child {
     bottom: -20px;
     right: 10px;
@@ -310,11 +316,14 @@ export const ProfileImage = styled.img`
   border: 4px solid white;
 `;
 
-export const ProfileEditLabel = styled.label<{ showMenu: boolean }>`
+export const ProfileEditLabel = styled.label.withConfig({
+  shouldForwardProp: (prop) => prop !== 'showMenu',
+})<{ showMenu: boolean }>`
   position: absolute;
   bottom: 10px;
   right: 10px;
-  background: ${(props) => (props.showMenu ? 'rgba(255, 69, 0, 0.15)' : 'rgba(30, 144, 255, 0.2)')};
+  background: ${(props) =>
+    props.showMenu ? 'rgba(255, 69, 0, 0.15)' : 'rgba(30, 144, 255, 0.2)'};
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -323,20 +332,16 @@ export const ProfileEditLabel = styled.label<{ showMenu: boolean }>`
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: ${(props) => (props.showMenu ? '2px solid var(--error-color)' : '2px solid var(--primary-color)')};
+  border: ${(props) =>
+    props.showMenu
+      ? '2px solid var(--error-color)'
+      : '2px solid var(--primary-color)'};
 
-  #clear-icon {
-    color: var(--error-color);
-  }
-  
   &:hover {
-    background: ${(props) => (props.showMenu ? 'var(--error-color)' : 'var(--primary-color)')};
+    background: ${(props) =>
+      props.showMenu ? 'var(--error-color)' : 'var(--primary-color)'};
 
     svg {
-      color: white;
-    }
-    
-    #clear-icon {
       color: white;
     }
   }

@@ -6,7 +6,6 @@ const float = keyframes`
   100% { transform: translateY(0px); }
 `;
 
-
 export const ProfileCard = styled.div`
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);

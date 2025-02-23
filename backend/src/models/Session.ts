@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IMessage {
   sender: mongoose.Types.ObjectId;
   content: string;
+  attachments?: { url: string; type: string }[];
   timestamp: Date;
 }
 
@@ -16,7 +17,13 @@ export interface ISession extends Document {
 
 const MessageSchema: Schema = new Schema({
   sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  content: { type: String, required: true },
+  content: { type: String },
+  attachments: [
+    {
+      url: { type: String, required: true },
+      type: { type: String, enum: ['image', 'pdf'], required: true },
+    },
+  ],
   timestamp: { type: Date, default: Date.now },
 });
 

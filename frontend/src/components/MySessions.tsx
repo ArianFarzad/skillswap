@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../utils/axiosInstance.ts';
-import log from '../utils/loggerInstance.ts';
 import { ISession } from '../models/models.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { useHandleChatRequest } from '../utils/chatUtils.ts';
 import {
+  ContinueButton,
+  Divider,
+  NoSessionsMessage,
+  ParticipantsContainer,
+  ProfileImage,
+  RoleBadge,
+  RoleContainer,
+  SessionContent,
+  SessionItem,
+  SessionList,
   SessionsContainer,
   SessionTitle,
-  SessionList,
-  SessionItem,
-  ParticipantsContainer,
-  RoleContainer,
-  RoleBadge,
-  ProfileImage,
   UserName,
-  NoSessionsMessage,
-  ContinueButton,
-  SessionContent,
-  Divider,
 } from '../style/components/MySessions.style.tsx';
+import { showToast } from '../utils/toastUtils.ts';
 
 const MySessions: React.FC = () => {
   const myUserId = localStorage.getItem('myUserId') || '';
@@ -31,15 +31,14 @@ const MySessions: React.FC = () => {
       try {
         const response = await axios.get(`/api/sessions/users/${myUserId}`);
         setSessions(Array.isArray(response.data) ? response.data : []);
-        log.info('Sessions fetched:', response.data);
       } catch (error) {
-        log.error('Error fetching sessions:', error);
+        showToast('error', error, t);
         setSessions([]);
       }
     };
 
     void fetchSessions();
-  }, [myUserId]);
+  }, [myUserId, t]);
 
   return (
     <SessionsContainer>

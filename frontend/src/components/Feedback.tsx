@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { IFeedback } from '../models/models.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import { showToast } from '../utils/toastUtils.ts';
-import log from '../utils/loggerInstance.ts';
 import axios from '../utils/axiosInstance';
 import {
   AverageRating,
@@ -55,8 +54,8 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         setReceivedFeedbacks(receivedFeedbacks);
         setAverageRatingReceived(averageRatingReceived);
       })
-      .catch((error) => log.error('Error fetching feedbacks:', error));
-  }, [sessionId]);
+      .catch((error) => showToast('error', error, t));
+  }, [sessionId, t]);
 
   useEffect(() => {
     fetchFeedbackData();
@@ -76,7 +75,7 @@ const Feedback: React.FC<FeedbackData> = ({ sessionId, senderId }) => {
         setComment('');
         fetchFeedbackData();
       })
-      .catch((error) => log.error('Error sending feedback:', error));
+      .catch((error) => showToast('error', error, t));
   };
 
   const handleRating = (value: number) => {

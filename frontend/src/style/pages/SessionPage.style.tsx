@@ -13,22 +13,24 @@ export const SessionContent = styled.div`
 `;
 
 export const CalendarContainer = styled.div`
-  flex: 2;
+  flex: 1;
+  min-width: 250px;
   padding: 1em;
   overflow-y: scroll;
   scrollbar-width: none;
 `;
 
 export const ChatContainer = styled.div`
-  align-content: center;
   display: flex;
+  flex: 2;
   justify-content: center;
+  align-content: center;
   border-left: 1px solid var(--border-color);
-  flex: 1;
 `;
 
 export const FeedbackContainer = styled.div`
   flex: 1;
+  min-width: 250px;
   padding: 2em;
   border-left: 1px solid var(--border-color);
 `;

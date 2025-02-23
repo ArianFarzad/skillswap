@@ -106,11 +106,6 @@ export const ProfileListItemActions = styled.div`
       color: var(--text-color);
     }
 
-    &:not(.stats) {
-      background-color: var(--primary-color);
-      color: var(--text-color-on-button);
-    }
-
     svg {
       font-size: 1rem;
     }

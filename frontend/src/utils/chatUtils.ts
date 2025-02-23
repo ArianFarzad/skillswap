@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { useTypedTranslation } from '../utils/translationUtils.ts';
+import { useTypedTranslation } from './translationUtils.ts';
 import axios from '../utils/axiosInstance.ts';
 import log from '../utils/loggerInstance.ts';
-import { showToast } from '../utils/toastUtils.ts';
+import { showToast } from './toastUtils.ts';
 
 export const useHandleChatRequest = () => {
   const navigate = useNavigate();
   const { t } = useTypedTranslation();
 
-  const handleChatRequest = async (otherUserId: string) => {
+  return async (otherUserId: string) => {
     const myUserId = localStorage.getItem('myUserId') || '';
 
     try {
@@ -33,6 +33,15 @@ export const useHandleChatRequest = () => {
       showToast('error', error, t);
     }
   };
-
-  return handleChatRequest;
+};
+export const formatTimestamp = (timestamp: string | Date): string => {
+  const date = new Date(timestamp);
+  return `${date.toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })}, ${date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  })}`;
 };

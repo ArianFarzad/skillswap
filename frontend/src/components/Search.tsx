@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosInstance';
-import log from '../utils/loggerInstance.ts';
 import { useTypedTranslation } from '../utils/translationUtils.ts';
 import ChatIcon from '@mui/icons-material/Chat';
 import { showToast } from '../utils/toastUtils.ts';
@@ -80,9 +79,9 @@ const Search: React.FC<SearchArgs> = ({ keyword, points }) => {
 
       setProfiles(profilesWithStats);
     } catch (error) {
-      log.error('Error fetching profiles:', error);
+      showToast('error', error, t);
     }
-  }, [keyword, points]);
+  }, [keyword, points, t]);
 
   useEffect(() => {
     if (keyword || points) {
